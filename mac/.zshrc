@@ -30,3 +30,17 @@ source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 
 alias kbcheck='hidutil property --get "UserKeyMapping"'
 alias fixkb='~/kb_toggle.sh'
+
+function dot-pull() {
+    local current_dir=$(pwd)
+    cd ~/dotfiles
+    echo "📡 Fetching updates from GitHub..."
+    git pull origin main
+    
+    # Reload configs automatically
+    source ~/.zshrc
+    tmux source-file ~/.tmux.conf 2>/dev/null
+    
+    cd $current_dir
+    echo "✅ Cockpit updated and reloaded."
+}
