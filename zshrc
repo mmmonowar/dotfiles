@@ -55,3 +55,13 @@ alias ls='ls --color=auto'
 if [ -x /usr/bin/dircolors ]; then
     eval "$(dircolors -b)"
 fi
+
+function dot-sync() {
+    local current_dir=$(pwd)
+    cd ~/dotfiles
+    git add .
+    git commit -m "Update dotfiles: $(date +'%Y-%m-%d %H:%M')"
+    git push origin main
+    cd $current_dir
+    echo "🚀 Dotfiles pushed to GitHub!"
+}
