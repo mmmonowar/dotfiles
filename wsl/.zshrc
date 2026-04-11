@@ -55,3 +55,17 @@ alias ls='ls --color=auto'
 if [ -x /usr/bin/dircolors ]; then
     eval "$(dircolors -b)"
 fi
+
+function dot-pull() {
+    local current_dir=$(pwd)
+    cd ~/dotfiles
+    echo "📡 Fetching updates from GitHub..."
+    git pull origin main
+    
+    # Reload configs automatically
+    source ~/.zshrc
+    tmux source-file ~/.tmux.conf 2>/dev/null
+    
+    cd $current_dir
+    echo "✅ Cockpit updated and reloaded."
+}
