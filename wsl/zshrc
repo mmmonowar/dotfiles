@@ -1,123 +1,79 @@
 # =============================================================================
 # WSL / UBUNTU - .zshrc
-# Hybrid Cockpit Configuration
 # =============================================================================
 
-# -----------------------------------------------------------------------------
 # 1. PATH & ENVIRONMENT
 # -----------------------------------------------------------------------------
-# Add local binaries to PATH (Standard practice on Ubuntu instead of Homebrew) 
-export PATH="$HOME/.local/bin:$PATH" 
+export PATH="$HOME/.local/bin:$PATH" # [cite: 5]
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" # [cite: 12]
 
-# Load Linuxbrew environment [cite: 13]
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" [cite: 13]
+# Boot up x-cmd
+[ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # [cite: 6, 7]
 
-# boot up x-cmd [cite: 7]
-[ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" [cite: 7]
-
-# -----------------------------------------------------------------------------
 # 2. AESTHETICS & PROMPT
 # -----------------------------------------------------------------------------
-# A clean, Mac-like prompt: [folder] > [cite: 13]
-PROMPT='%F{cyan}[%1d] > %f' [cite: 13]
+PROMPT='%F{cyan}[%1d] > %f' # [cite: 13]
 
-# Enable colorized output for ls (Ubuntu/GNU format) [cite: 9]
-alias ls='ls --color=auto' [cite: 9, 13]
-alias grep='grep --color=auto' [cite: 9]
+# Enable colorized output for ls (Ubuntu/GNU format)
+alias ls='ls --color=auto' # [cite: 8, 13]
+alias grep='grep --color=auto' # [cite: 8]
 
-# Set up GNU dircolors if available (replaces Mac's LSCOLORS) [cite: 9]
-if [ -x /usr/bin/dircolors ]; then [cite: 9, 13]
-    eval "$(dircolors -b)" [cite: 9, 13]
-fi [cite: 9, 13]
+# Set up GNU dircolors if available
+if [ -x /usr/bin/dircolors ]; then
+    eval "$(dircolors -b)" # [cite: 9, 13]
+fi
 
-# Enable auto-completion coloring [cite: 10]
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" [cite: 10]
+# Enable auto-completion coloring
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" # [cite: 10]
 
-# -----------------------------------------------------------------------------
 # 3. TMUX COCKPIT INITIALIZATION
 # -----------------------------------------------------------------------------
-# Auto-start tmux on shell login (optional) [cite: 6]
-if [[ -z "$TMUX" ]]; then [cite: 6]
-    tmux attach-session -t default || tmux new-session -s default [cite: 6]
-fi [cite: 6]
+# Auto-start tmux on shell login
+if [[ -z "$TMUX" ]]; then
+    tmux attach-session -t default || tmux new-session -s default # [cite: 5, 6]
+fi
 
-# Reload the tmux config for the current session 
-alias reload-tmux='tmux source-file ~/.tmux.conf && echo "Tmux reloaded."' 
+alias reload-tmux='tmux source-file ~/.tmux.conf && echo "Tmux reloaded."' # [cite: 8]
+alias restart-tmux='tmux kill-server' # [cite: 8]
 
-# Kill the server (effectively your restart) 
-alias restart-tmux='tmux kill-server' 
-
-# -----------------------------------------------------------------------------
 # 4. ALIASES & KEYBOARDS
 # -----------------------------------------------------------------------------
-# ddgr web search alias 
-alias search='ddgr --reg en-us --num 5' 
+alias search='ddgr --reg en-us --num 5' # [cite: 8]
 
-# NOTE: 'hidutil' is a macOS-only command. [cite: 11]
-# On Ubuntu, use 'xmodmap', 'setxkbmap', or 'evtest' to check keyboard mappings. [cite: 11]
-alias kbcheck='hidutil property --get "UserKeyMapping"' [cite: 12]
+# 'hidutil' is macOS-only; this alias is kept for cross-platform awareness
+alias kbcheck='hidutil property --get "UserKeyMapping"' # [cite: 12]
+alias fixkb='~/kb_toggle.sh' # [cite: 12]
 
-# Keep your custom keyboard script alias [cite: 13]
-alias fixkb='~/kb_toggle.sh' [cite: 13]
-
-# -----------------------------------------------------------------------------
 # 5. AUTOMATED AUTHENTICATION (SSH Agent)
 # -----------------------------------------------------------------------------
-# Starts the SSH agent automatically so you don't have to unlock your key 
-# for every new terminal session, enabling seamless Git pushes.
 if [ -z "$SSH_AUTH_SOCK" ]; then
    eval "$(ssh-agent -s)" > /dev/null
    ssh-add ~/.ssh/id_ed25519 2>/dev/null
 fi
 
-# -----------------------------------------------------------------------------
-# 6. DOTFILES AUTOMATION ("Basher" Workflows)
+# 6. DOTFILES AUTOMATION
 # -----------------------------------------------------------------------------
 function dot-sync() {
     local current_dir=$(pwd)
     cd ~/dotfiles
-    
-    echo "📦 Staging changes..."
     git add -A  
     git commit -m "WSL sync: $(date +'%Y-%m-%d %H:%M')"
-    
-    echo "🚀 Pushing to GitHub..."
     git push origin main
-    
     cd "$current_dir"
-    echo "✅ Dotfiles synced to GitHub cockpit."
 }
 
 function dotpull() {
     local current_dir=$(pwd)
     cd ~/dotfiles
-    
-    echo "📡 Fetching updates from GitHub..."
     if git pull origin main; then
-        echo "✅ Pull successful. Reloading configurations..."
-        
-        # Reload Zsh
         source ~/.zshrc
-        
-        # Reload Tmux if inside an active session
-        if [ -n "$TMUX" ]; then
-            tmux source-file ~/.tmux.conf
-            echo "🎨 Tmux reloaded."
-        fi
-        
-        echo "🚀 Cockpit is up to date."
-    else
-        echo "❌ Pull failed. Check for merge conflicts."
+        [ -n "$TMUX" ] && tmux source-file ~/.tmux.conf
     fi
-    
     cd "$current_dir"
 }
 
+# 7. PLUGINS
 # -----------------------------------------------------------------------------
-# 7. PLUGINS & EXTENSIONS
-# -----------------------------------------------------------------------------
-# Source zsh-syntax-highlighting [cite: 10]
-# Note: You must install it first via: sudo apt install zsh-syntax-highlighting [cite: 10]
-if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then [cite: 10]
-    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh [cite: 10]
-fi [cite: 10]
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
+fi
