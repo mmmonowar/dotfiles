@@ -1,28 +1,15 @@
-# Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
-# Text-based UI library
 brew "ncurses"
-# Console Matrix
 brew "cmatrix"
-# DuckDuckGo from the terminal
 brew "ddgr"
-# GNU Emacs text editor
 brew "emacs"
-# Command-line fuzzy finder written in Go
 brew "fzf"
-# Open-source, cross-platform JavaScript runtime environment
 brew "node"
-# Interact with Google Gemini AI models from the command-line
 brew "gemini-cli"
-# Render markdown on the CLI
 brew "glow"
-# Interactive cheatsheet tool for the command-line
+brew "micro"
 brew "navi"
-# File browser
 brew "ranger"
-# Modern and pretty fancy file manager for the terminal
 brew "superfile"
-# Terminal multiplexer
 brew "tmux"
-# Display directories as trees (with optional color/HTML output)
 brew "tree"
