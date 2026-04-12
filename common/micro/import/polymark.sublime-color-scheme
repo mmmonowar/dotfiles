@@ -1,0 +1,450 @@
+// ---
+// Author: Muhammad Mustafa Monowar
+// Updated: 2026-03-17-20-21-01
+// Target: Sublime-Text
+// Version: v.3.0.1
+// ---
+ 
+// # PolyMark (A Syntax and Color Scheme Compatible with PolyOS)
+ 
+// ## About PolyMark
+// PolyMark is a Color Scheme and Syntax Highlight Rule, a part of the PolyOS ecosystem. // For more information visit: https://thepolymodframework.carrd.co/
+ 
+// License:     
+// PolyMark v.3.0.0 by Muhammad Mustafa Monowar
+// Copyright (c) 2025 All Rights Reserved.
+// This software is licensed under the Commercial EULA included in this package.
+// Unauthorized redistribution or resale is strictly prohibited.
+
+// ## Setting Up
+// Please read the `Instructions.md` for instructions on how to set up PolyMark on your device.
+
+// ------
+// BODY
+
+
+{
+    "variables":
+    {
+
+        "heading_punc": "#6272a4",
+        "h1": "#ff79c6",
+        "h2": "#bd93f9",
+        "h3": "#8be9fd",
+        "h4": "#50fa7b",
+        "h5": "#f1fa8c",
+        "h6": "#ffb86c"
+
+    },
+    "globals":
+    {
+        // These keys are from your polymark-theme.sublime-theme file
+    "background": "#000101",
+    "foreground": "#edecee",
+    "caret": "#edecee",
+    "line_highlight": "#a394f033",
+    "selection": "#a394f033",
+    "selection_border": "#af8aff7f",
+    "find_highlight": "#3ea7847f",
+    "find_highlight_foreground": "#edecee",
+
+    // These ensure UI popups (like quickmenus) are styled
+    "popdown_background": "#000101",
+    "popup_background": "#000101",
+    "sheet_background": "#000101",
+
+    // Style brackets
+    "brackets_foreground": "#a394f033",
+    "brackets_options": "normal",
+    "bracket_contents_foreground": "#a394f033",
+    "bracket_contents_options": "normal",
+
+    // Style tags
+    "tags_options": "stippled_normal"
+    },
+    "rules":
+    [
+
+        // A7. Markers [Rule] (+, -) followed by text (Keep this near the end)
+        // A7. Captures 2
+        {
+        "name": "Polymark List/Marker Punctuation",
+        "scope": "punctuation.definition.marker.polymark",
+        "foreground": "#F08080", // Example: Light Coral/Red for emphasis 🔴
+        "font_style": "bold"
+        },
+        
+        // A7. Captures 4
+        {
+        "name": "Polymark Marker Content",
+        "scope": "string.unquoted.marker-content.polymark",
+        // "foreground": "#9EEBFF", // Example: Light Blue/Cyan for the text 💡
+        "font_style": ""
+        },
+        // Optional: General scope for the entire line (mostly handles indentation/separator)
+        {
+        "name": "Polymark Marker Line Meta",
+        "scope": "meta.marker-definition.polymark",
+        // "foreground": "#B0B0B0" // Muted default text color
+        },
+        // End of A7
+
+
+        // A8. Date Header [Rule] (####-##-##)
+        {
+            "name": "Date Header",
+            "scope": "entity.name.section.header.date",
+            "foreground": "#FBDA35", // Color: School bus Yellow
+            "font_style": "bold"      // Optional: make it bold
+        },
+        // End of A8.
+
+        // A9. Duration Range [Rule] (##-##-## -> ##-##-##)
+        {
+        "name": "Custom Date/Time Range Highlight",
+        "scope": "meta.date-range.time.span.custom",
+        "foreground": "#75FAF8",  // Color: Electric Blue
+        "font_style": "bold"    // Optional: Use "bold", "italic", or ""
+        },
+        // End of A9
+
+        // End of Section A.
+        // ---
+
+
+        // Beginning of Section E.
+
+        
+        // E1. Area/Project [Rule] (@Area/@Project)
+        // E1. Capture 1 - @ before Area
+        {
+            "name": "Area Tag Symbol",
+            "scope": "entity.name.tag.area.polymark",
+            "foreground": "#75FAF8",  // Color: Electric Blue
+            "background": "#021012", // Color: Rich Black Background
+            "font_style": "bold"
+        },
+        // E1. Capture 2 - Area name
+        {
+            "name": "Area Name",
+            "scope": "entity.name.area.polymark",
+            "foreground": "#75FAF8",  // Color: Electric Blue
+            "background": "#021012", // Color: Rich Black Background
+            "font_style": "bold"
+        },
+        // E1. Capture 3 - / separator
+        {
+            "name": "Area/Project Separator",
+            "scope": "punctuation.separator.polymark",
+            "foreground": "#75FAF8",  // Color: Electric Blue
+            "background": "#021012", // Color: Rich Black Background
+            "font_style": "bold"
+        },
+        // E1. Capture 4 - @ before Project
+        {
+            "name": "Project Tag Symbol",
+            "scope": "entity.name.tag.project.polymark",
+            "foreground": "#75FAF8",  // Color: Electric Blue
+            "background": "#021012", // Color: Rich Black Background
+            "font_style": "bold"
+        },
+        // E1. Capture 5 - Project name
+        {
+            "name": "Project Name",
+            "scope": "entity.name.project.polymark",
+            "foreground": "#75FAF8",  // Color: Electric Blue
+            "background": "#021012", // Color: Rich Black Background
+            "font_style": "bold"
+        },
+        // End of E1
+
+
+        // E2. Markdown-style headings [Rule] (H1 through H6)
+        {
+        "name": "General Markdown Heading Line",
+        "scope": "markup.heading.markdown",
+        "foreground": "#47D4FF",  // Color: Vivid sky blue
+        "background": "",
+        "font_style": "bold"
+        },
+        // E2. Captures 1.
+        {
+            "name": "Markdown Heading Punctuation",
+            "scope": "punctuation.definition.heading.markdown",
+            "foreground": "#82AAFF",
+            "font_style": "bold"
+        },
+        // End of E2
+
+
+        // E3. Incomplete to-do list items [Rule] (e.g., "- [ ] Task")
+        // E3. Captures 2
+        {
+        "name": "Task Bullet (Dark)",
+        "scope": "punctuation.definition.list.begin.markdown",
+        "foreground": "#47FFC2" /// Color: Aquamarine
+        },
+        // E3. Captures 4.
+        {
+        "name": "Task Incomplete Box (Dark)",
+        "scope": "markup.list.task.incomplete.markdown",
+        "foreground": "#FBDA35", // Color: School bus yellow
+        "font_style": "bold"
+        },
+        // End of E3.
+
+
+        // E4. Completed to-do list items [Rule] (e.g., "- [x] Task")
+        // E4. Captures 4.
+        {
+        "name": "Task Complete Box (Dark)",
+        "scope": "markup.list.task.complete.markdown",
+        "foreground": "#47FFC2", // Color: Aquamarine
+        "font_style": "bold"
+        },
+        // End of E4.
+
+
+        // E5. Metadata Definition [Rule] ([InnerString]:)
+        // E5. Captures 2.
+        {
+        "name": "Metadata InnerString (Key)",
+        "scope": "string.unquoted.tag-name.custom",
+        "foreground": "#47FFC2", // Color: Vivid sky blue
+        "font_style": "bold"
+        },
+        // E5. Captures 1 and 3. Punctuation ([ and ]:)
+        {
+        "name": "Metadata Punctuation Separators",
+        "scope": "punctuation.definition.tag.begin.custom, punctuation.separator.key-value.custom",
+        "foreground": "#47FFC2" // Color: Aquamarine
+        },
+        // E5. Encompassing Scope (Sets the background for the entire line)
+        {
+        "name": "Metadata Definition Line Background",
+        "scope": "meta.tag-definition.custom",
+        // "background": "#141414" // Example: A very subtle dark background
+        },
+        // End of E5.
+
+
+        // E6. Horizontal rule/document separator [Rule] (---)
+        {
+        "name": "Document Separator (---)",
+        "scope": "meta.separator.document.custom",
+        "foreground": "#9d70ff", // Color: Tropical Indigo
+        "font_style": "bold"   // Optional: Add italics for a soft look
+        },
+        // End of E6.
+
+
+        // E7. Blockquote [Rule] (> String)
+        {
+        "name": "General Markdown Blockquote",
+        "scope": "markup.quote.markdown",
+        "foreground": "#47FFC2",  // Color: Aquamarine
+        "background": "#052529",  // Color: Gunmetal
+        "font_style": ""          // No specific font style here, usually handled by content scope
+        },
+        // End of E7.
+
+
+        // E9. Comments [Rule] (/// Comment)
+        {
+            "name": "Polymark Comment Punctuation (//)",
+            "scope": "punctuation.definition.comment.polymark",
+            "foreground": "#94B3AE", // Color: Ash gray
+            "font_style": ""
+        },
+        {
+            "name": "Polymark Comment Content",
+            "scope": "comment.line.double-slash.content.polymark",
+            "foreground": "#94B3AE", // Color: Ash gray
+            "font_style": "italic"
+        },
+        // End of E9
+
+
+        // E10. Bold [Rule] (**Bold Item**)
+        {
+        "name": "Polymark Bold Content",
+        "scope": "markup.bold.content.polymark",
+        "font_style": "bold", // The core styling: bold font
+        "foreground": "#98FB98"
+        },
+        // End of E10
+
+
+        // E11. Italics [Rule] (*Italicized Item*)
+        {
+        "name": "Polymark Italic Content",
+        "scope": "markup.italic.content.polymark",
+        "font_style": "italic", // The core styling: italic font
+        "foreground": "#98FB98"
+        },
+        // End of E11.
+
+
+        // E12. Custom Tagging [Rule] (<tag> Content </tag>)
+        // E12. Captures 1.
+        {
+            "name": "Custom Tag Punctuation",
+            "scope": "punctuation.definition.tag.begin.polymark, punctuation.definition.tag.end.polymark",
+            "foreground": "#9D70FF", // Soft Red for the brackets/slashes
+            "font_style": "",
+            "background": "#021012" // Rich black background for highlight
+        },
+        // E12. Captures 2.
+        {
+            "name": "Custom Tag Name",
+            "scope": "entity.name.tag.polymark",
+            "foreground": "#9D70FF", // Bright Green for the tag name
+            "font_style": "bold",
+            "background": "#021012" // Rich black background for highlight
+        },
+        // E12. Metascope (Content within the Tags)
+        // This uses the meta_scope to apply background and font-style to everything inside the tag.
+        {
+            "name": "Custom Tag Content (Meta Scope)",
+            "scope": "meta.custom-tag.content.polymark",
+            "foreground": "#94B3AE",
+            "background": "#021012", // Rich black background for highlight
+            "font_style": ""   // Set all content to italic
+        },
+        // End of E12
+
+
+        // E13. Date-time-stamp [Rule] (YYYY-MM-DD-HH-MM-SS)
+        {
+            "name": "Date-time-stamp (YYYY-MM-DD-HH-MM-SS)",
+            "scope": "constant.numeric.timestamp.polymark",
+            "foreground": "#47FFC2", // Color: Vivid sky blue
+            "font_style": ""
+        },
+        // End of E13.
+
+        // E14. Email Address Pattern [Rule] (name@provider.com)
+        // E14. Captures 1.
+        {
+        "name": "Polymark Email - User Name",
+        "scope": "constant.character.user-name.polymark",
+        "foreground": "#94B3AE",
+        "font_style": "bold"
+        },
+        // E14. Captures 2.
+        {
+        "name": "Polymark Email - Domain Name",
+        "scope": "constant.character.domain.polymark",
+        "foreground": "#94B3AE",
+        "font_style": "bold"
+        },
+        // E14. Captures 3 - @ symbol
+        {
+        "name": "Polymark Email - At Symbol",
+        "scope": "punctuation.definition.email.at.polymark",
+        "foreground": "#94B3AE",
+        "font_style": "bold"
+        },
+        // End of E14.
+
+
+        // E15. Status Markers [Rule] ([?], [!])
+        // E15a STATUS MARKER [?] - Question/Uncertainty
+        {
+            "name": "Status Marker [?]",
+            "scope": "markup.status.ind-question.polymark",
+            "foreground": "#82AAFF", // Bright Blue
+            "font_style": "bold"
+        },
+        // E15b STATUS MARKER [!] - Alert/Important
+        {
+            "name": "Status Marker [!]",
+            "scope": "markup.status.ind-alert.polymark",
+            "foreground": "#FF4081", // Vivid Pink/Red
+            "font_style": "bold"
+        },
+        // End of E15.
+
+        // E16. Code Markers [Rule] ($ String)
+        // E16a. Code Marker Dollar '$'
+        {
+            "name": "Code Marker Dollar Symbol",
+            "scope": "punctuation.definition.dollar.polymark",
+            "foreground": "#75FAF8", // Color: Pastel Orange (distinct from the red/coral markers),
+            "background": "#021012",
+            "font_style": ""
+        },
+        // E16b. Code Marker Space ' '
+        {
+            "name": "Polymark Dollar Separator (Space)",
+            "scope": "punctuation.separator.dollar.polymark",
+            "background": "#021012"
+        },
+        // E16c. Code Marker String 'string'
+        {
+            "name": "Code Marker String Content",
+            "scope": "string.unquoted.dollar-line.polymark",
+            "foreground": "#75FAF8",
+            "background": "#021012",
+            "font_style": ""
+        },
+        // End of E16.
+
+        // E17. Status Markers [Rule] (- [/], - [!], - [?], - [-])
+        // E17a STATUS MARKER [/] - In-Progress
+        {
+            "name": "Status Marker [/]",
+            "scope": "markup.status.in-progress.polymark",
+            "foreground": "#C0C0C0", // Light Grey
+            "font_style": "bold"
+        },
+        // E17b STATUS MARKER [!] - Alert
+        {
+            "name": "Status Marker [!]",
+            "scope": "markup.status.alert.polymark",
+            "foreground": "#F22222", // Racing Red
+            "font_style": "bold"
+        },
+        // E17c STATUS MARKER [?] - Question
+        {
+            "name": "Status Marker [?]",
+            "scope": "markup.status.question.polymark",
+            "foreground": "#FFE733",
+            "font_style": "bold"
+        },
+        // E17da STATUS MARKER [-] - Abandoned
+        {
+            "name": "Status Marker [-]",
+            "scope": "markup.status.abandoned.polymark",
+            "foreground": "#565656", // Light Grey
+            "font_style": "bold"
+        },
+        // E17da STATUS MARKER [-] + Abandoned Content
+        {
+            "name": "Status Marker [-] Abandoned Content",
+            "scope": "markup.status.abandoned.content.polymark",
+            "foreground": "#565656", // Grey for abandoned text
+            "font_style": "normal"
+        },
+        // End of E17.
+
+        // E18. Filename with Extension [Rule] (filename.ext)
+        // E18a. Filename
+        {
+            "name": "Filename",
+            "scope": "entity.name.filename.polymark",
+            "foreground": "#94B3AE",  // Soft Yellow
+            "font_style": "normal"
+        },
+        // E18b. Extension
+        {
+            "name": "File Extension",
+            "scope": "entity.name.extension.polymark",
+            "foreground": "#94B3AE",  // Soft Orange
+            "font_style": "normal"
+        }
+        // End of E18.
+
+    ]
+
+}

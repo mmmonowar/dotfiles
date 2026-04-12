@@ -13,6 +13,8 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" # [cite: 12]
 # 2. AESTHETICS & PROMPT
 # -----------------------------------------------------------------------------
 PROMPT='%F{cyan}[%1d] > %f' # [cite: 13]
+export COLORTERM=truecolor
+export MICRO_TRUECOLOR=1
 
 # Enable colorized output for ls (Ubuntu/GNU format)
 alias ls='ls --color=auto' # [cite: 8, 13]

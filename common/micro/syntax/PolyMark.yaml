@@ -1,15 +1,39 @@
-id: my-custom             # Unique ID for this syntax
-filetype: plain           # Or a specific extension like .log, .txt
-
+id: polymark
+filetype: polymark
 detect:
-    filename: "\\.txt$"   # Regex to trigger this syntax
+    filename: "\\.pm$"
 
 rules:
-    # Format: - group: "regex"
-    - statement: "\\b(TODO|FIXME|IMPORTANT)\\b"
-    - identifier: "@[A-Za-z0-9_]+"
-    - constant: "\\b\\d+\\b"
+    # Comments
     - comment:
-        start: "//"
+        start: "///"
         end: "$"
         rules: []
+
+    # Headings
+    - heading: "^\\s*(#+)(\\s+)(.+)$"
+    
+    # Dates & Timestamps
+    - date.header: "\\b\\d{4}-\\d{2}-\\d{2}\\b"
+    - timestamp: "\\b\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}\\b"
+    
+    # Tasks
+    - task.incomplete: "- \\[ \\]"
+    - task.complete: "- \\[x\\]"
+    
+    # Areas & Projects
+    - area.name: "@[^/\\n\\r]+"
+    - project.name: "/@[^/\\n\\r]+"
+    
+    # Metadata
+    - metadata.key: "\\[[^\\]]+\\]:"
+    
+    # Symbols & Separators
+    - separator: "^---$"
+    - tag: "<[a-z]+>"
+    - status.alert: "\\[!\\]"
+    - status.question: "\\[\\?\\]"
+    
+    # Basic styles
+    - bold: "\\*\\*.*\\*\\*"
+    - italic: "\\*.*\\*"

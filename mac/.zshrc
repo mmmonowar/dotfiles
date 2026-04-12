@@ -19,6 +19,8 @@ alias restart-tmux='tmux kill-server'
 
 # Enable colorized output for ls
 export CLICOLOR=1
+export COLORTERM=truecolor
+export MICRO_TRUECOLOR=1
 
 # Define colors for different file types (Mac/BSD format)
 export LSCOLORS=Gxfxcxdxbxegedabagacad
