@@ -71,6 +71,7 @@ function dotpull() {
     fi
     cd "$current_dir"
 }
+alias dot-pull='dotpull'
 
 # 7. PLUGINS
 # -----------------------------------------------------------------------------
