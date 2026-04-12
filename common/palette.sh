@@ -2,90 +2,104 @@
 
 # Configuration
 BREWFILE_PATH="$HOME/dotfiles/wsl/Brewfile"
+META_PATH="$HOME/dotfiles/wsl/apps_meta.txt"
 TARGET_PANE=$(tmux display-message -p '#{pane_id}')
 
 function main_menu() {
-    # Added Option 3 and 4 for better control
     options="1. 🚀 Apps (Launch)
-2. 📦 Install New App (Brew)
-3. ⬇️  Pull Remote Changes (Update Local)
-4. ⬆️  Push Local Changes (Sync to GitHub)
-5. 🔄 Refresh Tmux/Plugins
-6. ❌ Exit"
+2. 📦 Install App
+3. 🗑️  Uninstall App
+4. ⬇️  Pull Remote Changes
+5. ⬆️  Push Local Changes (Sync)
+6. 🔄 Refresh Tmux
+7. ❌ Exit"
 
     choice=$(echo -e "$options" | fzf --prompt="󱂬 Cockpit > " --height=100% --layout=reverse --border)
 
     case "$choice" in
         *1.*) apps_menu ;;
         *2.*) install_app ;;
-        *3.*) trigger_zsh_func "dotpull" ;;
-        *4.*) trigger_zsh_func "dot-sync" ;;
-        *5.*) reload_tmux ;;
+        *3.*) uninstall_app ;;
+        *4.*) trigger_zsh_func "dotpull" ;;
+        *5.*) trigger_zsh_func "dot-sync" ;;
+        *6.*) reload_tmux ;;
         *) exit 0 ;;
     esac
 }
 
-# Unified function to send Zsh commands to the active pane
 function trigger_zsh_func() {
     local func_name=$1
-    echo "Sending $func_name to terminal..."
     tmux send-keys -t "$TARGET_PANE" "$func_name" C-m
-    # We don't exit the script so you can see if it worked
 }
 
 function install_app() {
     echo -n "Enter package name: "
     read -r app_name
-    
-    if [[ -n "$app_name" ]]; then
-        # Use your existing Zsh logic via tmux to keep everything in one history
-        tmux send-keys -t "$TARGET_PANE" "brew install $app_name && brew bundle dump --file=$BREWFILE_PATH --force && dot-sync" C-m
-        echo "Installation and Sync command queued."
+    [[ -z "$app_name" ]] && main_menu && return
+
+    echo -n "Enter menu description (e.g., 🚀 My App): "
+    read -r app_desc
+
+    # Ensure meta file exists and append the new description
+    touch "$META_PATH"
+    if [[ -n "$app_desc" ]]; then
+        # Remove any existing entry for this app to prevent duplicates, then append
+        sed -i "/^${app_name}|/d" "$META_PATH" 2>/dev/null
+        echo "${app_name}|${app_desc}" >> "$META_PATH"
+    fi
+
+    echo "--- Queuing Install & Sync ---"
+    tmux send-keys -t "$TARGET_PANE" "brew install $app_name && brew bundle dump --file=$BREWFILE_PATH --force && dot-sync" C-m
+    main_menu
+}
+
+function uninstall_app() {
+    if [[ ! -f "$BREWFILE_PATH" ]]; then
+        echo "Brewfile not found!"; sleep 2; main_menu; return
+    fi
+
+    # Pick from currently installed apps
+    app_choice=$(grep '^brew ' "$BREWFILE_PATH" | sed 's/brew "\(.*\)"/\1/' | fzf --prompt="🗑️ Uninstall > " --height=100% --layout=reverse)
+
+    if [[ -n "$app_choice" ]]; then
+        # Clean up the sidecar file
+        sed -i "/^${app_choice}|/d" "$META_PATH" 2>/dev/null
+        
+        echo "--- Queuing Uninstall & Sync ---"
+        tmux send-keys -t "$TARGET_PANE" "brew uninstall $app_choice && brew bundle dump --file=$BREWFILE_PATH --force && dot-sync" C-m
     fi
     main_menu
 }
 
-function sync_dots() {
-    # Since dot-sync is a Zsh function, we call it via zsh -c
-    # This ensures your existing Git logic is reused.
-    tmux send-keys -t "$TARGET_PANE" "dot-sync" C-m
-    echo "Sync command sent to terminal."
-    sleep 2
+function get_app_description() {
+    local app_name="$1"
+    # Look for the exact app name in the sidecar file
+    if [[ -f "$META_PATH" ]]; then
+        local desc=$(grep "^${app_name}|" "$META_PATH" | cut -d'|' -f2-)
+        if [[ -n "$desc" ]]; then
+            echo "$desc"
+            return
+        fi
+    fi
+    # Fallback if no description exists
+    echo "⚙️  CLI Tool"
 }
 
 function apps_menu() {
-    # Define your apps here: "Command | Description"
-    # The '|' is our delimiter for fzf
-    local app_list=(
-        "btop         | 📊 System Monitor (CPU, Mem, Network)"
-        "glow         | 📖 Markdown Reader (Render docs in terminal)"
-        "superfile    | 📂 Terminal File Manager (TUI)"
-        "navi         | 💡 Interactive Cheat-sheet for CLI"
-        "ranger       | 🤠 Classic File Explorer (Vim-like)"
-        "cmatrix      | 💊 The Matrix digital rain effect"
-        "ddgr         | 🔍 Search DuckDuckGo from terminal"
-        "emacs        | ✍️  The extensible text editor"
-    )
+    [[ ! -f "$BREWFILE_PATH" ]] && { echo "Brewfile missing"; sleep 2; main_menu; return; }
 
-    # Use fzf to display the menu
-    # --delimiter '|' splits the line
-    # --with-nth 1.. ensures both sides are visible to you
-    choice=$(printf "%s\n" "${app_list[@]}" | fzf \
-        --prompt="🚀 Launch > " \
-        --height=40% \
-        --layout=reverse \
-        --border \
-        --delimiter '\|' \
-        --with-nth 1,2)
+    local dynamic_list=""
+    
+    for app in $(grep '^brew ' "$BREWFILE_PATH" | sed 's/brew "\(.*\)"/\1/'); do
+        local desc=$(get_app_description "$app")
+        dynamic_list+="$(printf "%-15s | %s\n" "$app" "$desc")"
+    done
 
-    # Exit if nothing is selected (ESC)
+    choice=$(echo -e "$dynamic_list" | fzf --prompt="🚀 Launch > " --height=40% --layout=reverse --border --delimiter '\|' --with-nth 1,2)
+
     [[ -z "$choice" ]] && main_menu && return
 
-    # Extract just the command (everything before the '|')
-    # Use xargs to trim whitespace
     local cmd=$(echo "$choice" | cut -d'|' -f1 | xargs)
-
-    # Execute the command in the active tmux pane
     tmux send-keys -t "$TARGET_PANE" "$cmd" C-m
     exit 0
 }
