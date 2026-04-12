@@ -46,7 +46,9 @@
 # BODY
 # Beginning of File Extensions
 file_extensions:
-  - pm  # file extention .md or .pm will enable PolyMark
+  - pm
+  - md
+  - txt
 scope: text.polymark
 
 # Beginning of Contexts

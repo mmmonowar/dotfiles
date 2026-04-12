@@ -1,7 +1,7 @@
 id: polymark
 filetype: polymark
 detect:
-    filename: "\\.pm$"
+    filename: "\\.(pm|md|txt)$"
 
 rules:
     # Comments
