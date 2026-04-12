@@ -1,61 +1,56 @@
 #!/bin/bash
 
-# --- Helper: Get the current pane for send-keys ---
-# We want to send shell commands to the pane that was active BEFORE the popup opened.
+# Path to your Brewfile - adjusting based on your dotfiles structure
+BREWFILE="$HOME/dotfiles/Brewfile"
 TARGET_PANE=$(tmux display-message -p '#{pane_id}')
 
 function main_menu() {
-    options="1. 🔄 Refresh Plugins & Reload Tmux
-2. ⬇️  Pull Dotfiles (dot-pull)
-3. ⬆️  Sync Dotfiles (dot-sync)
-4. 🐚 Reload Zsh (~/.zshrc)
-5. 🐳 Docker Menu
-6. 📊 System Monitor (btop)
-7. ❌ Exit"
+    options="1. 🚀 Apps (from Brewfile)
+2. 🔄 Refresh Plugins & Reload Tmux
+3. ⬇️  Dot-Pull (Git Pull)
+4. ⬆️  Dot-Sync (Git Push)
+5. 🐚 Source Zsh (~/.zshrc)
+6. ❌ Exit"
 
-    # Run fzf
-    choice=$(echo -e "$options" | fzf --prompt="󱂬 Command Palette > " --height=100% --layout=reverse --border --header="Select an action")
+    choice=$(echo -e "$options" | fzf --prompt="󱂬 Main Menu > " --height=100% --layout=reverse --border)
 
     case "$choice" in
-        *1.*) # Refresh Plugins & Reload Tmux
+        *1.*) apps_menu ;;
+        *2.*) 
             tmux source-file ~/.tmux.conf
-            # This triggers TPM to install/clean plugins non-interactively
             ~/.tmux/plugins/tpm/bin/install_plugins
-            tmux display-message "Tmux Config & Plugins Reloaded!"
-            ;;
-        *2.*) # dot-pull
-            # We execute this directly in the popup so you can see the git output
-            cd ~/dotfiles && git pull origin main
+            tmux display-message "Tmux Reloaded!" ;;
+        *3.*) 
+            cd ~/dotfiles && git pull
             tmux send-keys -t "$TARGET_PANE" "source ~/.zshrc" C-m
-            read -p "Press Enter to close..."
-            ;;
-        *3.*) # dot-sync
-            cd ~/dotfiles
-            git add -A
-            git commit -m "Manual sync via palette: $(date +'%Y-%m-%d %H:%M')"
-            git push origin main
-            read -p "Press Enter to close..."
-            ;;
-        *4.*) # Reload Zsh
-            # We send the command to the active pane so it actually updates your shell
-            tmux send-keys -t "$TARGET_PANE" "source ~/.zshrc && echo 'Zsh reloaded.'" C-m
-            ;;
-        *5.*) docker_menu ;;
-        *6.*) tmux send-keys -t "$TARGET_PANE" "btop" C-m ;;
+            read -p "Pull complete. Press Enter..." ;;
+        *4.*) 
+            cd ~/dotfiles && git add . && git commit -m "sync: $(date)" && git push
+            read -p "Sync complete. Press Enter..." ;;
+        *5.*) 
+            tmux send-keys -t "$TARGET_PANE" "source ~/.zshrc && echo 'Zsh reloaded.'" C-m ;;
         *) exit 0 ;;
     esac
 }
 
-function docker_menu() {
-    docker_options="1. View Containers (ps)\n2. Prune System\n3. Back to Main Menu"
-    choice=$(echo -e "$docker_options" | fzf --prompt=" Docker > " --height=100% --layout=reverse --border)
-    
-    case "$choice" in
-        *1.*) tmux send-keys -t "$TARGET_PANE" "docker ps" C-m ;;
-        *2.*) tmux send-keys -t "$TARGET_PANE" "docker system prune -a" C-m ;;
-        *3.*) main_menu ;;
-    esac
+function apps_menu() {
+    # 1. Grab lines starting with 'brew' 
+    # 2. Extract the name between the quotes
+    # 3. Present in fzf
+    if [[ ! -f "$BREWFILE" ]]; then
+        echo "Brewfile not found at $BREWFILE"
+        sleep 2
+        main_menu
+    fi
+
+    app_choice=$(grep '^brew ' "$BREWFILE" | sed 's/brew "\(.*\)"/\1/' | fzf --prompt=" Launch App > " --height=100% --layout=reverse --border --header="Select a CLI tool to run")
+
+    if [[ -n "$app_choice" ]]; then
+        # Send the app name to the original pane and press Enter (C-m)
+        tmux send-keys -t "$TARGET_PANE" "$app_choice" C-m
+    else
+        main_menu
+    fi
 }
 
-# Start the engine
 main_menu
