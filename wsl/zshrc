@@ -65,9 +65,12 @@ function dot-sync() {
 function dotpull() {
     local current_dir=$(pwd)
     cd ~/dotfiles
-    if git pull origin main; then
+    echo "📥 Pulling latest changes (Rebasing local work)..."
+    if git pull --rebase origin main; then
         source ~/.zshrc
-        [ -n "$TMUX" ] && tmux source-file ~/.tmux.conf
+        [ -n "$TMUX" ] && tmux display-message "Dotfiles Updated & Reloaded"
+    else
+        echo "❌ Conflict detected! Please resolve manually."
     fi
     cd "$current_dir"
 }

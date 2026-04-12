@@ -2,48 +2,45 @@
 
 # Configuration
 BREWFILE_PATH="$HOME/dotfiles/wsl/Brewfile"
-DOTFILES_DIR="$HOME/dotfiles"
 TARGET_PANE=$(tmux display-message -p '#{pane_id}')
 
 function main_menu() {
+    # Added Option 3 and 4 for better control
     options="1. 🚀 Apps (Launch)
 2. 📦 Install New App (Brew)
-3. 🔄 Refresh Tmux/Plugins
-4. ⬆️  Sync Dotfiles (Push)
-5. ❌ Exit"
+3. ⬇️  Pull Remote Changes (Update Local)
+4. ⬆️  Push Local Changes (Sync to GitHub)
+5. 🔄 Refresh Tmux/Plugins
+6. ❌ Exit"
 
     choice=$(echo -e "$options" | fzf --prompt="󱂬 Cockpit > " --height=100% --layout=reverse --border)
 
     case "$choice" in
         *1.*) apps_menu ;;
         *2.*) install_app ;;
-        *3.*) reload_tmux ;;
-        *4.*) sync_dots ;;
+        *3.*) trigger_zsh_func "dotpull" ;;
+        *4.*) trigger_zsh_func "dot-sync" ;;
+        *5.*) reload_tmux ;;
         *) exit 0 ;;
     esac
 }
 
+# Unified function to send Zsh commands to the active pane
+function trigger_zsh_func() {
+    local func_name=$1
+    echo "Sending $func_name to terminal..."
+    tmux send-keys -t "$TARGET_PANE" "$func_name" C-m
+    # We don't exit the script so you can see if it worked
+}
+
 function install_app() {
-    echo -n "Enter package name to install: "
+    echo -n "Enter package name: "
     read -r app_name
     
-    if [[ -z "$app_name" ]]; then
-        main_menu
-        return
-    fi
-
-    echo "--- Installing $app_name ---"
-    if brew install "$app_name"; then
-        echo "✅ Success! Updating Brewfile..."
-        # Safely regenerate the Brewfile from actual installed apps
-        # --force overwrites the old file, --describe adds comments
-        brew bundle dump --file="$BREWFILE_PATH" --force --describe
-        
-        echo "📦 Brewfile updated. Initiating Sync..."
-        sync_dots
-    else
-        echo "❌ Installation failed. Brewfile not updated."
-        read -p "Press Enter to return..."
+    if [[ -n "$app_name" ]]; then
+        # Use your existing Zsh logic via tmux to keep everything in one history
+        tmux send-keys -t "$TARGET_PANE" "brew install $app_name && brew bundle dump --file=$BREWFILE_PATH --force && dot-sync" C-m
+        echo "Installation and Sync command queued."
     fi
     main_menu
 }
