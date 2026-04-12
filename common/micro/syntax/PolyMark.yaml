@@ -1,0 +1,15 @@
+id: my-custom             # Unique ID for this syntax
+filetype: plain           # Or a specific extension like .log, .txt
+
+detect:
+    filename: "\\.txt$"   # Regex to trigger this syntax
+
+rules:
+    # Format: - group: "regex"
+    - statement: "\\b(TODO|FIXME|IMPORTANT)\\b"
+    - identifier: "@[A-Za-z0-9_]+"
+    - constant: "\\b\\d+\\b"
+    - comment:
+        start: "//"
+        end: "$"
+        rules: []
