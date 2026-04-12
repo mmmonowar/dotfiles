@@ -54,18 +54,40 @@ function sync_dots() {
 }
 
 function apps_menu() {
-    if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo "Brewfile not found at $BREWFILE_PATH"
-        sleep 2; main_menu; return
-    fi
+    # Define your apps here: "Command | Description"
+    # The '|' is our delimiter for fzf
+    local app_list=(
+        "btop         | 📊 System Monitor (CPU, Mem, Network)"
+        "glow         | 📖 Markdown Reader (Render docs in terminal)"
+        "superfile    | 📂 Terminal File Manager (TUI)"
+        "navi         | 💡 Interactive Cheat-sheet for CLI"
+        "ranger       | 🤠 Classic File Explorer (Vim-like)"
+        "cmatrix      | 💊 The Matrix digital rain effect"
+        "ddgr         | 🔍 Search DuckDuckGo from terminal"
+        "emacs        | ✍️  The extensible text editor"
+    )
 
-    app_choice=$(grep '^brew ' "$BREWFILE_PATH" | sed 's/brew "\(.*\)"/\1/' | fzf --prompt=" Launch > " --height=100% --layout=reverse)
+    # Use fzf to display the menu
+    # --delimiter '|' splits the line
+    # --with-nth 1.. ensures both sides are visible to you
+    choice=$(printf "%s\n" "${app_list[@]}" | fzf \
+        --prompt="🚀 Launch > " \
+        --height=40% \
+        --layout=reverse \
+        --border \
+        --delimiter '\|' \
+        --with-nth 1,2)
 
-    if [[ -n "$app_choice" ]]; then
-        tmux send-keys -t "$TARGET_PANE" "$app_choice" C-m
-    else
-        main_menu
-    fi
+    # Exit if nothing is selected (ESC)
+    [[ -z "$choice" ]] && main_menu && return
+
+    # Extract just the command (everything before the '|')
+    # Use xargs to trim whitespace
+    local cmd=$(echo "$choice" | cut -d'|' -f1 | xargs)
+
+    # Execute the command in the active tmux pane
+    tmux send-keys -t "$TARGET_PANE" "$cmd" C-m
+    exit 0
 }
 
 function reload_tmux() {
