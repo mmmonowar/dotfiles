@@ -1,74 +1,33 @@
 #!/bin/bash
 
-# Configuration
-BREWFILE_PATH="$HOME/dotfiles/wsl/Brewfile"
-META_PATH="$HOME/dotfiles/wsl/apps_meta.txt"
+# ==========================================
+# 🎛️ TMUX COMMAND PALETTE (Merged & Upgraded)
+# ==========================================
+
+# 1. Capture the pane ID where the palette was triggered
 TARGET_PANE=$(tmux display-message -p '#{pane_id}')
 
-function main_menu() {
-    options="1. 🚀 Apps (Launch)
-2. 📦 Install App
-3. 🗑️  Uninstall App
-4. ⬇️  Pull Remote Changes
-5. ⬆️  Push Local Changes (Sync)
-6. 🔄 Refresh Tmux
-7. ❌ Exit"
+# 2. OS Detection for cross-platform dotfiles
+if uname -a | grep -iq "microsoft\|wsl"; then
+    OS_ENV="wsl"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    OS_ENV="mac"
+else
+    OS_ENV="linux" # Fallback for native Linux
+fi
 
-    choice=$(echo -e "$options" | fzf --prompt="󱂬 Cockpit > " --height=100% --layout=reverse --border)
+# 3. Dynamic Paths
+BREWFILE_PATH="$HOME/dotfiles/${OS_ENV}/Brewfile"
+META_PATH="$HOME/dotfiles/${OS_ENV}/apps_meta.txt"
 
-    case "$choice" in
-        *1.*) apps_menu ;;
-        *2.*) install_app ;;
-        *3.*) uninstall_app ;;
-        *4.*) trigger_zsh_func "dotpull" ;;
-        *5.*) trigger_zsh_func "dot-sync" ;;
-        *6.*) reload_tmux ;;
-        *) exit 0 ;;
-    esac
-}
+# ==========================================
+# 🛠️ HELPER FUNCTIONS
+# ==========================================
 
 function trigger_zsh_func() {
     local func_name=$1
+    # Send the command to the original pane and execute it
     tmux send-keys -t "$TARGET_PANE" "$func_name" C-m
-}
-
-function install_app() {
-    echo -n "Enter package name: "
-    read -r app_name
-    [[ -z "$app_name" ]] && main_menu && return
-
-    echo -n "Enter menu description (e.g., 🚀 My App): "
-    read -r app_desc
-
-    # Ensure meta file exists and append the new description
-    touch "$META_PATH"
-    if [[ -n "$app_desc" ]]; then
-        # Remove any existing entry for this app to prevent duplicates, then append
-        sed -i "/^${app_name}|/d" "$META_PATH" 2>/dev/null
-        echo "${app_name}|${app_desc}" >> "$META_PATH"
-    fi
-
-    echo "--- Queuing Install & Sync ---"
-    tmux send-keys -t "$TARGET_PANE" "brew install $app_name && brew bundle dump --file=$BREWFILE_PATH --force && dot-sync" C-m
-    main_menu
-}
-
-function uninstall_app() {
-    if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo "Brewfile not found!"; sleep 2; main_menu; return
-    fi
-
-    # Pick from currently installed apps
-    app_choice=$(grep '^brew ' "$BREWFILE_PATH" | sed 's/brew "\(.*\)"/\1/' | fzf --prompt="🗑️ Uninstall > " --height=100% --layout=reverse)
-
-    if [[ -n "$app_choice" ]]; then
-        # Clean up the sidecar file
-        sed -i "/^${app_choice}|/d" "$META_PATH" 2>/dev/null
-        
-        echo "--- Queuing Uninstall & Sync ---"
-        tmux send-keys -t "$TARGET_PANE" "brew uninstall $app_choice && brew bundle dump --file=$BREWFILE_PATH --force && dot-sync" C-m
-    fi
-    main_menu
 }
 
 function get_app_description() {
@@ -82,32 +41,135 @@ function get_app_description() {
         fi
     fi
     # Fallback if no description exists
-    echo "⚙️  CLI Tool"
+    echo "⚙️ CLI Tool"
 }
 
-function apps_menu() {
-    [[ ! -f "$BREWFILE_PATH" ]] && { echo "Brewfile missing"; sleep 2; main_menu; return; }
+# ==========================================
+# 📦 PACKAGE MANAGEMENT
+# ==========================================
 
-    local dynamic_list=""
+function install_app() {
+    clear
+    echo "📦 Install App (via Homebrew)"
+    echo "-----------------------------"
+    read -p "Enter package name (or press Enter to cancel): " app_name
     
-    for app in $(grep '^brew ' "$BREWFILE_PATH" | sed 's/brew "\(.*\)"/\1/'); do
-        local desc=$(get_app_description "$app")
-        dynamic_list+="$(printf "%-15s | %s\n" "$app" "$desc")"
+    if [[ -z "$app_name" ]]; then
+        main_menu
+        return
+    fi
+    
+    # Send install command to target pane
+    trigger_zsh_func "brew install $app_name"
+}
+
+function uninstall_app() {
+    if [[ ! -f "$BREWFILE_PATH" ]]; then
+        echo "❌ Brewfile not found at $BREWFILE_PATH!"
+        sleep 2
+        main_menu
+        return
+    fi
+
+    # Parse Brewfile and use fzf to select what to uninstall
+    local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
+    local list_items=""
+    for app in "${apps[@]}"; do
+        list_items+="$app\n"
     done
 
-    choice=$(echo -e "$dynamic_list" | fzf --prompt="🚀 Launch > " --height=40% --layout=reverse --border --delimiter '\|' --with-nth 1,2)
+    local selection=$(echo -e "$list_items" | fzf \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "🗑️ " \
+        --header "Select App to Uninstall")
 
-    [[ -z "$choice" ]] && main_menu && return
-
-    local cmd=$(echo "$choice" | cut -d'|' -f1 | xargs)
-    tmux send-keys -t "$TARGET_PANE" "$cmd" C-m
-    exit 0
+    if [[ -n "$selection" ]]; then
+        trigger_zsh_func "brew uninstall $selection"
+    else
+        main_menu
+    fi
 }
 
 function reload_tmux() {
     tmux source-file ~/.tmux.conf
     ~/.tmux/plugins/tpm/bin/install_plugins
-    tmux display-message "Tmux Reloaded!"
+    tmux display-message "✅ Tmux Reloaded & Plugins Installed!"
 }
+
+# ==========================================
+# 🚀 MENU LOGIC
+# ==========================================
+
+function apps_menu() {
+    if [[ ! -f "$BREWFILE_PATH" ]]; then
+        echo -e "❌ Brewfile missing at:\n$BREWFILE_PATH"
+        sleep 2
+        main_menu
+        return
+    fi
+
+    # Parse the Brewfile: Extract exact package names
+    local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
+
+    # Build the list with descriptions
+    local list_items=""
+    for app in "${apps[@]}"; do
+        local desc=$(get_app_description "$app")
+        list_items+="$app | $desc\n"
+    done
+
+    # fzf UI for Apps
+    local selection=$(echo -e "$list_items" | fzf \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "⚡ " \
+        --header "🚀 Launch App (Brewfile: $OS_ENV)" \
+        --delimiter ' \| ' \
+        --with-nth 1,2)
+
+    # Execution or back out
+    if [[ -n "$selection" ]]; then
+        local selected_app=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+        trigger_zsh_func "$selected_app"
+    else
+        main_menu
+    fi
+}
+
+function main_menu() {
+    # Define main menu options mirroring your original configuration
+    local menu_options="1 | 🚀 Apps (Launch)\n2 | 📦 Install App\n3 | 🗑️ Uninstall App\n4 | ⬇️ Pull Remote Changes\n5 | ⬆️ Push Local Changes (Sync)\n6 | 🔄 Refresh Tmux\n7 | ❌ Exit"
+
+    # fzf UI for Main Menu
+    local selection=$(echo -e "$menu_options" | fzf \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "❯ " \
+        --header "🎛️ Command Palette ($OS_ENV)" \
+        --delimiter ' \| ' \
+        --with-nth 2)
+
+    # Extract the ID
+    local choice=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+
+    # Route the choice
+    case "$choice" in
+        1) apps_menu ;;
+        2) install_app ;;
+        3) uninstall_app ;;
+        4) trigger_zsh_func "dot-pull" ;;
+        5) trigger_zsh_func "dot-sync" ;;
+        6) reload_tmux ;;
+        7|*) exit 0 ;;
+    esac
+}
+
+# ==========================================
+# 🏁 INITIALIZATION
+# ==========================================
 
 main_menu
