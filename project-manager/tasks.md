@@ -23,6 +23,7 @@
 
 ## ✅ Shell Automation (Zsh)
 - [x] Create `dot-sync` and `dot-pull` for Git automation
+- [x] Implement Smart Brewfile Sync (auto-dump/auto-install)
 - [x] Implement `search` alias via `ddgr`
 - [x] Set up SSH agent auto-initialization for WSL
 

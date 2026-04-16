@@ -18,7 +18,9 @@
 - **Goal**: Minimize manual git and package maintenance.
 - **Steps**:
     - [x] Standardize `dot-pull` and `dot-sync` across platforms.
-    - [x] Ensure Brewfiles are updated during palette operations.
+    - [x] Integrate `brew bundle dump` into `dot-sync`.
+    - [x] Integrate `brew bundle` into `dot-pull`.
+    - [x] Automate `dot-sync` within the Command Palette for package operations.
 
 ### 4. PolyMark Syntax & Theme Translation
 - **Goal**: Synchronize Micro editor styles with the master Sublime PolyMark definition.

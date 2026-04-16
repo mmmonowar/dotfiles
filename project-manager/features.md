@@ -7,7 +7,7 @@
 ## 🎛️ Unified Command Palette (`palette.sh`)
 - **VSCode-Style Popup**: Triggered via `Alt+p` in Tmux for a centralized control hub.
 - **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile`.
-- **Package Management**: Interactive UI to install or uninstall Homebrew packages.
+- **Package Management**: Interactive UI to install or uninstall Homebrew packages with **automatic synchronization** to GitHub.
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 
 ## 🗖 Advanced Tmux Configuration
@@ -19,6 +19,7 @@
 
 ## 📦 Declarative Package Management
 - **Brewfiles**: OS-specific lists for CLI tools (e.g., `btop`, `fzf`, `ranger`, `superfile`) and VSCode extensions.
+- **Automated Maintenance**: `dot-sync` automatically runs `brew bundle dump` before pushing; `dot-pull` runs `brew bundle` after pulling.
 - **Consistency**: Ensures the same environment can be reproduced across different machines.
 
 ## 🐚 Shell Automation (Zsh)
