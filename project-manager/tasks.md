@@ -10,7 +10,7 @@
 - [x] Implement application launching from Brewfile
 - [x] Implement dynamic app descriptions (blurbs) via `brew info`
 - [x] Implement Executable Shortcut menu
-- [x] Standardize UI emojis and alignment
+- [x] Integrate Nerd Font glyphs for consistent UI
 - [x] Implement confirmation prompts for destructive actions
 - [x] Implement interactive install/uninstall functions
 - [x] Bind `Alt+p` to trigger palette popup in `tmux.conf`

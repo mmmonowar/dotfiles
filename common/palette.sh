@@ -39,7 +39,7 @@ function trigger_and_sync() {
 
 function confirm_action() {
     local msg="$1"
-    echo -e "⚠️  $msg"
+    echo -e "  $msg"
     read -p "Confirm? (y/N): " resp
     case "$resp" in
         [yY][eE][sS]|[yY]) return 0 ;;
@@ -67,7 +67,7 @@ function get_app_description() {
         echo "${app_name}|${brew_desc}" >> "$META_PATH"
         echo "$brew_desc"
     else
-        echo "⚙️  CLI Tool"
+        echo "󰒓  CLI Tool"
     fi
 }
 
@@ -77,7 +77,7 @@ function get_app_description() {
 
 function install_app() {
     clear
-    echo "📦  Install App (via Homebrew)"
+    echo "󰏔  Install App (via Homebrew)"
     echo "-----------------------------"
     echo "This will install the app and automatically update your Brewfile and GitHub repo."
     read -p "Enter package name (or press Enter to cancel): " app_name
@@ -92,7 +92,7 @@ function install_app() {
 
 function uninstall_app() {
     if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo "❌  Brewfile not found at $BREWFILE_PATH!"
+        echo "󰅙  Brewfile not found at $BREWFILE_PATH!"
         sleep 2
         main_menu
         return
@@ -108,7 +108,7 @@ function uninstall_app() {
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "🗑️  " \
+        --prompt "󰆴  " \
         --header "Select App to Uninstall")
 
     if [[ -n "$selection" ]]; then
@@ -127,7 +127,7 @@ function uninstall_app() {
 function reload_tmux() {
     tmux source-file ~/.tmux.conf
     ~/.tmux/plugins/tpm/bin/install_plugins
-    tmux display-message "✅  Tmux Reloaded & Plugins Installed!"
+    tmux display-message "󰄬  Tmux Reloaded & Plugins Installed!"
 }
 
 # ==========================================
@@ -136,13 +136,13 @@ function reload_tmux() {
 
 function apps_menu() {
     if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo -e "❌  Brewfile missing at:\n$BREWFILE_PATH"
+        echo -e "󰅙  Brewfile missing at:\n$BREWFILE_PATH"
         sleep 2
         main_menu
         return
     fi
 
-    echo "🔍  Loading app descriptions..."
+    echo "󰇥  Loading app descriptions..."
 
     local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
     local list_items=""
@@ -155,8 +155,8 @@ function apps_menu() {
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "⚡  " \
-        --header "🚀  Launch App (Brewfile: $OS_ENV)" \
+        --prompt "󱐋  " \
+        --header "󰀶  Launch App (Brewfile: $OS_ENV)" \
         --delimiter ' \| ' \
         --with-nth 1,2)
 
@@ -169,23 +169,23 @@ function apps_menu() {
 }
 
 function shortcuts_menu() {
-    local menu_items="➕  New Session (Alt+,) | new-session\n"
-    menu_items+="🔄  Cycle Sessions (Alt+0) | switch-client -n\n"
-    menu_items+="🗑️   Kill Session (Alt+w) | kill-session\n"
-    menu_items+="📄  New Window (Alt+m) | new-window\n"
-    menu_items+="❌  Kill Window (Alt+e) | kill-window\n"
-    menu_items+="⬆️   Next Window (Alt+Up) | next-window\n"
-    menu_items+="⬇️   Previous Window (Alt+Down) | previous-window\n"
-    menu_items+="⬅️   Previous Pane (Alt+Left) | select-pane -t :.-\n"
-    menu_items+="➡️   Next Pane (Alt+Right) | select-pane -t :.+\n"
-    menu_items+="➕  Create Pane (Alt+1) | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
-    menu_items+="➖  Close Pane (Alt+2) | kill-pane; select-layout tiled"
+    local menu_items="󰐕  New Session (Alt+,) | new-session\n"
+    menu_items+="󰑐  Cycle Sessions (Alt+0) | switch-client -n\n"
+    menu_items+="󰆴  Kill Session (Alt+w) | kill-session\n"
+    menu_items+="󰈔  New Window (Alt+m) | new-window\n"
+    menu_items+="󰅙  Kill Window (Alt+e) | kill-window\n"
+    menu_items+="󰁞  Next Window (Alt+Up) | next-window\n"
+    menu_items+="󰁆  Previous Window (Alt+Down) | previous-window\n"
+    menu_items+="󰁍  Previous Pane (Alt+Left) | select-pane -t :.-\n"
+    menu_items+="󰁔  Next Pane (Alt+Right) | select-pane -t :.+\n"
+    menu_items+="󰐕  Create Pane (Alt+1) | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
+    menu_items+="󰅖  Close Pane (Alt+2) | kill-pane; select-layout tiled"
 
     local selection=$(echo -e "$menu_items" | fzf \
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "⌨️   " \
+        --prompt "  " \
         --header "Select a Shortcut to Execute" \
         --delimiter ' \| ' \
         --with-nth 1)
@@ -208,14 +208,14 @@ function shortcuts_menu() {
 }
 
 function main_menu() {
-    local menu_options="1 | 🚀  Launch App\n2 | 📦  Install App\n3 | 🗑️   Uninstall App\n4 | ⌨️   Execute Shortcut\n5 | ⬇️   Pull Changes\n6 | ⬆️   Push Changes\n7 | 🔄  Refresh Tmux\n8 | ❌  Exit"
+    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Refresh Tmux\n8 | 󰅙  Exit"
 
     local selection=$(echo -e "$menu_options" | fzf \
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "❯   " \
-        --header "🎛️   Command Palette ($OS_ENV)" \
+        --prompt "  " \
+        --header "󰍜  Command Palette ($OS_ENV)" \
         --delimiter ' \| ' \
         --with-nth 2)
 

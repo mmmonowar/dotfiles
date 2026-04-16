@@ -50,3 +50,12 @@
   - Improved `fzf` prompt and header text for better clarity.
   - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
 - **Impact**: Reduced risk of accidental destructive actions and improved overall visual consistency.
+
+## [2026-04-17] 🎨 Nerd Font Integration
+- **Feature**: Modernized UI with vector-like glyphs.
+- **Changes**:
+  - Replaced all standard emojis in `common/palette.sh` with specific Nerd Font v3 symbols.
+  - Standardized symbols for Launch, Install, Uninstall, Shortcuts, Sync, and System commands.
+  - Maintained consistent spacing and alignment for a high-end CLI aesthetic.
+  - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
+- **Impact**: More professional and consistent visual experience across various terminal fonts that support Nerd Fonts.

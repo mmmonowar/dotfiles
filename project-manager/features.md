@@ -9,7 +9,7 @@
 - **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile` with **dynamic blurbs** (fetched from Homebrew).
 - **Executable Shortcuts**: Instant access to trigger all custom Tmux keybindings directly from the palette.
 - **Safety Measures**: Integrated confirmation prompts for destructive actions (uninstallation, session killing) to prevent accidental execution.
-- **Consistent UI**: Standardized emoji alignment and spacing across all menus for a polished, professional look.
+- **Modern UI**: Replaced standard emojis with consistent **Nerd Font glyphs** for a professional, high-fidelity terminal experience.
 - **Package Management**: Interactive UI to install or uninstall Homebrew packages with **automatic synchronization** to GitHub.
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 

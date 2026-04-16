@@ -15,7 +15,7 @@
     - [x] Configure `tmux` popup dimensions and keybindings.
     - [x] Implement dynamic metadata (blurb) fetching for apps.
     - [x] Integrate an interactive "Execute Shortcut" menu in the palette.
-    - [x] Refine UI ergonomics (emojis, alignment, and safety prompts).
+    - [x] Refine UI ergonomics (Nerd Fonts, alignment, and safety prompts).
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.
