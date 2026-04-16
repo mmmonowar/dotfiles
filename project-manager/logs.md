@@ -11,3 +11,13 @@
   - Updated `project-manager/` documentation (`features.md`, `tasks.md`, `plan.md`).
   - Created `GEMINI.md` with repository-specific instructions and documentation standards.
 - **Platform**: Verified for WSL/Ubuntu and structured for macOS compatibility.
+
+## [2026-04-17] ✨ Dynamic App Descriptions in Palette
+- **Feature**: Command Palette now shows descriptions for CLI tools.
+- **Changes**:
+  - Enhanced `get_app_description` in `common/palette.sh` to fetch descriptions using `brew info`.
+  - Implemented caching to `apps_meta.txt` to ensure fast loading in subsequent uses.
+  - Added "Loading..." indicator to `apps_menu` while fetching metadata.
+  - Added automatic cleanup of metadata upon uninstallation.
+  - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
+- **Impact**: Improved user experience when browsing and launching tools from the palette.

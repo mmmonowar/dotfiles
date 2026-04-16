@@ -6,7 +6,7 @@
 
 ## 🎛️ Unified Command Palette (`palette.sh`)
 - **VSCode-Style Popup**: Triggered via `Alt+p` in Tmux for a centralized control hub.
-- **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile`.
+- **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile` with **dynamic blurbs** (fetched from Homebrew).
 - **Package Management**: Interactive UI to install or uninstall Homebrew packages with **automatic synchronization** to GitHub.
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 

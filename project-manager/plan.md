@@ -13,6 +13,7 @@
 - **Steps**:
     - [x] Script the `palette.sh` logic.
     - [x] Configure `tmux` popup dimensions and keybindings.
+    - [x] Implement dynamic metadata (blurb) fetching for apps.
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.

@@ -8,6 +8,7 @@
 ## ✅ Unified Command Palette
 - [x] Create `palette.sh` with `fzf` integration
 - [x] Implement application launching from Brewfile
+- [x] Implement dynamic app descriptions (blurbs) via `brew info`
 - [x] Implement interactive install/uninstall functions
 - [x] Bind `Alt+p` to trigger palette popup in `tmux.conf`
 

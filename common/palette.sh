@@ -39,7 +39,7 @@ function trigger_and_sync() {
 
 function get_app_description() {
     local app_name="$1"
-    # Look for the exact app name in the sidecar file
+    # 1. Check if we already have it in the meta file
     if [[ -f "$META_PATH" ]]; then
         local desc=$(grep "^${app_name}|" "$META_PATH" | cut -d'|' -f2-)
         if [[ -n "$desc" ]]; then
@@ -47,8 +47,19 @@ function get_app_description() {
             return
         fi
     fi
-    # Fallback if no description exists
-    echo "⚙️ CLI Tool"
+
+    # 2. If not found, fetch it dynamically from brew
+    # We use 'head -n 2 | tail -n 1' because the description is usually the second line
+    local brew_desc=$(brew info "$app_name" 2>/dev/null | head -n 2 | tail -n 1 | xargs)
+    
+    # 3. If brew returned a valid description (not an error or empty)
+    if [[ -n "$brew_desc" && ! "$brew_desc" =~ "==>" ]]; then
+        # Cache it for next time
+        echo "${app_name}|${brew_desc}" >> "$META_PATH"
+        echo "$brew_desc"
+    else
+        echo "⚙️ CLI Tool"
+    fi
 }
 
 # ==========================================
@@ -94,6 +105,8 @@ function uninstall_app() {
         --header "Select App to Uninstall (This will also sync changes to GitHub)")
 
     if [[ -n "$selection" ]]; then
+        # Remove from meta file if it exists
+        sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
         trigger_and_sync "brew uninstall $selection"
     else
         main_menu
@@ -117,6 +130,8 @@ function apps_menu() {
         main_menu
         return
     fi
+
+    echo "🔍 Loading app descriptions..."
 
     # Parse the Brewfile: Extract exact package names
     local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))

@@ -1,0 +1,15 @@
+btop|Resource monitor. C++ version and continuation of bashtop and bpytop
+ncurses|Text-based UI library
+cmatrix|Console Matrix
+ddgr|DuckDuckGo from the terminal
+emacs|GNU Emacs text editor
+fzf|Command-line fuzzy finder written in Go
+node|Open-source, cross-platform JavaScript runtime environment
+gemini-cli|Interact with Google Gemini AI models from the command-line
+glow|Render markdown on the CLI
+micro|Modern and intuitive terminal-based text editor
+navi|Interactive cheatsheet tool for the command-line
+ranger|File browser
+superfile|Modern and pretty fancy file manager for the terminal
+tmux|Terminal multiplexer
+tree|Display directories as trees (with optional color/HTML output)
