@@ -56,26 +56,41 @@ fi
 # 6. DOTFILES AUTOMATION
 # -----------------------------------------------------------------------------
 function dot-sync() {
+    # Dynamically find the repo path based on your current setup
+    local DOT_PATH="$HOME/GitHub/mmmonowar/dotfiles"
     local current_dir=$(pwd)
-    cd ~/dotfiles
-    git add -A  
-    git commit -m "WSL sync: $(date +'%Y-%m-%d %H:%M')"
-    git push origin main
-    cd "$current_dir"
+
+    if [ -d "$DOT_PATH" ]; then
+        cd "$DOT_PATH"
+        echo "🔄 Syncing Cockpit configurations..."
+        git add -A
+        git commit -m "WSL Sync: $(date +'%Y-%m-%d %H:%M')"
+        git push origin main
+        cd "$current_dir"
+        echo "✅ Dotfiles pushed to GitHub."
+    else
+        echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
+    fi
 }
 
 function dotpull() {
+    local DOT_PATH="$HOME/GitHub/mmmonowar/dotfiles"
     local current_dir=$(pwd)
-    cd ~/dotfiles
-    echo "📥 Pulling latest changes (Rebasing local work)..."
-    if git pull --rebase origin main; then
-        source ~/.zshrc
-        [ -n "$TMUX" ] && tmux display-message "Dotfiles Updated & Reloaded"
+
+    if [ -d "$DOT_PATH" ]; then
+        cd "$DOT_PATH"
+        echo "📥 Pulling latest cockpit updates..."
+        if git pull origin main; then
+            source ~/.zshrc
+            echo "✅ Configurations reloaded."
+        fi
+        cd "$current_dir"
     else
-        echo "❌ Conflict detected! Please resolve manually."
+        echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
     fi
-    cd "$current_dir"
 }
+
+# Alias to catch "dot-pull" if you type it with a hyphen
 alias dot-pull='dotpull'
 
 # 7. PLUGINS
