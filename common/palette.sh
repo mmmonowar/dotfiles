@@ -17,8 +17,9 @@ else
 fi
 
 # 3. Dynamic Paths
-BREWFILE_PATH="$HOME/dotfiles/${OS_ENV}/Brewfile"
-META_PATH="$HOME/dotfiles/${OS_ENV}/apps_meta.txt"
+REPO_PATH="$HOME/GitHub/mmmonowar/dotfiles"
+BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile"
+META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
 
 # ==========================================
 # 🛠️ HELPER FUNCTIONS
@@ -28,6 +29,12 @@ function trigger_zsh_func() {
     local func_name=$1
     # Send the command to the original pane and execute it
     tmux send-keys -t "$TARGET_PANE" "$func_name" C-m
+}
+
+function trigger_and_sync() {
+    local cmd=$1
+    # Execute command and then dot-sync
+    tmux send-keys -t "$TARGET_PANE" "$cmd && dot-sync" C-m
 }
 
 function get_app_description() {
@@ -52,6 +59,7 @@ function install_app() {
     clear
     echo "📦 Install App (via Homebrew)"
     echo "-----------------------------"
+    echo "This will install the app and automatically update your Brewfile and GitHub repo."
     read -p "Enter package name (or press Enter to cancel): " app_name
     
     if [[ -z "$app_name" ]]; then
@@ -59,8 +67,8 @@ function install_app() {
         return
     fi
     
-    # Send install command to target pane
-    trigger_zsh_func "brew install $app_name"
+    # Send install command and sync to target pane
+    trigger_and_sync "brew install $app_name"
 }
 
 function uninstall_app() {
@@ -83,10 +91,10 @@ function uninstall_app() {
         --reverse \
         --border rounded \
         --prompt "🗑️ " \
-        --header "Select App to Uninstall")
+        --header "Select App to Uninstall (This will also sync changes to GitHub)")
 
     if [[ -n "$selection" ]]; then
-        trigger_zsh_func "brew uninstall $selection"
+        trigger_and_sync "brew uninstall $selection"
     else
         main_menu
     fi

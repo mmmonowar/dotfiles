@@ -56,18 +56,31 @@ fi
 # 6. DOTFILES AUTOMATION
 # -----------------------------------------------------------------------------
 function dot-sync() {
-    # Dynamically find the repo path based on your current setup
     local DOT_PATH="$HOME/GitHub/mmmonowar/dotfiles"
     local current_dir=$(pwd)
 
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
-        echo "🔄 Syncing Cockpit configurations..."
+        
+        echo "🍺 Updating Brewfile..."
+        # Update Brewfile based on OS
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            brew bundle dump --force --file="$DOT_PATH/mac/Brewfile"
+        else
+            # For WSL/Linux
+            brew bundle dump --force --file="$DOT_PATH/wsl/Brewfile"
+        fi
+
+        echo "🔄 Syncing configurations to GitHub..."
         git add -A
-        git commit -m "WSL Sync: $(date +'%Y-%m-%d %H:%M')"
-        git push origin main
+        git commit -m "Sync: $(date +'%Y-%m-%d %H:%M') [$(hostname)]"
+        if git push origin main; then
+            echo "✅ Dotfiles and Brewfile pushed to GitHub."
+        else
+            echo "❌ Failed to push to GitHub. Check your connection or git status."
+        fi
+        
         cd "$current_dir"
-        echo "✅ Dotfiles pushed to GitHub."
     else
         echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
     fi
@@ -79,10 +92,18 @@ function dotpull() {
 
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
-        echo "📥 Pulling latest cockpit updates..."
+        echo "📥 Pulling latest updates from GitHub..."
         if git pull origin main; then
+            echo "📦 Installing any new dependencies from Brewfile..."
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                brew bundle --file="$DOT_PATH/mac/Brewfile"
+            else
+                brew bundle --file="$DOT_PATH/wsl/Brewfile"
+            fi
+            
+            # Reload zshrc
             source ~/.zshrc
-            echo "✅ Configurations reloaded."
+            echo "✅ Configurations reloaded and dependencies updated."
         fi
         cd "$current_dir"
     else
