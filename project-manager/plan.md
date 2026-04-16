@@ -14,6 +14,8 @@
     - [x] Script the `palette.sh` logic.
     - [x] Configure `tmux` popup dimensions and keybindings.
     - [x] Implement dynamic metadata (blurb) fetching for apps.
+    - [x] Integrate an interactive "Execute Shortcut" menu in the palette.
+    - [x] Refine UI ergonomics (emojis, alignment, and safety prompts).
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.
@@ -22,6 +24,7 @@
     - [x] Integrate `brew bundle dump` into `dot-sync`.
     - [x] Integrate `brew bundle` into `dot-pull`.
     - [x] Automate `dot-sync` within the Command Palette for package operations.
+    - [x] Enhance Tmux session management workflows.
 
 ### 4. PolyMark Syntax & Theme Translation
 - **Goal**: Synchronize Micro editor styles with the master Sublime PolyMark definition.

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================================
-# 🎛️ TMUX COMMAND PALETTE (Merged & Upgraded)
+# 🎛️  TMUX COMMAND PALETTE
 # ==========================================
 
 # 1. Capture the pane ID where the palette was triggered
@@ -22,7 +22,7 @@ BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
 
 # ==========================================
-# 🛠️ HELPER FUNCTIONS
+# 🛠️  HELPER FUNCTIONS
 # ==========================================
 
 function trigger_zsh_func() {
@@ -37,6 +37,16 @@ function trigger_and_sync() {
     tmux send-keys -t "$TARGET_PANE" "$cmd && dot-sync" C-m
 }
 
+function confirm_action() {
+    local msg="$1"
+    echo -e "⚠️  $msg"
+    read -p "Confirm? (y/N): " resp
+    case "$resp" in
+        [yY][eE][sS]|[yY]) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 function get_app_description() {
     local app_name="$1"
     # 1. Check if we already have it in the meta file
@@ -49,26 +59,25 @@ function get_app_description() {
     fi
 
     # 2. If not found, fetch it dynamically from brew
-    # We use 'head -n 2 | tail -n 1' because the description is usually the second line
     local brew_desc=$(brew info "$app_name" 2>/dev/null | head -n 2 | tail -n 1 | xargs)
     
-    # 3. If brew returned a valid description (not an error or empty)
+    # 3. If brew returned a valid description
     if [[ -n "$brew_desc" && ! "$brew_desc" =~ "==>" ]]; then
         # Cache it for next time
         echo "${app_name}|${brew_desc}" >> "$META_PATH"
         echo "$brew_desc"
     else
-        echo "⚙️ CLI Tool"
+        echo "⚙️  CLI Tool"
     fi
 }
 
 # ==========================================
-# 📦 PACKAGE MANAGEMENT
+# 📦  PACKAGE MANAGEMENT
 # ==========================================
 
 function install_app() {
     clear
-    echo "📦 Install App (via Homebrew)"
+    echo "📦  Install App (via Homebrew)"
     echo "-----------------------------"
     echo "This will install the app and automatically update your Brewfile and GitHub repo."
     read -p "Enter package name (or press Enter to cancel): " app_name
@@ -78,19 +87,17 @@ function install_app() {
         return
     fi
     
-    # Send install command and sync to target pane
     trigger_and_sync "brew install $app_name"
 }
 
 function uninstall_app() {
     if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo "❌ Brewfile not found at $BREWFILE_PATH!"
+        echo "❌  Brewfile not found at $BREWFILE_PATH!"
         sleep 2
         main_menu
         return
     fi
 
-    # Parse Brewfile and use fzf to select what to uninstall
     local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
     local list_items=""
     for app in "${apps[@]}"; do
@@ -101,13 +108,17 @@ function uninstall_app() {
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "🗑️ " \
-        --header "Select App to Uninstall (This will also sync changes to GitHub)")
+        --prompt "🗑️  " \
+        --header "Select App to Uninstall")
 
     if [[ -n "$selection" ]]; then
-        # Remove from meta file if it exists
-        sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
-        trigger_and_sync "brew uninstall $selection"
+        clear
+        if confirm_action "Uninstall $selection and sync to GitHub?"; then
+            sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
+            trigger_and_sync "brew uninstall $selection"
+        else
+            uninstall_app
+        fi
     else
         main_menu
     fi
@@ -116,44 +127,39 @@ function uninstall_app() {
 function reload_tmux() {
     tmux source-file ~/.tmux.conf
     ~/.tmux/plugins/tpm/bin/install_plugins
-    tmux display-message "✅ Tmux Reloaded & Plugins Installed!"
+    tmux display-message "✅  Tmux Reloaded & Plugins Installed!"
 }
 
 # ==========================================
-# 🚀 MENU LOGIC
+# 🚀  MENU LOGIC
 # ==========================================
 
 function apps_menu() {
     if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo -e "❌ Brewfile missing at:\n$BREWFILE_PATH"
+        echo -e "❌  Brewfile missing at:\n$BREWFILE_PATH"
         sleep 2
         main_menu
         return
     fi
 
-    echo "🔍 Loading app descriptions..."
+    echo "🔍  Loading app descriptions..."
 
-    # Parse the Brewfile: Extract exact package names
     local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
-
-    # Build the list with descriptions
     local list_items=""
     for app in "${apps[@]}"; do
         local desc=$(get_app_description "$app")
         list_items+="$app | $desc\n"
     done
 
-    # fzf UI for Apps
     local selection=$(echo -e "$list_items" | fzf \
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "⚡ " \
-        --header "🚀 Launch App (Brewfile: $OS_ENV)" \
+        --prompt "⚡  " \
+        --header "🚀  Launch App (Brewfile: $OS_ENV)" \
         --delimiter ' \| ' \
         --with-nth 1,2)
 
-    # Execution or back out
     if [[ -n "$selection" ]]; then
         local selected_app=$(echo "$selection" | cut -d '|' -f 1 | xargs)
         trigger_zsh_func "$selected_app"
@@ -162,37 +168,73 @@ function apps_menu() {
     fi
 }
 
-function main_menu() {
-    # Define main menu options mirroring your original configuration
-    local menu_options="1 | 🚀 Apps (Launch)\n2 | 📦 Install App\n3 | 🗑️ Uninstall App\n4 | ⬇️ Pull Remote Changes\n5 | ⬆️ Push Local Changes (Sync)\n6 | 🔄 Refresh Tmux\n7 | ❌ Exit"
+function shortcuts_menu() {
+    local menu_items="➕  New Session (Alt+,) | new-session\n"
+    menu_items+="🔄  Cycle Sessions (Alt+0) | switch-client -n\n"
+    menu_items+="🗑️   Kill Session (Alt+w) | kill-session\n"
+    menu_items+="📄  New Window (Alt+m) | new-window\n"
+    menu_items+="❌  Kill Window (Alt+e) | kill-window\n"
+    menu_items+="⬆️   Next Window (Alt+Up) | next-window\n"
+    menu_items+="⬇️   Previous Window (Alt+Down) | previous-window\n"
+    menu_items+="⬅️   Previous Pane (Alt+Left) | select-pane -t :.-\n"
+    menu_items+="➡️   Next Pane (Alt+Right) | select-pane -t :.+\n"
+    menu_items+="➕  Create Pane (Alt+1) | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
+    menu_items+="➖  Close Pane (Alt+2) | kill-pane; select-layout tiled"
 
-    # fzf UI for Main Menu
+    local selection=$(echo -e "$menu_items" | fzf \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "⌨️   " \
+        --header "Select a Shortcut to Execute" \
+        --delimiter ' \| ' \
+        --with-nth 1)
+
+    if [[ -n "$selection" ]]; then
+        local cmd=$(echo "$selection" | cut -d '|' -f 2 | xargs)
+        
+        if [[ "$cmd" == "kill-session" ]]; then
+            clear
+            if ! confirm_action "Kill current session?"; then
+                shortcuts_menu
+                return
+            fi
+        fi
+
+        tmux run-shell "tmux $cmd"
+    else
+        main_menu
+    fi
+}
+
+function main_menu() {
+    local menu_options="1 | 🚀  Launch App\n2 | 📦  Install App\n3 | 🗑️   Uninstall App\n4 | ⌨️   Execute Shortcut\n5 | ⬇️   Pull Changes\n6 | ⬆️   Push Changes\n7 | 🔄  Refresh Tmux\n8 | ❌  Exit"
+
     local selection=$(echo -e "$menu_options" | fzf \
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "❯ " \
-        --header "🎛️ Command Palette ($OS_ENV)" \
+        --prompt "❯   " \
+        --header "🎛️   Command Palette ($OS_ENV)" \
         --delimiter ' \| ' \
         --with-nth 2)
 
-    # Extract the ID
     local choice=$(echo "$selection" | cut -d '|' -f 1 | xargs)
 
-    # Route the choice
     case "$choice" in
         1) apps_menu ;;
         2) install_app ;;
         3) uninstall_app ;;
-        4) trigger_zsh_func "dot-pull" ;;
-        5) trigger_zsh_func "dot-sync" ;;
-        6) reload_tmux ;;
-        7|*) exit 0 ;;
+        4) shortcuts_menu ;;
+        5) trigger_zsh_func "dot-pull" ;;
+        6) trigger_zsh_func "dot-sync" ;;
+        7) reload_tmux ;;
+        8|*) exit 0 ;;
     esac
 }
 
 # ==========================================
-# 🏁 INITIALIZATION
+# 🏁  INITIALIZATION
 # ==========================================
 
 main_menu

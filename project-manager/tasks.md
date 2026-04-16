@@ -9,10 +9,14 @@
 - [x] Create `palette.sh` with `fzf` integration
 - [x] Implement application launching from Brewfile
 - [x] Implement dynamic app descriptions (blurbs) via `brew info`
+- [x] Implement Executable Shortcut menu
+- [x] Standardize UI emojis and alignment
+- [x] Implement confirmation prompts for destructive actions
 - [x] Implement interactive install/uninstall functions
 - [x] Bind `Alt+p` to trigger palette popup in `tmux.conf`
 
 ## ✅ Advanced Tmux Configuration
+- [x] Implement session management (Alt+, , Alt+0, Alt+w)
 - [x] Implement 2x2 grid management (Alt+1, Alt+2)
 - [x] Configure Smart Dashboard (btop/docker) auto-start
 - [x] Set up cross-platform clipboard (pbcopy/xclip)

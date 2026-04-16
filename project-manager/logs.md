@@ -21,3 +21,32 @@
   - Added automatic cleanup of metadata upon uninstallation.
   - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
 - **Impact**: Improved user experience when browsing and launching tools from the palette.
+
+## [2026-04-17] 🎹 Session Management & Shortcuts Reference
+- **Feature**: Enhanced Tmux navigation and internal documentation.
+- **Changes**:
+  - Added `Alt+,` to create new sessions and `Alt+0` to cycle through active sessions in `common/tmux.conf`.
+  - Implemented a "Shortcuts Reference" menu in `common/palette.sh` that lists all custom keybindings.
+  - Re-indexed the main menu in the Command Palette to accommodate the new reference option.
+  - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
+- **Impact**: Increased productivity through faster session switching and better discoverability of custom bindings.
+
+## [2026-04-17] ⚡ Executable Shortcuts & Session Termination
+- **Feature**: Interactive palette and expanded session control.
+- **Changes**:
+  - Added `Alt+w` to kill the current session in `common/tmux.conf`.
+  - Upgraded the "Shortcuts Reference" in `common/palette.sh` to an **"Execute Shortcut"** menu.
+  - Mapped menu items to actual `tmux` commands using `tmux run-shell`.
+  - Added session termination to both keybindings and the palette menu.
+  - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
+- **Impact**: Provides a powerful GUI-like command execution layer for Tmux management.
+
+## [2026-04-17] 🛡️ Ergonomics & Safety Improvements
+- **Feature**: Refined UX for the Command Palette.
+- **Changes**:
+  - Standardized emoji spacing (two spaces after each emoji) for consistent alignment across terminals.
+  - Implemented a `confirm_action` helper function in `common/palette.sh`.
+  - Added "Are you sure?" confirmation prompts for uninstalling apps and killing sessions.
+  - Improved `fzf` prompt and header text for better clarity.
+  - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
+- **Impact**: Reduced risk of accidental destructive actions and improved overall visual consistency.

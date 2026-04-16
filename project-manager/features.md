@@ -7,10 +7,14 @@
 ## 🎛️ Unified Command Palette (`palette.sh`)
 - **VSCode-Style Popup**: Triggered via `Alt+p` in Tmux for a centralized control hub.
 - **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile` with **dynamic blurbs** (fetched from Homebrew).
+- **Executable Shortcuts**: Instant access to trigger all custom Tmux keybindings directly from the palette.
+- **Safety Measures**: Integrated confirmation prompts for destructive actions (uninstallation, session killing) to prevent accidental execution.
+- **Consistent UI**: Standardized emoji alignment and spacing across all menus for a polished, professional look.
 - **Package Management**: Interactive UI to install or uninstall Homebrew packages with **automatic synchronization** to GitHub.
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 
 ## 🗖 Advanced Tmux Configuration
+- **Session Management**: Rapid creation (`Alt+,`), cycling (`Alt+0`), and termination (`Alt+w`) of tmux sessions.
 - **2x2 Grid Management**: Custom bindings (`Alt+1`, `Alt+2`) for rapid tiling and pane management (limited to 4 panes for focus).
 - **Smart Dashboard**: Auto-starts a session named "Dashboard" with `btop` and `docker ps` on launch.
 - **Dynamic Clipboard**: Context-aware clipboard integration using `pbcopy` (macOS) and `xclip` (Linux).
