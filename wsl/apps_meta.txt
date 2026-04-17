@@ -19,3 +19,4 @@ lftp|Sophisticated file transfer program
 rclone|Rsync for cloud storage
 termscp|Feature rich terminal file transfer and explorer
 zsh|UNIX shell (command interpreter)
+hledger|Easy plain text accounting with command-line, terminal and web UIs
