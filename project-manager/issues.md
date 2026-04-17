@@ -1,15 +1,15 @@
 # Project Issues
 
-## 🛑 Monochrome Micro (No Colors)
-- **Status**: Open
-- **Description**: After applying the `PolyMark` colorscheme, Micro only displays black and white text, even when running inside Tmux.
+## ✅ Slow Homebrew Installations (Cleanup)
+- **Status**: Resolved
+- **Description**: `brew install` triggers an automatic cleanup process that takes a significant amount of time.
+- **Resolution**: Set `HOMEBREW_NO_INSTALL_CLEANUP=1` in `.zshrc` to disable automatic cleanup after every installation.
+
+## 🔄 Slow Brewfile Updates
+- **Status**: Investigation
+- **Description**: `brew bundle dump` takes a long time to list and categorize all installed packages.
 - **Potential Causes**:
-    - [x] Terminal/Tmux `COLORTERM` or `TERM` mismatch.
-    - [ ] Micro fails to parse hex codes if truecolor is not fully negotiated.
-    - [ ] `color-link default` setting might be causing a global override to black/white.
-    - [ ] Syntax file (`PolyMark.yaml`) rules not triggering, leading to no scopes being colored.
-- **Resolution Plan**:
-    - [x] Update `tmux.conf` to include `set -ga terminal-overrides ",xterm-256color:Tc"`.
-    - [x] Add `export COLORTERM=truecolor` and `export MICRO_TRUECOLOR=1` to `.zshrc`.
-    - [x] Set `truecolor` to `on` in Micro's `settings.json`.
+    - Querying all casks and formulae globally.
+    - Network checks or metadata verification during the dump.
+- **Resolution Plan**: Research if specific flags or environment variables can speed up the dumping process.
 

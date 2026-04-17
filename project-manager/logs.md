@@ -1,5 +1,12 @@
 # Project Logs
 
+## [2026-04-17] 🏎️ Homebrew Performance Optimization
+- **Feature**: Faster installations by disabling automatic post-install cleanup.
+- **Changes**:
+  - Exported `HOMEBREW_NO_INSTALL_CLEANUP=1` in both `wsl/zshrc` and `mac/.zshrc`.
+  - Documented the `brew bundle dump` performance issue for further investigation.
+- **Impact**: Significant reduction in time for `brew install` and `brew uninstall` operations.
+
 ## [2026-04-17] ⚡ Optimized App Description Loading
 - **Feature**: Instant loading of the "Launch App" menu when descriptions are cached.
 - **Changes**:

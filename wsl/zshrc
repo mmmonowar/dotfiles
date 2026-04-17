@@ -7,6 +7,9 @@
 export PATH="$HOME/.local/bin:$PATH" # [cite: 5]
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" # [cite: 12]
 
+# Optimization: Speed up Homebrew by disabling automatic cleanup after install
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+
 # Boot up x-cmd
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # [cite: 6, 7]
 

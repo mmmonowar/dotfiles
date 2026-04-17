@@ -1,6 +1,9 @@
 # This .zshrc is for mac
 export PATH="/opt/homebrew/bin:$PATH"
 
+# Optimization: Speed up Homebrew by disabling automatic cleanup after install
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+
 # Auto-start tmux on shell login (optional)
 if [[ -z "$TMUX" ]]; then
     tmux attach-session -t default || tmux new-session -s default
