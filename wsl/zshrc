@@ -65,10 +65,10 @@ function dot-sync() {
         echo "🍺 Updating Brewfile..."
         # Update Brewfile based on OS
         if [[ "$OSTYPE" == "darwin"* ]]; then
-            brew bundle dump --force --file="$DOT_PATH/mac/Brewfile"
+            brew bundle dump --verbose --force --file="$DOT_PATH/mac/Brewfile"
         else
             # For WSL/Linux
-            brew bundle dump --force --file="$DOT_PATH/wsl/Brewfile"
+            brew bundle dump --verbose --force --file="$DOT_PATH/wsl/Brewfile"
         fi
 
         echo "🔄 Syncing configurations to GitHub..."
@@ -96,9 +96,9 @@ function dotpull() {
         if git pull origin main; then
             echo "📦 Installing any new dependencies from Brewfile..."
             if [[ "$OSTYPE" == "darwin"* ]]; then
-                brew bundle --file="$DOT_PATH/mac/Brewfile"
+                brew bundle --verbose --file="$DOT_PATH/mac/Brewfile"
             else
-                brew bundle --file="$DOT_PATH/wsl/Brewfile"
+                brew bundle --verbose --file="$DOT_PATH/wsl/Brewfile"
             fi
             
             # Reload zshrc

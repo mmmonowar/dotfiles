@@ -1,5 +1,14 @@
 # Project Logs
 
+## [2026-04-17] 📢 Verbose Installation & Syncing
+- **Feature**: Enhanced transparency for installation and synchronization processes.
+- **Changes**:
+  - Added `--verbose` flag to `brew bundle` and `brew bundle dump` in `wsl/zshrc` and `mac/.zshrc`.
+  - Added `--verbose` flag to `brew install` and `brew uninstall` in `common/palette.sh`.
+  - Aligned `mac/.zshrc` with `wsl/zshrc` by adding `dot-sync` and enhancing `dot-pull` with `brew bundle`.
+  - Updated `project-manager/tasks.md` to reflect the changes.
+- **Impact**: Provides users with detailed real-time feedback during package management and dotfile synchronization.
+
 ## [2026-04-17] 🚀 Smart Brewfile Sync & Command Palette Integration
 - **Feature**: Automated Homebrew dependency management.
 - **Changes**:

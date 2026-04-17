@@ -33,16 +33,49 @@ source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 alias kbcheck='hidutil property --get "UserKeyMapping"'
 alias fixkb='~/kb_toggle.sh'
 
-function dot-pull() {
+function dot-sync() {
+    local DOT_PATH="$HOME/dotfiles"
     local current_dir=$(pwd)
-    cd ~/dotfiles
-    echo "📡 Fetching updates from GitHub..."
-    git pull origin main
-    
-    # Reload configs automatically
-    source ~/.zshrc
-    tmux source-file ~/.tmux.conf 2>/dev/null
-    
-    cd $current_dir
-    echo "✅ Cockpit updated and reloaded."
+
+    if [ -d "$DOT_PATH" ]; then
+        cd "$DOT_PATH"
+        
+        echo "🍺 Updating Brewfile..."
+        brew bundle dump --verbose --force --file="$DOT_PATH/mac/Brewfile"
+
+        echo "🔄 Syncing configurations to GitHub..."
+        git add -A
+        git commit -m "Sync: $(date +'%Y-%m-%d %H:%M') [$(hostname)]"
+        if git push origin main; then
+            echo "✅ Dotfiles and Brewfile pushed to GitHub."
+        else
+            echo "❌ Failed to push to GitHub. Check your connection or git status."
+        fi
+        
+        cd "$current_dir"
+    else
+        echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
+    fi
+}
+
+function dot-pull() {
+    local DOT_PATH="$HOME/dotfiles"
+    local current_dir=$(pwd)
+
+    if [ -d "$DOT_PATH" ]; then
+        cd "$DOT_PATH"
+        echo "📡 Fetching updates from GitHub..."
+        if git pull origin main; then
+            echo "📦 Installing any new dependencies from Brewfile..."
+            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile"
+            
+            # Reload configs automatically
+            source ~/.zshrc
+            tmux source-file ~/.tmux.conf 2>/dev/null
+            echo "✅ Cockpit updated and reloaded."
+        fi
+        cd "$current_dir"
+    else
+        echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
+    fi
 }

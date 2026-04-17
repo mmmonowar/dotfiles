@@ -24,6 +24,7 @@
 ## 📦 Declarative Package Management
 - **Brewfiles**: OS-specific lists for CLI tools (e.g., `btop`, `fzf`, `ranger`, `superfile`) and VSCode extensions.
 - **Automated Maintenance**: `dot-sync` automatically runs `brew bundle dump` before pushing; `dot-pull` runs `brew bundle` after pulling.
+- **Verbose Output**: All installation, uninstallation, and synchronization processes provide detailed real-time feedback via the `--verbose` flag.
 - **Consistency**: Ensures the same environment can be reproduced across different machines.
 
 ## 🐚 Shell Automation (Zsh)

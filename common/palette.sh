@@ -87,7 +87,7 @@ function install_app() {
         return
     fi
     
-    trigger_and_sync "brew install $app_name"
+    trigger_and_sync "brew install --verbose $app_name"
 }
 
 function uninstall_app() {
@@ -115,7 +115,7 @@ function uninstall_app() {
         clear
         if confirm_action "Uninstall $selection and sync to GitHub?"; then
             sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
-            trigger_and_sync "brew uninstall $selection"
+            trigger_and_sync "brew uninstall --verbose $selection"
         else
             uninstall_app
         fi
