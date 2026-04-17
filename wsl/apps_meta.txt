@@ -13,3 +13,9 @@ ranger|File browser
 superfile|Modern and pretty fancy file manager for the terminal
 tmux|Terminal multiplexer
 tree|Display directories as trees (with optional color/HTML output)
+gh|GitHub command-line tool
+lazygit|Simple terminal UI for git commands
+lftp|Sophisticated file transfer program
+rclone|Rsync for cloud storage
+termscp|Feature rich terminal file transfer and explorer
+zsh|UNIX shell (command interpreter)

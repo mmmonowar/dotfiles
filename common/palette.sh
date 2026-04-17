@@ -142,14 +142,33 @@ function apps_menu() {
         return
     fi
 
-    echo "󰇥  Loading app descriptions..."
-
+    # 1. Get apps from Brewfile
     local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
-    local list_items=""
+    
+    # 2. Check for missing descriptions to avoid unnecessary "Loading" delay
+    local missing_apps=()
     for app in "${apps[@]}"; do
-        local desc=$(get_app_description "$app")
-        list_items+="$app | $desc\n"
+        if ! grep -q "^${app}|" "$META_PATH" 2>/dev/null; then
+            missing_apps+=("$app")
+        fi
     done
+
+    # 3. Only fetch if something is missing
+    if [[ ${#missing_apps[@]} -gt 0 ]]; then
+        echo "󰇥  Fetching new app descriptions..."
+        for app in "${missing_apps[@]}"; do
+            get_app_description "$app" > /dev/null
+        done
+    fi
+
+    # 4. Generate the final list quickly using awk
+    local list_items=$(awk -F'|' '
+        NR==FNR { cache[$1]=$2; next }
+        { 
+            desc = cache[$1] ? cache[$1] : "󰒓  CLI Tool"
+            print $1 " | " desc
+        }
+    ' "$META_PATH" <(printf "%s\n" "${apps[@]}"))
 
     local selection=$(echo -e "$list_items" | fzf \
         --height 100% \

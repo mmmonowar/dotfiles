@@ -1,5 +1,13 @@
 # Project Logs
 
+## [2026-04-17] ⚡ Optimized App Description Loading
+- **Feature**: Instant loading of the "Launch App" menu when descriptions are cached.
+- **Changes**:
+  - Refactored `apps_menu` in `common/palette.sh` to use `awk` for high-speed list generation.
+  - Implemented a "fetch-on-demand" logic that only triggers the "Loading..." message and `brew info` when an app is missing from `apps_meta.txt`.
+  - Eliminated the per-app `grep` loop, significantly improving responsiveness for large Brewfiles.
+- **Impact**: The Command Palette now opens the app list instantly if all blurbs are cached.
+
 ## [2026-04-17] 📢 Verbose Installation & Syncing
 - **Feature**: Enhanced transparency for installation and synchronization processes.
 - **Changes**:
