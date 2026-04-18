@@ -117,8 +117,16 @@ function dotpull() {
 # Alias to catch "dot-pull" if you type it with a hyphen
 alias dot-pull='dotpull'
 
+function dot-reload() {
+    echo "🔄 Reloading configurations..."
+    source ~/.zshrc
+    tmux source-file ~/.tmux.conf 2>/dev/null
+    echo "✅ Cockpit reloaded."
+}
+
 # 7. PLUGINS
 # -----------------------------------------------------------------------------
 if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
 fi
+export PATH="$HOME/Apps:$PATH"

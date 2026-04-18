@@ -82,3 +82,10 @@ function dot-pull() {
         echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
     fi
 }
+
+function dot-reload() {
+    echo "🔄 Reloading configurations..."
+    source ~/.zshrc
+    tmux source-file ~/.tmux.conf 2>/dev/null
+    echo "✅ Cockpit reloaded."
+}

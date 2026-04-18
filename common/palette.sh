@@ -124,12 +124,6 @@ function uninstall_app() {
     fi
 }
 
-function reload_tmux() {
-    tmux source-file ~/.tmux.conf
-    ~/.tmux/plugins/tpm/bin/install_plugins
-    tmux display-message "󰄬  Tmux Reloaded & Plugins Installed!"
-}
-
 # ==========================================
 # 🚀  MENU LOGIC
 # ==========================================
@@ -227,7 +221,7 @@ function shortcuts_menu() {
 }
 
 function main_menu() {
-    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Refresh Tmux\n8 | 󰅙  Exit"
+    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Reload All Configs\n8 | 󰅙  Exit"
 
     local selection=$(echo -e "$menu_options" | fzf \
         --height 100% \
@@ -247,7 +241,7 @@ function main_menu() {
         4) shortcuts_menu ;;
         5) trigger_zsh_func "dot-pull" ;;
         6) trigger_zsh_func "dot-sync" ;;
-        7) reload_tmux ;;
+        7) trigger_zsh_func "dot-reload" ;;
         8|*) exit 0 ;;
     esac
 }

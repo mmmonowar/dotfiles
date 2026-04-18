@@ -29,6 +29,7 @@
 
 ## 🐚 Shell Automation (Zsh)
 - **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading.
+- **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
 - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).
 - **Aesthetics**: Support for `zsh-syntax-highlighting` and customized `ls` colors across platforms.

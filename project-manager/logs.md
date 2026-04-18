@@ -1,5 +1,14 @@
 # Project Logs
 
+## [2026-04-18] 🔄 Integrated Configuration Reloading
+- **Feature**: Unified command and shortcuts to refresh the entire environment.
+- **Changes**:
+  - Implemented `dot-reload` function in both `mac/.zshrc` and `wsl/zshrc` to source Zsh config and reload Tmux config.
+  - Added `Alt+r` global keybinding in `common/tmux.conf` to trigger `dot-reload` in the current pane.
+  - Updated `common/palette.sh` to include "Reload All Configs" option, replacing the Tmux-only refresh.
+  - Unified reloading logic across terminal prompt, keybindings, and command palette.
+- **Impact**: Provides a seamless way to apply configuration changes instantly without restarting sessions or windows.
+
 ## [2026-04-17] 🏎️ Homebrew Performance Optimization
 - **Feature**: Faster installations by disabling automatic post-install cleanup.
 - **Changes**:

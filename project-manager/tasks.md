@@ -33,6 +33,7 @@
 - [x] Optimize Homebrew performance (disable auto-cleanup)
 - [x] Implement `search` alias via `ddgr`
 - [x] Set up SSH agent auto-initialization for WSL
+- [x] Implement integrated `dot-reload` for Zsh and Tmux
 
 ## ✅ Micro Editor Customization
 - [x] Define `PolyMark.yaml` syntax rules
