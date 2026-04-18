@@ -241,7 +241,7 @@ function main_menu() {
         4) shortcuts_menu ;;
         5) trigger_zsh_func "dot-pull" ;;
         6) trigger_zsh_func "dot-sync" ;;
-        7) trigger_zsh_func "dot-reload" ;;
+        7) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
         8|*) exit 0 ;;
     esac
 }
