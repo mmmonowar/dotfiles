@@ -1,5 +1,14 @@
 # Project Logs
 
+## [2026-04-19] 🍏 macOS Dotfiles Deployment & Sync
+- **Feature**: Initial deployment of repository configurations to the local macOS environment.
+- **Changes**:
+  - Created symbolic link from repo to `~/dotfiles` to maintain path consistency with automation scripts.
+  - Backed up existing `~/.zshrc` and `~/.tmux.conf` to `.bak` files.
+  - Deployed `mac/.zshrc`, `common/tmux.conf`, and `common/micro/` to their respective local settings paths via symbolic links.
+  - Successfully executed the first `dot-sync` on macOS, which refreshed the `mac/Brewfile` and pushed all configuration changes to GitHub.
+- **Impact**: The Mac environment is now fully synchronized with the repository, enabling unified cross-platform management.
+
 ## [2026-04-18] 🔄 Integrated Configuration Reloading
 - **Feature**: Unified command and shortcuts to refresh the entire environment.
 - **Changes**:
