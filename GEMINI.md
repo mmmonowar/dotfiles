@@ -11,6 +11,7 @@ This file contains repository-specific instructions and context for Gemini CLI.
 ## Key Automation Commands
 - `dot-sync`: Automatically dumps the current Brewfile, stages all changes, commits with a timestamp, and pushes to GitHub.
 - `dot-pull`: Pulls latest changes from GitHub, installs any new dependencies from the Brewfile, and reloads the shell.
+- `dot-reload`: Instantly refreshes the entire environment (Zsh and Tmux) across all platforms.
 
 ## Command Palette (`common/palette.sh`)
 - Triggered via `Alt+p` in Tmux.

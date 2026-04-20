@@ -1,5 +1,32 @@
 # Project Logs
 
+## [2026-04-20] 🚀 Automated Shell & Cockpit Launch
+- **Feature**: Automatic initialization of Zsh and Tmux upon terminal startup.
+- **Changes**:
+  - Modified `~/.bashrc` to automatically `exec zsh` in interactive sessions, ensuring Zsh becomes the primary shell without requiring system-level `chsh` changes.
+  - Verified the existing "TMUX COCKPIT INITIALIZATION" logic in `wsl/zshrc` which auto-attaches or creates a 'default' tmux session.
+- **Impact**: Provides a frictionless "instant-on" experience where the user is immediately dropped into their configured Zsh + Tmux environment.
+
+## [2026-04-20] 🛠️ WSL Dotfiles Deployment & Sync
+- **Feature**: Deployment of repository configurations to the local WSL environment (Surface Pro 3).
+- **Changes**:
+  - Updated `common/tmux.conf` to use absolute paths for the command palette script.
+  - Backed up existing `~/.zshrc` and `~/.config/micro` to `.bak` files.
+  - Created symbolic links for `~/.zshrc`, `~/.tmux.conf`, and `~/.config/micro` pointing to the repository.
+  - Installed Tmux Plugin Manager (TPM) and Homebrew dependencies from `wsl/Brewfile`.
+  - Installed `zsh-syntax-highlighting` via apt to resolve missing dependency in Zsh.
+  - Verified `fzf` and `xclip` availability for palette and clipboard functionality.
+- **Impact**: The WSL environment is now fully synchronized with the repository and the latest configuration standards.
+
+## [2026-04-20] 🛠️ Project State Verification & Documentation Sync
+- **Feature**: Routine maintenance and documentation alignment.
+- **Changes**:
+  - Verified cross-platform consistency across macOS (MacBook Pro) and WSL (Surface Pro 3).
+  - Synchronized `project-manager/` files to reflect the 100% completion of defined tasks.
+  - Updated `tasks.md` to mark the PolyMark Translation section as fully completed.
+  - Audited `mac/Brewfile` and `wsl/Brewfile` for consistency; noted additional dev tools (Rust, Python 3.14, Zoxide) on the macOS environment.
+- **Impact**: Ensures that Gemini CLI and the user have an accurate, up-to-date view of the project's progress and environment state.
+
 ## [2026-04-19] 🍏 macOS Dotfiles Deployment & Sync
 - **Feature**: Initial deployment of repository configurations to the local macOS environment.
 - **Changes**:

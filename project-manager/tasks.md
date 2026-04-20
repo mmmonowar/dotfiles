@@ -27,6 +27,7 @@
 - [x] Define `wsl/Brewfile` with Ubuntu-specific packages
 
 ## ✅ Shell Automation (Zsh)
+- [x] Implement automated Zsh and Tmux startup via `.bashrc`
 - [x] Create `dot-sync` and `dot-pull` for Git automation
 - [x] Implement Smart Brewfile Sync (auto-dump/auto-install)
 - [x] Set any installation via dotfiles to be verbose
@@ -40,7 +41,7 @@
 - [x] Create `PolyMark.micro` colorscheme
 - [x] Link `common/micro/` configurations to `~/.config/micro/`
 
-## 🔄 PolyMark Translation
+## ✅ PolyMark Translation
 - [x] Parse `polymark.sublime-syntax` contexts and matches
 - [x] Map Sublime scopes to Micro `color-link` identifiers
 - [x] Extract colors from `polymark.sublime-color-scheme`
