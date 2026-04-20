@@ -27,6 +27,7 @@
 - [x] Define `wsl/Brewfile` with Ubuntu-specific packages
 
 ## ✅ Shell Automation (Zsh)
+- [x] Implement automated Zsh and Tmux startup via `.bashrc`
 - [x] Create `dot-sync` and `dot-pull` for Git automation
 - [x] Implement Smart Brewfile Sync (auto-dump/auto-install)
 - [x] Set any installation via dotfiles to be verbose

@@ -7,6 +7,7 @@
 - **Steps**:
     - [x] Map shared configurations to `common/`.
     - [x] Create entry points in `mac/.zshrc` and `wsl/zshrc`.
+    - [x] Configure automated Zsh + Tmux cockpit entry upon terminal launch.
 
 ### 2. Interface Layer
 - **Goal**: Provide a GUI-like experience in the terminal.

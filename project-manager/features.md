@@ -28,6 +28,7 @@
 - **Consistency**: Ensures the same environment can be reproduced across different machines.
 
 ## 🐚 Shell Automation (Zsh)
+- **Automated Startup**: Configured to auto-switch from Bash to Zsh and immediately initialize the Tmux cockpit upon terminal entry.
 - **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading.
 - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
 - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.

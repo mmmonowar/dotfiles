@@ -1,5 +1,12 @@
 # Project Logs
 
+## [2026-04-20] 🚀 Automated Shell & Cockpit Launch
+- **Feature**: Automatic initialization of Zsh and Tmux upon terminal startup.
+- **Changes**:
+  - Modified `~/.bashrc` to automatically `exec zsh` in interactive sessions, ensuring Zsh becomes the primary shell without requiring system-level `chsh` changes.
+  - Verified the existing "TMUX COCKPIT INITIALIZATION" logic in `wsl/zshrc` which auto-attaches or creates a 'default' tmux session.
+- **Impact**: Provides a frictionless "instant-on" experience where the user is immediately dropped into their configured Zsh + Tmux environment.
+
 ## [2026-04-20] 🛠️ WSL Dotfiles Deployment & Sync
 - **Feature**: Deployment of repository configurations to the local WSL environment (Surface Pro 3).
 - **Changes**:
