@@ -40,7 +40,7 @@
 - [x] Create `PolyMark.micro` colorscheme
 - [x] Link `common/micro/` configurations to `~/.config/micro/`
 
-## 🔄 PolyMark Translation
+## ✅ PolyMark Translation
 - [x] Parse `polymark.sublime-syntax` contexts and matches
 - [x] Map Sublime scopes to Micro `color-link` identifiers
 - [x] Extract colors from `polymark.sublime-color-scheme`
