@@ -1,5 +1,29 @@
 # Project Logs
 
+## [2026-04-21]   Unified Alt Key Shortcuts (Cross-Platform)
+- **Feature**: Standardized all Tmux and Command Palette shortcuts to use the `Alt` (Meta) key globally.
+- **Changes**:
+  - Removed OS-specific conditional logic in `common/tmux.conf`, favoring `M-` (Meta) bindings for all platforms.
+  - Simplified `common/palette.sh` to consistently display and execute `Alt` shortcuts.
+  - Enhanced `common/fix-alt-keys.sh` with a diagnostic "Test Mode" and detailed instructions for configuring GNOME Terminal (Ubuntu) and iTerm2/Terminal.app (macOS).
+- **Impact**: Provides a consistent, muscle-memory-friendly experience across WSL, Ubuntu, and Mac, provided the terminal is configured to pass Alt as Meta.
+
+## [2026-04-21]   Conditional Ctrl+Shift Shortcuts (macOS & Ubuntu)
+- **Feature**: Switched all custom Tmux shortcuts to `Ctrl+Shift` for Mac and Ubuntu to avoid `Alt` key hardware/terminal conflicts.
+- **Changes**:
+  - Modified `common/tmux.conf` to use `if-shell` OS detection.
+  - Implemented `Ctrl+Shift` (e.g., `C-P`, `C-S-Up`) for Mac/Ubuntu.
+  - Retained `Alt` (e.g., `M-p`, `M-Up`) for WSL where it remains native and working.
+  - Dynamically updated `common/palette.sh` to show the correct modifier in the Help menu based on the current OS.
+- **Impact**: Provides a reliable way to trigger the palette and manage windows/panes without terminal intercept issues.
+
+## [2026-04-20] 🛠️ Tmux Initialization Robustness & Bug Fix
+- **Feature**: Improved Tmux auto-start logic to prevent terminal-related errors.
+- **Changes**:
+  - Modified `wsl/zshrc` and `mac/.zshrc` to wrap the Tmux initialization in an interactivity check (`[[ -o interactive ]]`).
+  - Added `2>/dev/null` to the `tmux attach-session` command to suppress "can't find session: default" noise during fresh starts.
+- **Impact**: Resolves "open terminal failed: not a terminal" and "can't find session: default" errors when opening the terminal, particularly in environments like VS Code or non-interactive shell invocations.
+
 ## [2026-04-20] 🚀 Automated Shell & Cockpit Launch
 - **Feature**: Automatic initialization of Zsh and Tmux upon terminal startup.
 - **Changes**:

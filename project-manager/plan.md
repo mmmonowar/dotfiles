@@ -38,11 +38,14 @@
     - [x] Create symbolic links from `~/dotfiles/common/micro/` to `~/.config/micro/` for deployment.
 
 ### 5. Troubleshooting & Compatibility
-- **Goal**: Fix the monochrome issue in Micro.
+- **Goal**: Fix the monochrome issue and keybinding conflicts.
 - **Steps**:
     - [x] Update `tmux.conf` for explicit TrueColor support.
     - [x] Configure shell profiles (`.zshrc`) to export TrueColor variables.
     - [x] Enable TrueColor in Micro's internal settings.
+    - [x] Implement `fix-alt-keys.sh` for macOS and Ubuntu shortcut compatibility.
+    - [x] Unify all shortcuts on the Alt (Meta) key across all platforms.
+    - [x] Integrate Alt key fix into the Command Palette.
 
 ### 6. Maintenance & Optimization (Ongoing)
 - **Goal**: Ensure long-term stability and performance.

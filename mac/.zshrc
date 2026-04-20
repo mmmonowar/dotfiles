@@ -4,9 +4,9 @@ export PATH="/opt/homebrew/bin:$PATH"
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 
-# Auto-start tmux on shell login (optional)
-if [[ -z "$TMUX" ]]; then
-    tmux attach-session -t default || tmux new-session -s default
+# Auto-start tmux on interactive shell login
+if [[ -o interactive ]] && [[ -z "$TMUX" ]]; then
+    tmux attach-session -t default 2>/dev/null || tmux new-session -s default
 fi
 
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # boot up x-cmd.

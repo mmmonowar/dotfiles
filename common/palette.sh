@@ -40,7 +40,8 @@ function trigger_and_sync() {
 function confirm_action() {
     local msg="$1"
     echo -e "  $msg"
-    read -p "Confirm? (y/N): " resp
+    printf "Confirm? (y/N): "
+    read -r resp
     case "$resp" in
         [yY][eE][sS]|[yY]) return 0 ;;
         *) return 1 ;;
@@ -80,7 +81,8 @@ function install_app() {
     echo "󰏔  Install App (via Homebrew)"
     echo "-----------------------------"
     echo "This will install the app and automatically update your Brewfile and GitHub repo."
-    read -p "Enter package name (or press Enter to cancel): " app_name
+    printf "Enter package name (or press Enter to cancel): "
+    read -r app_name
     
     if [[ -z "$app_name" ]]; then
         main_menu
@@ -182,17 +184,19 @@ function apps_menu() {
 }
 
 function shortcuts_menu() {
-    local menu_items="󰐕  New Session (Alt+,) | new-session\n"
-    menu_items+="󰑐  Cycle Sessions (Alt+0) | switch-client -n\n"
-    menu_items+="󰆴  Kill Session (Alt+w) | kill-session\n"
-    menu_items+="󰈔  New Window (Alt+m) | new-window\n"
-    menu_items+="󰅙  Kill Window (Alt+e) | kill-window\n"
-    menu_items+="󰁞  Next Window (Alt+Up) | next-window\n"
-    menu_items+="󰁆  Previous Window (Alt+Down) | previous-window\n"
-    menu_items+="󰁍  Previous Pane (Alt+Left) | select-pane -t :.-\n"
-    menu_items+="󰁔  Next Pane (Alt+Right) | select-pane -t :.+\n"
-    menu_items+="󰐕  Create Pane (Alt+1) | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
-    menu_items+="󰅖  Close Pane (Alt+2) | kill-pane; select-layout tiled"
+    local mod="Alt"
+
+    local menu_items="󰐕  New Session ($mod+,) | new-session\n"
+    menu_items+="󰑐  Cycle Sessions ($mod+0) | switch-client -n\n"
+    menu_items+="󰆴  Kill Session ($mod+w) | kill-session\n"
+    menu_items+="󰈔  New Window ($mod+m) | new-window\n"
+    menu_items+="󰅙  Kill Window ($mod+e) | kill-window\n"
+    menu_items+="󰁞  Next Window ($mod+Up) | next-window\n"
+    menu_items+="󰁆  Previous Window ($mod+Down) | previous-window\n"
+    menu_items+="󰁍  Previous Pane ($mod+Left) | select-pane -t :.-\n"
+    menu_items+="󰁔  Next Pane ($mod+Right) | select-pane -t :.+\n"
+    menu_items+="󰐕  Create Pane ($mod+1) | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
+    menu_items+="󰅖  Close Pane ($mod+2) | kill-pane; select-layout tiled"
 
     local selection=$(echo -e "$menu_items" | fzf \
         --height 100% \
@@ -221,7 +225,7 @@ function shortcuts_menu() {
 }
 
 function main_menu() {
-    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Reload All Configs\n8 | 󰅙  Exit"
+    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Reload All Configs\n8 |   Fix Alt Keys\n9 | 󰅙  Exit"
 
     local selection=$(echo -e "$menu_options" | fzf \
         --height 100% \
@@ -242,7 +246,8 @@ function main_menu() {
         5) trigger_zsh_func "dot-pull" ;;
         6) trigger_zsh_func "dot-sync" ;;
         7) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
-        8|*) exit 0 ;;
+        8) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
+        9|*) exit 0 ;;
     esac
 }
 
