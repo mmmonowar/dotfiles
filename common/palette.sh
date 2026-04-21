@@ -17,7 +17,7 @@ else
 fi
 
 # 3. Dynamic Paths
-REPO_PATH="$HOME/GitHub/mmmonowar/dotfiles"
+REPO_PATH="$HOME/Developer/GitHub/mmmonowar/dotfiles"
 BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
 
