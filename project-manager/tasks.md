@@ -48,6 +48,12 @@
 - [x] Generate updated `common/micro/syntax/PolyMark.yaml`
 - [x] Generate updated `common/micro/colorschemes/PolyMark.micro`
 
+## ✅ Repository Portability
+- [x] Dynamically determine repository root in `palette.sh`
+- [x] Implement dynamic `DOTFILES_ROOT` detection in Zsh profiles
+- [x] Synchronize `DOTFILES_ROOT` environment variable with Tmux
+- [x] Convert all hardcoded absolute paths to relative or environment-based paths
+
 ## 🛠️ Troubleshooting
 - [x] Fix Tmux "not a terminal" startup error
 - [x] Diagnose monochrome display issue in Micro

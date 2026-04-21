@@ -1,5 +1,15 @@
 # Project Logs
 
+## [2026-04-22] 📂 Path Relativeization & Portability
+- **Feature**: Converted all hardcoded repository paths to dynamic, relative paths.
+- **Changes**:
+  - Updated `common/palette.sh` to derive `REPO_PATH` dynamically from the script's location.
+  - Enhanced `mac/.zshrc` and `wsl/zshrc` to dynamically determine `DOTFILES_ROOT` based on the sourced file's location.
+  - Configured `zshrc` to export `DOTFILES_ROOT` to the Tmux environment using `tmux set-environment`.
+  - Refactored `common/tmux.conf` to use the `$DOTFILES_ROOT` environment variable for the Command Palette binding.
+  - Updated all shell functions (`dot-sync`, `dot-pull`) to use the dynamic `DOT_PATH` instead of hardcoded home directory paths.
+- **Impact**: The repository can now be cloned to any directory (e.g., `~/dotfiles`, `~/GitHub/dotfiles`, `~/Developer/my-configs`) without breaking the automation scripts or keybindings.
+
 ## [2026-04-22] 🛠️ Tmux Configuration Protection & User Guidance
 - **Issue**: Users were accidentally running `~/.tmux.conf` as a shell script, resulting in "command not found" and "parse error" messages.
 - **Changes**:

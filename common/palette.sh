@@ -17,7 +17,7 @@ else
 fi
 
 # 3. Dynamic Paths
-REPO_PATH="$HOME/Developer/GitHub/mmmonowar/dotfiles"
+REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
 
@@ -116,7 +116,11 @@ function uninstall_app() {
     if [[ -n "$selection" ]]; then
         clear
         if confirm_action "Uninstall $selection and sync to GitHub?"; then
-            sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
+            if [[ "$OS_ENV" == "mac" ]]; then
+                sed -i '' "/^$selection|/d" "$META_PATH" 2>/dev/null
+            else
+                sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
+            fi
             trigger_and_sync "brew uninstall --verbose $selection"
         else
             uninstall_app

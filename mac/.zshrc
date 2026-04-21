@@ -1,4 +1,9 @@
 # This .zshrc is for mac
+# 1. PATH & ENVIRONMENT
+# -----------------------------------------------------------------------------
+# Determine the root of the dotfiles repository dynamically
+export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
+
 export PATH="/opt/homebrew/bin:$PATH"
 
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
@@ -6,6 +11,8 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 
 # Auto-start tmux on interactive shell login
 if [[ -o interactive ]] && [[ -z "$TMUX" ]]; then
+    # Ensure tmux knows about the dotfiles root
+    tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
     tmux attach-session -t default 2>/dev/null || tmux new-session -s default
 fi
 
@@ -15,7 +22,7 @@ fi
 alias search='ddgr --reg en-us --num 5'
 
 # Reload the tmux config for the current session
-alias reload-tmux='tmux source-file ~/.tmux.conf && echo "Tmux reloaded."'
+alias reload-tmux='dot-reload'
 
 # Kill the server (effectively your restart)
 alias restart-tmux='tmux kill-server'
@@ -37,7 +44,7 @@ alias kbcheck='hidutil property --get "UserKeyMapping"'
 alias fixkb='~/kb_toggle.sh'
 
 function dot-sync() {
-    local DOT_PATH="$HOME/dotfiles"
+    local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
 
     if [ -d "$DOT_PATH" ]; then
@@ -62,7 +69,7 @@ function dot-sync() {
 }
 
 function dot-pull() {
-    local DOT_PATH="$HOME/dotfiles"
+    local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
 
     if [ -d "$DOT_PATH" ]; then
@@ -73,9 +80,7 @@ function dot-pull() {
             brew bundle --verbose --file="$DOT_PATH/mac/Brewfile"
             
             # Reload configs automatically
-            source ~/.zshrc
-            tmux source-file ~/.tmux.conf 2>/dev/null
-            echo "✅ Cockpit updated and reloaded."
+            dot-reload
         fi
         cd "$current_dir"
     else
@@ -85,7 +90,18 @@ function dot-pull() {
 
 function dot-reload() {
     echo "🔄 Reloading configurations..."
-    source ~/.zshrc
-    tmux source-file ~/.tmux.conf 2>/dev/null
+    if [ -f "$HOME/.zshrc" ]; then
+        source "$HOME/.zshrc"
+    else
+        # If ~/.zshrc doesn't exist, source the current file directly
+        # This handles cases where symlinks aren't set up yet
+        source "${(%):-%x}"
+    fi
+    
+    # Update tmux environment to reflect potential repo location changes
+    if [[ -n "$TMUX" ]]; then
+        tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+        tmux source-file ~/.tmux.conf 2>/dev/null
+    fi
     echo "✅ Cockpit reloaded."
 }

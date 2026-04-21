@@ -50,6 +50,7 @@
 ### 6. Maintenance & Optimization (Ongoing)
 - **Goal**: Ensure long-term stability and performance.
 - **Steps**:
+    - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.
     - [ ] Research methods to speed up `brew bundle dump`.
     - [ ] Audit configurations for cross-platform redundancies.
     - [ ] Implement automated health checks for symbolic links.

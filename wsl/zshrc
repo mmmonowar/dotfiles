@@ -4,6 +4,9 @@
 
 # 1. PATH & ENVIRONMENT
 # -----------------------------------------------------------------------------
+# Determine the root of the dotfiles repository dynamically
+export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
+
 export PATH="$HOME/.local/bin:$PATH" # [cite: 5]
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" # [cite: 12]
 
@@ -35,10 +38,12 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" # [cite: 10]
 # -----------------------------------------------------------------------------
 # Auto-start tmux on interactive shell login
 if [[ -o interactive ]] && [[ -z "$TMUX" ]]; then
+    # Ensure tmux knows about the dotfiles root
+    tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
     tmux attach-session -t default 2>/dev/null || tmux new-session -s default
 fi
 
-alias reload-tmux='tmux source-file ~/.tmux.conf && echo "Tmux reloaded."' # [cite: 8]
+alias reload-tmux='dot-reload' # [cite: 8]
 alias restart-tmux='tmux kill-server' # [cite: 8]
 
 # 4. ALIASES & KEYBOARDS
@@ -59,7 +64,7 @@ fi
 # 6. DOTFILES AUTOMATION
 # -----------------------------------------------------------------------------
 function dot-sync() {
-    local DOT_PATH="$HOME/GitHub/mmmonowar/dotfiles"
+    local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
 
     if [ -d "$DOT_PATH" ]; then
@@ -89,8 +94,8 @@ function dot-sync() {
     fi
 }
 
-function dotpull() {
-    local DOT_PATH="$HOME/GitHub/mmmonowar/dotfiles"
+function dot-pull() {
+    local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
 
     if [ -d "$DOT_PATH" ]; then
@@ -104,9 +109,8 @@ function dotpull() {
                 brew bundle --verbose --file="$DOT_PATH/wsl/Brewfile"
             fi
             
-            # Reload zshrc
-            source ~/.zshrc
-            echo "✅ Configurations reloaded and dependencies updated."
+            # Reload configs
+            dot-reload
         fi
         cd "$current_dir"
     else
@@ -114,13 +118,24 @@ function dotpull() {
     fi
 }
 
-# Alias to catch "dot-pull" if you type it with a hyphen
-alias dot-pull='dotpull'
+# Keep the alias for backward compatibility or muscle memory
+alias dotpull='dot-pull'
 
 function dot-reload() {
     echo "🔄 Reloading configurations..."
-    source ~/.zshrc
-    tmux source-file ~/.tmux.conf 2>/dev/null
+    if [ -f "$HOME/.zshrc" ]; then
+        source "$HOME/.zshrc"
+    else
+        # If ~/.zshrc doesn't exist, source the current file directly
+        # This handles cases where symlinks aren't set up yet
+        source "${(%):-%x}"
+    fi
+    
+    # Update tmux environment to reflect potential repo location changes
+    if [[ -n "$TMUX" ]]; then
+        tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+        tmux source-file ~/.tmux.conf 2>/dev/null
+    fi
     echo "✅ Cockpit reloaded."
 }
 
