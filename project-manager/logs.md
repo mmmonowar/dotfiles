@@ -1,5 +1,12 @@
 # Project Logs
 
+## [2026-04-22] 🛠️ Tmux Configuration Protection & User Guidance
+- **Issue**: Users were accidentally running `~/.tmux.conf` as a shell script, resulting in "command not found" and "parse error" messages.
+- **Changes**:
+  - Added a protective warning comment to the header of `common/tmux.conf` clarifying that it is NOT a shell script.
+  - Provided explicit instructions on the correct methods for reloading configuration (`dot-reload`, `tmux source-file`, or `Alt+r`).
+- **Impact**: Reduces user confusion and prevents common misconfiguration errors during the dotfile development lifecycle.
+
 ## [2026-04-21]   Unified Alt Key Shortcuts (Cross-Platform)
 - **Feature**: Standardized all Tmux and Command Palette shortcuts to use the `Alt` (Meta) key globally.
 - **Changes**:
