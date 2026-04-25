@@ -68,6 +68,9 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 - **`Alt+1`**: Create/Split Pane (Maximum 4 per window)
 - **`Alt+2`**: Close/Kill Pane
 - **`Alt+Left` / `Alt+Right`**: Cycle Panes
+- **Ergonomics**: 
+    - **Visual Padding**: An empty border header creates "air" at the top of each pane for a cleaner look.
+    - **Active Highlighting**: The active pane is displayed with a bright blue border and full background brightness, while inactive panes are slightly dimmed for better focus.
 
 ### System & Navigation
 - **`Alt+p`**: Open Command Palette

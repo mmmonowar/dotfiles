@@ -56,7 +56,14 @@ function dot-scan() {
 
     # 4. Secret Scanning (Simple heuristic)
     echo -e "\n🔑 ${YELLOW}Scanning for potential secrets...${NC}"
-    local secrets_found=$(grep -rEi "api_key|secret|password|token|auth" "$DOT_PATH" --exclude-dir=".git" --exclude="*.md" --exclude="Brewfile*" | grep -vE "GITHUB_TOKEN|#|//" | head -n 5)
+    # We exclude the scanner itself and common non-sensitive environment variables
+    local secrets_found=$(grep -rEi "api_key|secret|password|token|auth" "$DOT_PATH" \
+        --exclude-dir=".git" \
+        --exclude="*.md" \
+        --exclude="Brewfile*" \
+        --exclude="security.sh" | \
+        grep -vE "GITHUB_TOKEN|SSH_AUTH_SOCK|COLORTERM|MICRO_TRUECOLOR|#|//" | \
+        head -n 5)
     if [ -n "$secrets_found" ]; then
         echo -e "⚠️  ${RED}Potential secrets or sensitive keys found in files:${NC}"
         echo "$secrets_found"
@@ -68,12 +75,15 @@ function dot-scan() {
     fi
 
     # 5. System Security Audit (Lynis)
+    if ! command -v lynis &> /dev/null; then
+        echo -e "\n🔎 ${YELLOW}lynis not found. Installing...${NC}"
+        brew install lynis
+    fi
+
     if command -v lynis &> /dev/null; then
         echo -e "\n🔎 ${YELLOW}Running system security audit (Lynis - quick check)...${NC}"
         # We run a subset of lynis or a quick audit to avoid it being too slow
         sudo lynis audit system --quick --no-log
-    else
-        echo -e "\n⚠️  lynis not found. Skipping system audit."
     fi
 
     echo -e "\n${BLUE}==========================================${NC}"

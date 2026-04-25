@@ -1,4 +1,50 @@
-# Project Logs
+## [2026-04-25-16-16-59] - Peppermint Design System & Tmux Refinement
+- **Feature**: Centralized design system and Peppermint theme integration.
+- **Details**:
+    - Created `DESIGN.md` in the root to define core design principles and color palette.
+    - Moved `peppermint.json` to `common/design/` for centralized access.
+    - Reverted tmux heavy borders and border status padding.
+    - Applied Peppermint colors to Tmux: solid black (`#000000`) active background, dimmed (`#1c1c1c`) inactive background, and blue (`#449fd0`) active borders.
+    - Aligned Tmux status bar with Peppermint palette.
+    - Updated all project management files to reflect the new design system.
+
+## [2026-04-25-15-55-22] - Tmux Pane Ergonomics
+- **Feature**: Implemented pane padding and visual differentiation.
+- **Details**:
+    - Added `window-style` and `window-active-style` to dim inactive panes (using Catppuccin Mantle).
+    - Enabled `pane-border-lines heavy` for better visual separation.
+    - Configured `pane-border-status top` with empty padding to create visual "air" at the top of panes.
+    - Updated `common/tmux.conf` and all project management files.
+
+## [2026-04-25] 🧹 Zsh Configuration Cleanup & Tmux Error Resolution
+- **Feature**: Fixed configuration corruption that caused shell errors.
+- **Changes**:
+  - Cleaned up `mac/.zshrc` by removing corrupted trailing lines that caused the shell to misinterpret the configuration.
+  - Cleaned up `linux/zshrc` by removing duplicate plugin sourcing and path exports.
+- **Impact**: Resolves the "command not found" and "parse error" messages seen when the shell incorrectly attempted to execute `.tmux.conf` as a script.
+
+## [2026-04-25] 🛡️ Hardened Secret Detection & False Positive Reduction
+- **Feature**: Refined the repository's secret scanning heuristic to be more accurate and less noisy.
+- **Changes**:
+  - Updated `dot-scan` in `common/security.sh` to exclude the scanner script itself and common system environment variables (`SSH_AUTH_SOCK`, `COLORTERM`, `MICRO_TRUECOLOR`).
+  - Improved exclusion patterns to ignore comments and descriptive text.
+  - Performed a full repository audit to ensure no actual hardcoded credentials exist.
+- **Impact**: Provides a cleaner, more reliable security report while maintaining high sensitivity for actual hardcoded secrets.
+
+## [2026-04-25] 🛡️ Automatic Security Tool Installation
+- **Feature**: Ensured critical security tools are available before scanning.
+- **Changes**:
+  - Updated `dot-scan` in `common/security.sh` to automatically install `lynis` via Homebrew if it's not found in the path.
+- **Impact**: Guarantees that system security audits are never skipped due to missing dependencies, maintaining a consistent security baseline across all environments.
+
+## [2026-04-25] 🌍 OS Environment Standardization & Brewfile Path Fix
+- **Feature**: Standardized the `OS_ENV` variable across all platforms to ensure robust path resolution for Homebrew dependencies.
+- **Changes**:
+  - Exported `OS_ENV="wsl"` in `wsl/zshrc` to fix the "No Brewfile found" error during `dot-pull`.
+  - Exported `OS_ENV="linux"` in `linux/zshrc` for generic Linux environments.
+  - Exported `OS_ENV="mac"` in `mac/.zshrc` and updated `dot-sync` and `dot-pull` functions to use the variable instead of hardcoded paths.
+  - Cleaned up the repository by removing a misplaced `Brewfile.apps` file in the root directory that was created by previous failed sync attempts.
+- **Impact**: Resolves critical path resolution issues in automation scripts, ensuring that `dot-pull` and `dot-sync` correctly identify platform-specific configuration files.
 
 ## [2026-04-25] 🛡️ Security Vulnerability Scanning & Automated Fixes
 - **Feature**: Integrated security auditing and remediation into the dotfile lifecycle.

@@ -21,6 +21,8 @@
 - [x] Configure Smart Dashboard (btop/docker) auto-start
 - [x] Set up cross-platform clipboard (pbcopy/xclip)
 - [x] Integrate Catppuccin theme and custom status bar
+- [x] Implement centralized Peppermint Design System (`DESIGN.md` and `common/design/`)
+- [x] Apply Peppermint theme to Tmux (solid black active background, blue borders)
 
 ## ✅ Declarative Package Management
 - [x] Define `mac/Brewfile` with core CLI tools and VSCode extensions
@@ -61,14 +63,16 @@
 - [x] Validate Micro colorscheme hex code compatibility
 - [x] Implement Alt/Option key compatibility for macOS and Ubuntu
 - [x] Unify all Tmux shortcuts on the Alt (Meta) key across all platforms
+- [x] Standardize `OS_ENV` across all platforms to fix Brewfile path resolution in `dot-pull` and `dot-sync`
+- [x] Fix `mac/.zshrc` and `linux/zshrc` corruption to resolve Tmux configuration execution errors
 
 ## ✅ Security & Vulnerability Management
 - [x] Create `common/security.sh` with `dot-scan` function
 - [x] Integrate `shellcheck` for shell script static analysis
 - [x] Implement automated package vulnerability checks via `brew outdated`
 - [x] Integrate Homebrew health auditing (`brew doctor`)
-- [x] Implement heuristic secret scanning for the repository
-- [x] Integrate `lynis` for system security auditing
+- [x] Implement heuristic secret scanning for the repository with false positive reduction for system variables
+- [x] Integrate `lynis` for system security auditing with automatic installation if missing
 - [x] Embed automated security scans into `install.sh`, `dot-pull`, and `dot-sync`
 - [x] Add security tools (`shellcheck`, `lynis`) to `Brewfile.core` across all platforms
 

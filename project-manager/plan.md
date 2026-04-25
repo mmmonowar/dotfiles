@@ -17,6 +17,7 @@
     - [x] Implement dynamic metadata (blurb) fetching for apps.
     - [x] Integrate an interactive "Execute Shortcut" menu in the palette.
     - [x] Refine UI ergonomics (Nerd Fonts, alignment, and safety prompts).
+    - [x] Implement centralized Peppermint Design System and theme synchronization.
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.

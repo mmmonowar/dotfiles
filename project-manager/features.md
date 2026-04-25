@@ -14,12 +14,14 @@
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 
 ## 🗖 Advanced Tmux Configuration
-- **Session Management**: Rapid creation (`Alt+,`), cycling (`Alt+0`), and termination (`Alt+w`) of tmux sessions.
-- **2x2 Grid Management**: Custom bindings (`Alt+1`, `Alt+2`) for rapid tiling and pane management (limited to 4 panes for focus).
-- **Smart Dashboard**: Auto-starts a session named "Dashboard" with `btop` and `docker ps` on launch.
-- **Dynamic Clipboard**: Context-aware clipboard integration using `pbcopy` (macOS) and `xclip` (Linux).
-- **Aesthetics**: Integrated with **Catppuccin** theme and a custom-formatted status bar showing date and time.
-- **Plugin Power**: Managed via `tpm` with support for `resurrect` and `continuum` for session persistence.
+- [x] **Session Management**: Rapid creation (`Alt+,`), cycling (`Alt+0`), and termination (`Alt+w`) of tmux sessions.
+- [x] **2x2 Grid Management**: Custom bindings (`Alt+1`, `Alt+2`) for rapid tiling and pane management (limited to 4 panes for focus).
+- [x] **Smart Dashboard**: Auto-starts a session named "Dashboard" with `btop` and `docker ps` on launch.
+- [x] **Dynamic Clipboard**: Context-aware clipboard integration using `pbcopy` (macOS) and `xclip` (Linux).
+- [x] **Aesthetics**: Integrated with **Catppuccin** theme and a custom-formatted status bar.
+- [x] **Peppermint Design System**: Centralized design language in `DESIGN.md` using the **Peppermint** palette for high-contrast, comfortable ergonomics.
+- [x] **Pane Differentiation**: Active panes use a solid black background (`#000000`) and blue borders, while inactive panes are subtly dimmed (`#1c1c1c`) for focused workflows.
+- [x] **Plugin Power**: Managed via `tpm` with support for `resurrect` and `continuum` for session persistence.
 
 ## 📦 Declarative Package Management
 - **Brewfiles**: OS-specific lists for CLI tools (e.g., `btop`, `fzf`, `ranger`, `superfile`) and VSCode extensions.

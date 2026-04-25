@@ -3,6 +3,7 @@
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
+export OS_ENV="mac"
 
 export PATH="/opt/homebrew/bin:$PATH"
 
@@ -52,8 +53,8 @@ function dot-sync() {
         cd "$DOT_PATH"
         
         echo "🍺 Updating Brewfile..."
-        local BREW_CORE="$DOT_PATH/mac/Brewfile.core"
-        local BREW_APPS="$DOT_PATH/mac/Brewfile.apps"
+        local BREW_CORE="$DOT_PATH/$OS_ENV/Brewfile.core"
+        local BREW_APPS="$DOT_PATH/$OS_ENV/Brewfile.apps"
         local TEMP_BREW=$(mktemp)
 
         # Dump current state to temp
@@ -93,8 +94,8 @@ function dot-pull() {
         echo "📡 Fetching updates from GitHub..."
         if git pull --verbose origin main; then
             echo "📦 Installing any new dependencies from Brewfile..."
-            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.core"
-            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.apps"
+            brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.core"
+            brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.apps"
             
             echo "🛡️ Running post-pull security scan..."
             dot-scan
@@ -121,11 +122,6 @@ function dot-reload() {
     # Update tmux environment to reflect potential repo location changes
     if [[ -n "$TMUX" ]]; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
-        tmux source-file ~/.tmux.conf 2>/dev/null
-    fi
-    echo "✅ Cockpit reloaded."
-}
-ILES_ROOT "$DOTFILES_ROOT"
         tmux source-file ~/.tmux.conf 2>/dev/null
     fi
     echo "✅ Cockpit reloaded."

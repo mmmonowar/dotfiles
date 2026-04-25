@@ -6,6 +6,7 @@
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
+export OS_ENV="linux"
 
 export PATH="$HOME/.local/bin:$PATH" # [cite: 5]
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" # [cite: 12]
@@ -153,8 +154,5 @@ function dot-reload() {
 # -----------------------------------------------------------------------------
 if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
-fi
-export PATH="$HOME/Apps:$PATH"
-  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
 fi
 export PATH="$HOME/Apps:$PATH"
