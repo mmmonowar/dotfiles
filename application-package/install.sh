@@ -112,8 +112,53 @@ mkdir -p "$HOME/.config/glow"
 safe_link "$TARGET_DIR/common/glow.yml" "$HOME/.config/glow/glow.yml"
 
 # 6. Install Packages (Brewfile)
-echo -e "📦  ${BLUE}Installing packages from $OS_ENV/Brewfile...${NC}"
-brew bundle --verbose --file="$TARGET_DIR/$OS_ENV/Brewfile"
+echo -e "📦  ${BLUE}Installing CORE packages from $OS_ENV/Brewfile.core...${NC}"
+brew bundle --verbose --file="$TARGET_DIR/$OS_ENV/Brewfile.core"
+
+# Interactive App Selection
+echo -e "\n🧩  ${BLUE}Optional Applications Selection${NC}"
+APPS_FILE="$TARGET_DIR/$OS_ENV/Brewfile.apps"
+
+if [ -f "$APPS_FILE" ]; then
+    echo -e "You can now choose which optional apps to install."
+    
+    # Use fzf if available (it should be, as it is in core)
+    if command -v fzf &> /dev/null; then
+        # Parse Brewfile.apps to get clean names for selection
+        # Supports: brew "name", cask "name", vscode "name"
+        mapfile -t all_apps < <(grep -E '^(brew|cask|vscode)' "$APPS_FILE" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\1: \2/')
+        
+        if [ ${#all_apps[@]} -gt 0 ]; then
+            echo -e "${YELLOW}Instructions: Use TAB to select multiple, ENTER to confirm, ESC to skip all.${NC}"
+            selected=$(printf "%s\n" "${all_apps[@]}" | fzf --multi --header "Select Optional Apps to Install" --reverse --border rounded)
+            
+            if [ -n "$selected" ]; then
+                TEMP_BREWFILE=$(mktemp)
+                echo -e "📝  ${BLUE}Generating temporary Brewfile for selected apps...${NC}"
+                
+                while read -r line; do
+                    type=$(echo "$line" | cut -d: -f1)
+                    name=$(echo "$line" | cut -d: -f2 | xargs)
+                    grep "^$type \"$name\"" "$APPS_FILE" >> "$TEMP_BREWFILE"
+                done <<< "$selected"
+                
+                echo -e "📦  ${BLUE}Installing selected apps...${NC}"
+                brew bundle --verbose --file="$TEMP_BREWFILE"
+                rm "$TEMP_BREWFILE"
+            else
+                echo -e "⏭️  ${YELLOW}No optional apps selected. Skipping.${NC}"
+            fi
+        fi
+    else
+        # Fallback for systems without fzf (though it should be in core)
+        read -p "Install all optional apps from $OS_ENV/Brewfile.apps? (y/N): " resp
+        if [[ "$resp" =~ ^[yY] ]]; then
+            brew bundle --verbose --file="$APPS_FILE"
+        fi
+    fi
+else
+    echo -e "⏭️  ${YELLOW}No optional apps file found. Skipping.${NC}"
+fi
 
 # 7. Install TPM (Tmux Plugin Manager)
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then

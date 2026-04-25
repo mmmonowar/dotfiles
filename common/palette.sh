@@ -18,7 +18,7 @@ fi
 
 # 3. Dynamic Paths
 REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
-BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile"
+BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile.apps"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
 
 # ==========================================

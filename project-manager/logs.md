@@ -1,5 +1,13 @@
 # Project Logs
 
+## [2026-04-25] 🧩 Interactive Optional App Selection
+- **Feature**: Provided users with the choice to install optional applications during setup.
+- **Changes**:
+  - Split Brewfiles into `Brewfile.core` (essentials) and `Brewfile.apps` (optional) for all platforms.
+  - Updated `application-package/install.sh` with an `fzf`-powered interactive multi-select menu.
+  - Enhanced `dot-sync` to intelligently maintain the split by filtering dumped items against the core list.
+  - Re-targeted the Command Palette (`palette.sh`) to use `Brewfile.apps` for its interactive menu.
+
 ## [2026-04-25] 📢 Default Verbosity for Setup & Sync
 - **Feature**: Standardized verbose output across all installation and synchronization workflows.
 - **Changes**:

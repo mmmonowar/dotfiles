@@ -52,7 +52,22 @@ function dot-sync() {
         cd "$DOT_PATH"
         
         echo "🍺 Updating Brewfile..."
-        brew bundle dump --verbose --force --file="$DOT_PATH/mac/Brewfile"
+        local BREW_CORE="$DOT_PATH/mac/Brewfile.core"
+        local BREW_APPS="$DOT_PATH/mac/Brewfile.apps"
+        local TEMP_BREW=$(mktemp)
+
+        # Dump current state to temp
+        brew bundle dump --force --file="$TEMP_BREW"
+
+        # 1. Update Brewfile.apps (all items NOT in Brewfile.core)
+        grep -E '^(brew|cask|vscode)' "$TEMP_BREW" | while read -r line; do
+            app_name=$(echo "$line" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\2/')
+            if ! grep -q "\"$app_name\"" "$BREW_CORE"; then
+                echo "$line"
+            fi
+        done > "$BREW_APPS"
+
+        rm "$TEMP_BREW"
 
         echo "🔄 Syncing configurations to GitHub..."
         git add -A
@@ -78,7 +93,8 @@ function dot-pull() {
         echo "📡 Fetching updates from GitHub..."
         if git pull --verbose origin main; then
             echo "📦 Installing any new dependencies from Brewfile..."
-            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile"
+            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.core"
+            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.apps"
             
             # Reload configs automatically
             dot-reload

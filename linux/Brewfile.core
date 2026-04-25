@@ -1,0 +1,6 @@
+brew "fzf"
+brew "git"
+brew "tmux"
+brew "zsh"
+brew "unzip"
+brew "gh"

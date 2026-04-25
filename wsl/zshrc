@@ -72,14 +72,24 @@ function dot-sync() {
         cd "$DOT_PATH"
         
         echo "🍺 Updating Brewfile..."
-        # Update Brewfile based on OS
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            brew bundle dump --verbose --force --file="$DOT_PATH/mac/Brewfile"
-        elif uname -a | grep -iq "microsoft\|wsl"; then
-            brew bundle dump --verbose --force --file="$DOT_PATH/wsl/Brewfile"
-        else
-            brew bundle dump --verbose --force --file="$DOT_PATH/linux/Brewfile"
-        fi
+        local BREW_CORE="$DOT_PATH/$OS_ENV/Brewfile.core"
+        local BREW_APPS="$DOT_PATH/$OS_ENV/Brewfile.apps"
+        local TEMP_BREW=$(mktemp)
+
+        # Dump current state to temp
+        brew bundle dump --force --file="$TEMP_BREW"
+
+        # 1. Update Brewfile.apps (all items NOT in Brewfile.core)
+        # We read BREW_CORE to know what to exclude
+        grep -E '^(brew|cask|vscode)' "$TEMP_BREW" | while read -r line; do
+            # Extract just the name for comparison
+            app_name=$(echo "$line" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\2/')
+            if ! grep -q "\"$app_name\"" "$BREW_CORE"; then
+                echo "$line"
+            fi
+        done > "$BREW_APPS"
+
+        rm "$TEMP_BREW"
 
         echo "🔄 Syncing configurations to GitHub..."
         git add -A
@@ -105,13 +115,8 @@ function dot-pull() {
         echo "📥 Pulling latest updates from GitHub..."
         if git pull --verbose origin main; then
             echo "📦 Installing any new dependencies from Brewfile..."
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                brew bundle --verbose --file="$DOT_PATH/mac/Brewfile"
-            elif uname -a | grep -iq "microsoft\|wsl"; then
-                brew bundle --verbose --file="$DOT_PATH/wsl/Brewfile"
-            else
-                brew bundle --verbose --file="$DOT_PATH/linux/Brewfile"
-            fi
+            brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.core"
+            brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.apps"
             
             # Reload configs
             dot-reload
