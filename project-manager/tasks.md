@@ -61,3 +61,11 @@
 - [x] Validate Micro colorscheme hex code compatibility
 - [x] Implement Alt/Option key compatibility for macOS and Ubuntu
 - [x] Unify all Tmux shortcuts on the Alt (Meta) key across all platforms
+
+## 🚀 Deployment & Installation
+- [x] Implement unified application package installer (`install.sh`)
+- [x] Add generic Linux support with `linux/zshrc`
+- [x] Enable remote one-command installation via curl
+- [x] Create `bin/polyterm` CLI tool
+- [x] Implement Homebrew Formula (`Formula/polyterm.rb`) for Tap support
+- [ ] Implement automated health checks for symbolic links

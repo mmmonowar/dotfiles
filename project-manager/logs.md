@@ -1,5 +1,30 @@
 # Project Logs
 
+## [2026-04-25] 📝 Content Wrapping Improvements
+- **Feature**: Enabled default content wrapping for `tmux`, `micro`, and `glow`.
+- **Changes**:
+  - Configured `micro` with `"softwrap": true` in `common/micro/settings.json`.
+  - Configured `glow` with `width: 80` in `common/glow.yml` and added a shell alias `glow -w 80`.
+  - Added explicit `wrap-search` option in `common/tmux.conf` (though tmux wraps content by default).
+  - Updated `install.sh` to symlink the new `glow.yml` configuration.
+
+## [2026-04-25] 🍺 PolyTerm CLI & Homebrew Tap Support
+- **Feature**: Enabled `brew install polyterm` by implementing a Homebrew formula and a centralized CLI tool.
+- **Changes**:
+  - Developed `bin/polyterm` bash script with subcommands for `setup`, `sync`, `pull`, and `reload`.
+  - Created `Formula/polyterm.rb` to turn the repository into a functional Homebrew Tap.
+  - Configured `polyterm` to launch the Command Palette by default when run inside Tmux.
+  - Updated project documentation to reflect the new CLI-based management workflow.
+
+## [2026-04-25] 🚀 Unified Application Package & One-Command Installation
+- **Feature**: Implemented a "single command" installation experience for macOS, WSL, and Linux.
+- **Changes**:
+  - Created `application-package/install.sh` bootstrap script for automated environment setup.
+  - Added generic Linux support by creating `linux/zshrc` and updating `Brewfile` logic.
+  - Enhanced `dot-sync` and `dot-pull` in both `wsl/zshrc` and `linux/zshrc` to robustly handle multiple OS environments.
+  - Configured `install.sh` to handle Homebrew installation, repository cloning, config backups, symlinking, and TPM setup.
+  - Enabled remote installation support via `curl | bash`.
+
 ## [2026-04-22] 📂 Path Relativeization & Portability
 - **Feature**: Converted all hardcoded repository paths to dynamic, relative paths.
 - **Changes**:

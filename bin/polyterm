@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# ==========================================
+# 🚀  POLYTERM CLI
+# ==========================================
+# Central management tool for the PolyTerm dotfiles environment.
+
+# Determine the repository root dynamically
+# This works whether run from the repo or installed via Homebrew
+if [[ -L "$0" ]]; then
+    # Resolve symlinks
+    SOURCE="$(readlink "$0")"
+else
+    SOURCE="$0"
+fi
+BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+REPO_PATH="$( cd -P "$BIN_DIR/.." && pwd )"
+
+# Colors for output
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+function show_help() {
+    echo -e "${BLUE}PolyTerm CLI${NC} - Dotfiles Management"
+    echo ""
+    echo -e "Usage: ${GREEN}polyterm${NC} [command]"
+    echo ""
+    echo "Commands:"
+    echo -e "  ${GREEN}palette${NC}  (Default) Launch the Tmux Command Palette"
+    echo -e "  ${GREEN}setup${NC}    Run the bootstrap installer"
+    echo -e "  ${GREEN}sync${NC}     Sync configurations to GitHub (dot-sync)"
+    echo -e "  ${GREEN}pull${NC}     Pull latest updates from GitHub (dot-pull)"
+    echo -e "  ${GREEN}reload${NC}   Refresh Zsh and Tmux environments"
+    echo -e "  ${GREEN}help${NC}     Show this help message"
+    echo ""
+}
+
+case "$1" in
+    setup)
+        echo -e "🚀  ${BLUE}Starting PolyTerm Setup...${NC}"
+        bash "$REPO_PATH/application-package/install.sh"
+        ;;
+    sync)
+        echo -e "🔄  ${BLUE}Syncing Dotfiles...${NC}"
+        # We use zsh -ic to ensure aliases/functions are loaded
+        zsh -ic "dot-sync"
+        ;;
+    pull)
+        echo -e "📥  ${BLUE}Pulling Updates...${NC}"
+        zsh -ic "dot-pull"
+        ;;
+    reload)
+        echo -e "  ${BLUE}Reloading Environment...${NC}"
+        zsh -ic "dot-reload"
+        ;;
+    palette)
+        # Check if inside Tmux
+        if [[ -n "$TMUX" ]]; then
+            "$REPO_PATH/common/palette.sh"
+        else
+            echo -e "${YELLOW}Warning: Palette must be run inside a Tmux session.${NC}"
+            echo -e "Starting a new Tmux session..."
+            tmux new-session "$REPO_PATH/common/palette.sh"
+        fi
+        ;;
+    help|--help|-h)
+        show_help
+        ;;
+    "")
+        # Default action: Palette
+        if [[ -n "$TMUX" ]]; then
+            "$REPO_PATH/common/palette.sh"
+        else
+            show_help
+        fi
+        ;;
+    *)
+        echo -e "${RED}Unknown command: $1${NC}"
+        show_help
+        exit 1
+        ;;
+esac

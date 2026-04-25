@@ -47,10 +47,17 @@
     - [x] Unify all shortcuts on the Alt (Meta) key across all platforms.
     - [x] Integrate Alt key fix into the Command Palette.
 
-### 6. Maintenance & Optimization (Ongoing)
+### 6. Deployment & Onboarding
+- **Goal**: Enable rapid setup on new machines.
+- **Steps**:
+    - [x] Create a unified `install.sh` bootstrap script.
+    - [x] Implement generic Linux support (`linux/zshrc`).
+    - [x] Enable remote installation via `curl | bash`.
+    - [ ] Implement automated health checks for symbolic links.
+
+### 7. Maintenance & Optimization (Ongoing)
 - **Goal**: Ensure long-term stability and performance.
 - **Steps**:
     - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.
     - [ ] Research methods to speed up `brew bundle dump`.
     - [ ] Audit configurations for cross-platform redundancies.
-    - [ ] Implement automated health checks for symbolic links.

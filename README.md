@@ -1,0 +1,26 @@
+# 🚀 PolyTerm
+
+**PolyTerm** is a high-fidelity, cross-platform dotfiles environment for macOS, WSL, and Linux. It provides a unified, GUI-like terminal experience using Zsh, Tmux, and a custom Command Palette.
+
+## ✨ Highlights
+- **One-Command Install**: Setup your entire environment in seconds.
+- **Unified Command Palette**: `Alt+p` to launch apps, manage packages, and execute shortcuts.
+- **Cross-Platform**: Seamlessly transition between Mac and Linux with consistent keybindings.
+- **Declarative**: All packages managed via Homebrew Brewfiles.
+
+## 📦 Quick Start
+
+### Install via Homebrew
+```bash
+brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles
+brew install polyterm
+polyterm setup
+```
+
+### Install via Curl
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"
+```
+
+## 📖 Documentation
+For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](project-manager/user-manual.md)**.

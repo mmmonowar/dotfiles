@@ -35,6 +35,18 @@
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).
 - **Aesthetics**: Support for `zsh-syntax-highlighting` and customized `ls` colors across platforms.
 
+## 🚀 One-Command Installation
+- **Unified Installer**: A single `install.sh` script that works across macOS, WSL, and generic Linux.
+- **Remote Execution**: Supports bootstrap installation via `curl | bash` for rapid environment setup.
+- **Safety First**: Automatically backs up existing configuration files before applying dotfiles.
+- **Full Automation**: Handles Homebrew installation, repository cloning, symlinking, package installation (`brew bundle`), and TPM setup in one go.
+
+## 🛠️ PolyTerm CLI
+- **Centralized Command**: A unified `polyterm` command to manage your entire environment.
+- **Homebrew Tap Support**: Installable via `brew install polyterm` from your personal tap.
+- **Management Subcommands**: Built-in support for `setup`, `sync`, `pull`, and `reload`.
+- **Instant Palette**: Launch the Command Palette directly from the CLI.
+
 ## 📝 Micro Editor Customization
 - **PolyMark Syntax**: Custom syntax highlighting rules defined in `PolyMark.yaml`.
 - **Theming**: A dedicated `PolyMark.micro` colorscheme for a consistent editing experience.
