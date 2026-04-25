@@ -113,7 +113,7 @@ safe_link "$TARGET_DIR/common/glow.yml" "$HOME/.config/glow/glow.yml"
 
 # 6. Install Packages (Brewfile)
 echo -e "📦  ${BLUE}Installing packages from $OS_ENV/Brewfile...${NC}"
-brew bundle --file="$TARGET_DIR/$OS_ENV/Brewfile"
+brew bundle --verbose --file="$TARGET_DIR/$OS_ENV/Brewfile"
 
 # 7. Install TPM (Tmux Plugin Manager)
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then

@@ -76,7 +76,7 @@ function dot-pull() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
         echo "📡 Fetching updates from GitHub..."
-        if git pull origin main; then
+        if git pull --verbose origin main; then
             echo "📦 Installing any new dependencies from Brewfile..."
             brew bundle --verbose --file="$DOT_PATH/mac/Brewfile"
             

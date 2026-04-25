@@ -1,5 +1,12 @@
 # Project Logs
 
+## [2026-04-25] 📢 Default Verbosity for Setup & Sync
+- **Feature**: Standardized verbose output across all installation and synchronization workflows.
+- **Changes**:
+  - Added `--verbose` flag to `brew bundle` in `application-package/install.sh`.
+  - Added `--verbose` flag to `git push` and `git pull` in `dot-sync` and `dot-pull` shell functions across all platforms.
+  - Verified that palette-based installations and removals already use the `--verbose` flag.
+
 ## [2026-04-25] 🎨 Automated Theme & Font Deployment
 - **Feature**: Ensured all visual components (Catppuccin, PolyMark, Nerd Fonts) are automatically configured.
 - **Changes**:
