@@ -100,13 +100,18 @@ function uninstall_app() {
         return
     fi
 
-    local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
+    local apps=()
+    while IFS= read -r line; do
+        apps+=("$line")
+    done < <(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2)
+    
     local list_items=""
     for app in "${apps[@]}"; do
         list_items+="$app\n"
     done
 
-    local selection=$(echo -e "$list_items" | fzf \
+    local selection
+    selection=$(echo -e "$list_items" | fzf \
         --height 100% \
         --reverse \
         --border rounded \
@@ -143,7 +148,10 @@ function apps_menu() {
     fi
 
     # 1. Get apps from Brewfile
-    local apps=($(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2))
+    local apps=()
+    while IFS= read -r line; do
+        apps+=("$line")
+    done < <(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2)
     
     # 2. Check for missing descriptions to avoid unnecessary "Loading" delay
     local missing_apps=()

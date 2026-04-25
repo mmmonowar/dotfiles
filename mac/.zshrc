@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # This .zshrc is for mac
 # 1. PATH & ENVIRONMENT
 # -----------------------------------------------------------------------------

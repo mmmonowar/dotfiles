@@ -37,15 +37,17 @@ function dot-scan() {
     if command -v shellcheck &> /dev/null; then
         echo -e "\n🐚 ${YELLOW}Scanning shell scripts with shellcheck...${NC}"
         # Scan all .sh files and zshrc files in the repo
-        local scripts=$(find "$DOT_PATH" -maxdepth 3 -name "*.sh" -o -name "*zshrc" -not -path "*/.git/*")
         local sc_errors=0
-        for script in $scripts; do
-            if ! shellcheck "$script"; then
-                echo -e "❌ Issues found in ${BLUE}$script${NC}"
-                sc_errors=$((sc_errors + 1))
+        while IFS= read -r script; do
+            if [ -n "$script" ]; then
+                if ! shellcheck "$script"; then
+                    echo -e "❌ Issues found in ${BLUE}$script${NC}"
+                    sc_errors=$((sc_errors + 1))
+                fi
             fi
-        done
-        if [ $sc_errors -eq 0 ]; then
+        done < <(find "$DOT_PATH" -maxdepth 3 -name "*.sh" -o -name "*zshrc" -not -path "*/.git/*")
+        
+        if [ "$sc_errors" -eq 0 ]; then
             echo -e "✅ No critical shell script vulnerabilities found."
         else
             ISSUES_FOUND=$((ISSUES_FOUND + sc_errors))
@@ -57,7 +59,8 @@ function dot-scan() {
     # 4. Secret Scanning (Simple heuristic)
     echo -e "\n🔑 ${YELLOW}Scanning for potential secrets...${NC}"
     # We exclude the scanner itself and common non-sensitive environment variables
-    local secrets_found=$(grep -rEi "api_key|secret|password|token|auth" "$DOT_PATH" \
+    local secrets_found
+    secrets_found=$(grep -rEi "api_key|secret|password|token|auth" "$DOT_PATH" \
         --exclude-dir=".git" \
         --exclude="*.md" \
         --exclude="Brewfile*" \

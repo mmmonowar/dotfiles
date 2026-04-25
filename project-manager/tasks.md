@@ -22,7 +22,7 @@
 - [x] Set up cross-platform clipboard (pbcopy/xclip)
 - [x] Integrate Catppuccin theme and custom status bar
 - [x] Implement centralized Peppermint Design System (`DESIGN.md` and `common/design/`)
-- [x] Apply Peppermint theme to Tmux (solid black active background, blue borders)
+- [x] Apply Sublime Focus aesthetic to Tmux (pure black bg, teal active borders, no labels)
 
 ## ✅ Declarative Package Management
 - [x] Define `mac/Brewfile` with core CLI tools and VSCode extensions
@@ -68,7 +68,7 @@
 
 ## ✅ Security & Vulnerability Management
 - [x] Create `common/security.sh` with `dot-scan` function
-- [x] Integrate `shellcheck` for shell script static analysis
+- [x] Integrate `shellcheck` for shell script static analysis and resolve all identified warnings
 - [x] Implement automated package vulnerability checks via `brew outdated`
 - [x] Integrate Homebrew health auditing (`brew doctor`)
 - [x] Implement heuristic secret scanning for the repository with false positive reduction for system variables

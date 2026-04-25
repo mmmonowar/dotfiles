@@ -151,7 +151,8 @@ if [ -f "$APPS_FILE" ]; then
         fi
     else
         # Fallback for systems without fzf (though it should be in core)
-        read -p "Install all optional apps from $OS_ENV/Brewfile.apps? (y/N): " resp
+        printf "Install all optional apps from %s/Brewfile.apps? (y/N): " "$OS_ENV"
+        read -r resp
         if [[ "$resp" =~ ^[yY] ]]; then
             brew bundle --verbose --file="$APPS_FILE"
         fi
@@ -194,7 +195,8 @@ fi
 current_shell=$(basename "$SHELL")
 if [[ "$current_shell" != "zsh" ]]; then
     echo -e "\n${YELLOW}Prompt: Current shell is $current_shell.${NC}"
-    read -p "Do you want to change your default shell to Zsh? (y/N): " resp
+    printf "Do you want to change your default shell to Zsh? (y/N): "
+    read -r resp
     if [[ "$resp" =~ ^[yY] ]]; then
         zsh_path=$(which zsh)
         echo -e "🐚  ${BLUE}Changing shell to $zsh_path...${NC}"

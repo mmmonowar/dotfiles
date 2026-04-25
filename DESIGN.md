@@ -1,33 +1,33 @@
 # 🎨 PolyTerm Design System
 
-## Peppermint Theme
+## Peppermint Theme (Foundational)
+... (existing content) ...
 
-The **Peppermint** theme is the foundational aesthetic for PolyTerm, providing high contrast and comfortable ergonomics for long coding sessions.
+---
+
+## Sublime Focus (Tmux Specialization)
+
+The **Sublime Focus** aesthetic is designed to mimic the immersive, "infinite canvas" feel of the Sublime Text editor.
 
 ### Color Palette
 
 | Name | Hex | Usage |
 | :--- | :--- | :--- |
-| **Background** | `#000000` | Active terminal background |
-| **Foreground** | `#c8c8c8` | Primary text |
-| **Black** | `#353535` | Inactive borders, Subtle UI elements |
-| **Bright Black**| `#535353` | Comments, Secondary UI |
-| **Blue** | `#449fd0` | Active borders, Primary highlights |
-| **Green** | `#89d287` | Success states |
-| **Red** | `#e74669` | Error states |
-| **Purple** | `#da62dc` | Secondary highlights |
+| **Pure Black** | `#000000` | Background for ALL panes |
+| **Vibrant Teal** | `#14b8a6` | Active pane border |
+| **Dark Grey** | `#2a2a2a` | Inactive pane border |
 
 ### Design Principles
 
-1.  **Comfortable Contrast**: Active workspaces use a solid black (`#000000`) background to minimize eye strain and maximize foreground readability.
-2.  **Visual Hierarchy**: Inactive panes are dimmed to `#1c1c1c` to provide a clear focus on the active task without creating jarring transitions.
-3.  **Interface Distinction**: Borders and status elements use distinct colors (Peppermint Blue for active, Peppermint Black for inactive) to define boundaries without unnecessary visual clutter.
-4.  **Cross-Platform Consistency**: All themes and configurations (Zsh, Tmux, Micro) must align with these hex codes to ensure a seamless experience across macOS, WSL, and Linux.
+1.  **Immersive Canvas**: By using a uniform `#000000` background across all panes, the terminal interface recedes, allowing the code and content to take center stage.
+2.  **High-Visibility Focus**: A vibrant teal border provides an unmistakable indicator of the active pane without the need for text labels.
+3.  **Minimalist Interface**: Disabling border status labels (`pane-border-status off`) ensures a clean, distraction-free environment.
+4.  **Simulated Padding**: While tmux lacks native internal padding, the uniform black background minimizes the "harshness" of borders touching text.
 
 ---
 
 ## Tmux Implementation
 
-- **Active Pane**: Background `#000000`, Border `#449fd0`
-- **Inactive Pane**: Background `#1c1c1c`, Border `#353535`
-- **Status Bar**: Aligned with the Peppermint palette for a unified look.
+- **Active Pane**: Background `#000000`, Border `#14b8a6`
+- **Inactive Pane**: Background `#000000`, Border `#2a2a2a`
+- **Status Bar**: Peppermint Blue (`#449fd0`) on Black (`#000000`) for clear system feedback.

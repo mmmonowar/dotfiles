@@ -1,3 +1,12 @@
+## [2026-04-25-16-34-38] - Sublime Focus Aesthetic for Tmux
+- **Feature**: Implemented "Sublime Focus" design system for Tmux.
+- **Details**:
+    - Updated `common/tmux.conf` to use a uniform pure black (`#000000`) background for all panes.
+    - Set active pane border to vibrant teal (`#14b8a6`) and inactive borders to dark grey (`#2a2a2a`).
+    - Disabled pane border status labels (`pane-border-status off`) for a cleaner interface.
+    - Documented the design system in `DESIGN.md`.
+    - Updated all project management files to reflect the aesthetic shift.
+
 ## [2026-04-25-16-16-59] - Peppermint Design System & Tmux Refinement
 - **Feature**: Centralized design system and Peppermint theme integration.
 - **Details**:
@@ -15,6 +24,16 @@
     - Enabled `pane-border-lines heavy` for better visual separation.
     - Configured `pane-border-status top` with empty padding to create visual "air" at the top of panes.
     - Updated `common/tmux.conf` and all project management files.
+
+## [2026-04-25] 🐚 Global Shellcheck Resolution & Script Robustness
+- **Feature**: Achieved 100% compliance with `shellcheck` across all repository scripts and configurations.
+- **Changes**:
+  - Refactored `common/security.sh` to use robust `while read` loops for file scanning, preventing issues with paths containing spaces.
+  - Updated `common/palette.sh` with safe array population and consistent variable quoting.
+  - Optimized `application-package/install.sh` for portability by replacing `read -p` with `printf` and `read -r`.
+  - Added `shellcheck` dialect hints to all Zsh configuration files (`.zshrc`) to ensure accurate static analysis.
+  - Consistently quoted all variable expansions to prevent word splitting and globbing issues.
+- **Impact**: Eliminates all security scan warnings related to shell script vulnerabilities and significantly improves the reliability of automation scripts across different platforms.
 
 ## [2026-04-25] 🧹 Zsh Configuration Cleanup & Tmux Error Resolution
 - **Feature**: Fixed configuration corruption that caused shell errors.
