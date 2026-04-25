@@ -1,5 +1,13 @@
 # Project Logs
 
+## [2026-04-25] 🎨 Automated Theme & Font Deployment
+- **Feature**: Ensured all visual components (Catppuccin, PolyMark, Nerd Fonts) are automatically configured.
+- **Changes**:
+  - Added automated **JetBrains Mono Nerd Font** installation for Linux and WSL in `install.sh`.
+  - Added `unzip` dependency to Linux/WSL Brewfiles to support font extraction.
+  - Verified that `mac/Brewfile` already includes the font cask.
+  - Confirmed that **Catppuccin** (Tmux) and **PolyMark** (Micro) themes are correctly deployed via symlinks and TPM.
+
 ## [2026-04-25] 📝 Content Wrapping Improvements
 - **Feature**: Enabled default content wrapping for `tmux`, `micro`, and `glow`.
 - **Changes**:

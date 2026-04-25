@@ -124,7 +124,28 @@ else
     echo -e "✅  ${GREEN}TPM is already installed.${NC}"
 fi
 
-# 8. Shell Configuration
+# 8. Install Nerd Font (Linux/WSL only, Mac uses Brew Cask)
+if [[ "$OS_ENV" != "mac" ]]; then
+    # Check if font exists (JetBrains Mono)
+    if ! (fc-list 2>/dev/null | grep -qi "JetBrainsMono") ; then
+        echo -e "🔡  ${BLUE}Installing JetBrains Mono Nerd Font...${NC}"
+        FONT_DIR="$HOME/.local/share/fonts"
+        mkdir -p "$FONT_DIR"
+        # Download the font
+        curl -fLo "$FONT_DIR/JetBrainsMono.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+        unzip -o "$FONT_DIR/JetBrainsMono.zip" -d "$FONT_DIR"
+        rm "$FONT_DIR/JetBrainsMono.zip"
+        # Update font cache
+        if command -v fc-cache &> /dev/null; then
+            fc-cache -f "$FONT_DIR"
+        fi
+        echo -e "✅  ${GREEN}Nerd Font installed.${NC}"
+    else
+        echo -e "✅  ${GREEN}Nerd Font already detected.${NC}"
+    fi
+fi
+
+# 9. Shell Configuration
 current_shell=$(basename "$SHELL")
 if [[ "$current_shell" != "zsh" ]]; then
     echo -e "\n${YELLOW}Prompt: Current shell is $current_shell.${NC}"
