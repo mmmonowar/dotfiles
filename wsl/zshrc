@@ -64,6 +64,11 @@ fi
 
 # 6. DOTFILES AUTOMATION
 # -----------------------------------------------------------------------------
+# Source security tools
+if [ -f "$DOTFILES_ROOT/common/security.sh" ]; then
+    source "$DOTFILES_ROOT/common/security.sh"
+fi
+
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
@@ -71,6 +76,9 @@ function dot-sync() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
         
+        echo "🛡️ Running pre-sync security check..."
+        dot-scan
+
         echo "🍺 Updating Brewfile..."
         local BREW_CORE="$DOT_PATH/$OS_ENV/Brewfile.core"
         local BREW_APPS="$DOT_PATH/$OS_ENV/Brewfile.apps"
@@ -118,6 +126,9 @@ function dot-pull() {
             brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.core"
             brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.apps"
             
+            echo "🛡️ Running post-pull security scan..."
+            dot-scan
+
             # Reload configs
             dot-reload
         fi

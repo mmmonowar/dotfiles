@@ -229,7 +229,7 @@ function shortcuts_menu() {
 }
 
 function main_menu() {
-    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Reload All Configs\n8 |   Fix Alt Keys\n9 | 󰅙  Exit"
+    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Reload All Configs\n8 | 󰒃  Security Scan\n9 |   Fix Alt Keys\n10 | 󰅙  Exit"
 
     local selection=$(echo -e "$menu_options" | fzf \
         --height 100% \
@@ -250,8 +250,9 @@ function main_menu() {
         5) trigger_zsh_func "dot-pull" ;;
         6) trigger_zsh_func "dot-sync" ;;
         7) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
-        8) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
-        9|*) exit 0 ;;
+        8) trigger_zsh_func "dot-scan" ;;
+        9) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
+        10|*) exit 0 ;;
     esac
 }
 

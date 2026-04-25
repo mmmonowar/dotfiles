@@ -85,6 +85,28 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 
 ---
 
+## 🛡️ Security & Vulnerability Management
+
+PolyTerm prioritizes the security of your development environment with integrated scanning and automated remediation.
+
+### The `dot-scan` Command
+Run `dot-scan` at any time to perform a comprehensive security audit of your repository and system.
+
+**What it checks:**
+1.  **Package Vulnerabilities**: Scans for outdated Homebrew packages and **automatically upgrades** them to the latest secure versions.
+2.  **System Health**: Runs `brew doctor` to detect configuration issues and potential conflicts.
+3.  **Static Analysis**: Uses `shellcheck` to scan all shell scripts for logic errors and security vulnerabilities.
+4.  **Secret Detection**: Proactively scans for hardcoded API keys, tokens, and credentials.
+5.  **System Audit**: Executes a `lynis` security audit for deep system-level inspection.
+
+### Continuous Monitoring
+Security scans are automatically performed during:
+-   **Installation**: Ensures your fresh setup is secure from the start.
+-   **`dot-pull`**: Scans for vulnerabilities immediately after updating your configurations.
+-   **`dot-sync`**: Performs a pre-sync check to ensure no sensitive data is pushed to GitHub.
+
+---
+
 ## 📝 Micro Editor & PolyMark
 
 PolyTerm includes a customized **Micro** editor configuration located in `common/micro`.

@@ -56,6 +56,12 @@
 - **Color Conversion**: Map `.sublime-color-scheme` JSON colors to Micro's `.micro` colorscheme format.
 - **Ecosystem Alignment**: Ensure the PolyOS aesthetic is preserved across different editors.
 
+## 🛡️ Security & Vulnerability Management
+- **Security Vulnerability Scanning**: Integrated `dot-scan` function that performs static analysis on scripts (`shellcheck`), checks for outdated packages (`brew outdated`), audits Homebrew health (`brew doctor`), scans for hardcoded secrets, and runs a system security audit (`lynis`).
+- **Automated Security Fixes**: Automatically upgrades outdated packages and provides actionable advice for detected vulnerabilities during installation and updates.
+- **Continuous Monitoring**: Security scans are automatically triggered during `dot-pull` (after updates) and `dot-sync` (before pushing) to ensure repository integrity.
+- **Secret Detection**: Proactive heuristic scanning for API keys, tokens, and hardcoded credentials within the repository to prevent accidental exposure.
+
 ## 🛠️ System Diagnostics & Troubleshooting
 - **Issue Tracking**: Centralized `issues.md` for documenting and resolving configuration bugs.
 - **Terminal Compatibility**: Ensuring TrueColor/RGB support across Tmux and shell environments.

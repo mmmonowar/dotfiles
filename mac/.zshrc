@@ -96,6 +96,9 @@ function dot-pull() {
             brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.core"
             brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.apps"
             
+            echo "🛡️ Running post-pull security scan..."
+            dot-scan
+
             # Reload configs automatically
             dot-reload
         fi
@@ -118,6 +121,11 @@ function dot-reload() {
     # Update tmux environment to reflect potential repo location changes
     if [[ -n "$TMUX" ]]; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+        tmux source-file ~/.tmux.conf 2>/dev/null
+    fi
+    echo "✅ Cockpit reloaded."
+}
+ILES_ROOT "$DOTFILES_ROOT"
         tmux source-file ~/.tmux.conf 2>/dev/null
     fi
     echo "✅ Cockpit reloaded."

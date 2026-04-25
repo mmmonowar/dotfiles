@@ -55,7 +55,16 @@
     - [x] Enable remote installation via `curl | bash`.
     - [ ] Implement automated health checks for symbolic links.
 
-### 7. Maintenance & Optimization (Ongoing)
+### 7. Security & Vulnerability Management
+- **Goal**: Ensure the environment is secure and free of vulnerabilities.
+- **Steps**:
+    - [x] Create a dedicated `dot-scan` security function.
+    - [x] Implement static analysis for shell scripts using `shellcheck`.
+    - [x] Automate package vulnerability checks and system audits (`lynis`).
+    - [x] Integrate secret detection to prevent hardcoded credential exposure.
+    - [x] Embed security checks into the core installation and sync workflows.
+
+### 8. Maintenance & Optimization (Ongoing)
 - **Goal**: Ensure long-term stability and performance.
 - **Steps**:
     - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.

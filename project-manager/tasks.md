@@ -62,6 +62,16 @@
 - [x] Implement Alt/Option key compatibility for macOS and Ubuntu
 - [x] Unify all Tmux shortcuts on the Alt (Meta) key across all platforms
 
+## ✅ Security & Vulnerability Management
+- [x] Create `common/security.sh` with `dot-scan` function
+- [x] Integrate `shellcheck` for shell script static analysis
+- [x] Implement automated package vulnerability checks via `brew outdated`
+- [x] Integrate Homebrew health auditing (`brew doctor`)
+- [x] Implement heuristic secret scanning for the repository
+- [x] Integrate `lynis` for system security auditing
+- [x] Embed automated security scans into `install.sh`, `dot-pull`, and `dot-sync`
+- [x] Add security tools (`shellcheck`, `lynis`) to `Brewfile.core` across all platforms
+
 ## 🚀 Deployment & Installation
 - [x] Implement unified application package installer (`install.sh`)
 - [x] Add generic Linux support with `linux/zshrc`

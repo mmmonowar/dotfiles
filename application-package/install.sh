@@ -206,6 +206,15 @@ if [[ "$current_shell" != "zsh" ]]; then
     fi
 fi
 
+# 10. Security Scan
+echo -e "\n🛡️  ${BLUE}Performing initial security scan...${NC}"
+if [ -f "$TARGET_DIR/common/security.sh" ]; then
+    # Set DOTFILES_ROOT for the scan
+    export DOTFILES_ROOT="$TARGET_DIR"
+    source "$TARGET_DIR/common/security.sh"
+    dot-scan
+fi
+
 echo -e "\n${GREEN}=========================================="
 echo -e "✨  Installation Complete!"
 echo -e "==========================================${NC}"

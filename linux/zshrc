@@ -116,6 +116,9 @@ function dot-pull() {
             brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.core"
             brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.apps"
             
+            echo "🛡️ Running post-pull security scan..."
+            dot-scan
+
             # Reload configs
             dot-reload
         fi
@@ -150,5 +153,8 @@ function dot-reload() {
 # -----------------------------------------------------------------------------
 if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
+fi
+export PATH="$HOME/Apps:$PATH"
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
 fi
 export PATH="$HOME/Apps:$PATH"

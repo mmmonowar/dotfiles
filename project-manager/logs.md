@@ -1,5 +1,18 @@
 # Project Logs
 
+## [2026-04-25] 🛡️ Security Vulnerability Scanning & Automated Fixes
+- **Feature**: Integrated security auditing and remediation into the dotfile lifecycle.
+- **Changes**:
+  - Created `common/security.sh` containing the `dot-scan` function for multi-layered security audits.
+  - Integrated `shellcheck` for static analysis of shell scripts and Zsh profiles.
+  - Implemented automated package upgrades via `brew outdated` to fix known vulnerabilities.
+  - Added Homebrew health monitoring with `brew doctor`.
+  - Implemented heuristic scanning for hardcoded secrets (API keys, tokens).
+  - Integrated `lynis` for deep system-level security auditing.
+  - Embedded `dot-scan` into `install.sh` (initial setup), `dot-pull` (post-update), and `dot-sync` (pre-sync).
+  - Added `shellcheck` and `lynis` to `Brewfile.core` across all platforms.
+- **Impact**: Provides a robust, proactive security posture for the user's environment, ensuring vulnerabilities are detected and addressed automatically.
+
 ## [2026-04-25] 🧩 Interactive Optional App Selection
 - **Feature**: Provided users with the choice to install optional applications during setup.
 - **Changes**:

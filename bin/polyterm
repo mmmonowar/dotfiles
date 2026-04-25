@@ -43,6 +43,10 @@ case "$1" in
         echo -e "🚀  ${BLUE}Starting PolyTerm Setup...${NC}"
         bash "$REPO_PATH/application-package/install.sh"
         ;;
+    scan)
+        echo -e "🛡️  ${BLUE}Starting Security Scan...${NC}"
+        zsh -ic "dot-scan"
+        ;;
     sync)
         echo -e "🔄  ${BLUE}Syncing Dotfiles...${NC}"
         # We use zsh -ic to ensure aliases/functions are loaded
