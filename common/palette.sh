@@ -16,7 +16,10 @@ else
     OS_ENV="linux" # Fallback for native Linux
 fi
 
-# 3. Dynamic Paths
+# 3. FZF Theming (Peppermint Greenish/Dark)
+export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8a6,fg:#c8c8c8,header:#449fd0,info:#dab853,pointer:#14b8a6,marker:#89d287,fg+:#dfdfdf,prompt:#14b8a6,hl+:#14b8a6"
+
+# 4. Dynamic Paths
 REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile.apps"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
@@ -39,7 +42,7 @@ function trigger_and_sync() {
 
 function confirm_action() {
     local msg="$1"
-    echo -e "  $msg"
+    echo -e "󰀦  $msg"
     printf "Confirm? (y/N): "
     read -r resp
     case "$resp" in
@@ -184,7 +187,7 @@ function apps_menu() {
         --reverse \
         --border rounded \
         --prompt "󱐋  " \
-        --header "󰀶  Launch App (Brewfile: $OS_ENV)" \
+        --header "󱓞  Launch App (Brewfile: $OS_ENV)" \
         --delimiter ' \| ' \
         --with-nth 1,2)
 
@@ -240,20 +243,54 @@ function shortcuts_menu() {
     fi
 }
 
+function manuals_menu() {
+    local dim="\033[2m"
+    local reset="\033[0m"
+    local manuals_path="${REPO_PATH}/project-manager"
+    
+    local manual_options="1 | 󰈙  User Manual | ${dim}Guide on usage, installation, and shortcuts${reset} | ${manuals_path}/user-manual.md\n"
+    manual_options+="2 | 󰒓  System Manual | ${dim}Technical architecture and file interdependencies${reset} | ${manuals_path}/system-manual.md\n"
+    manual_options+="3 | 󰈙  Feature List | ${dim}Detailed breakdown of environment capabilities${reset} | ${manuals_path}/features.md"
+
+    local selection=$(echo -e "$manual_options" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󱓡  " \
+        --header "Select a Manual to Read (glow)" \
+        --delimiter ' \| ' \
+        --with-nth 2,3)
+
+    if [[ -n "$selection" ]]; then
+        local manual_file=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        clear
+        if command -v glow &>/dev/null; then
+            glow -p "$manual_file"
+        else
+            less "$manual_file"
+        fi
+        main_menu
+    else
+        main_menu
+    fi
+}
+
 function main_menu() {
     local dim="\033[2m"
     local reset="\033[0m"
     
-    local menu_options="1 | 󰀶  Launch App | ${dim}Search and launch installed CLI tools${reset}\n"
-    menu_options+="2 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset}\n"
-    menu_options+="3 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset}\n"
-    menu_options+="4 |   Execute Shortcut | ${dim}Run Tmux window and pane commands${reset}\n"
-    menu_options+="5 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset}\n"
-    menu_options+="6 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset}\n"
-    menu_options+="7 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset}\n"
-    menu_options+="8 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset}\n"
-    menu_options+="9 |   Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset}\n"
-    menu_options+="10 | 󰅙  Exit | ${dim}Close the command palette${reset}"
+    local menu_options="1 | 󱓞  Launch App | ${dim}Search and launch installed CLI tools${reset}\n"
+    menu_options+="2 | 󱓡  Read Manuals | ${dim}View User and System documentation with glow${reset}\n"
+    menu_options+="3 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset}\n"
+    menu_options+="4 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset}\n"
+    menu_options+="5 |   Execute Shortcut | ${dim}Run Tmux window and pane commands${reset}\n"
+    menu_options+="6 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset}\n"
+    menu_options+="7 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset}\n"
+    menu_options+="8 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset}\n"
+    menu_options+="9 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset}\n"
+    menu_options+="10 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset}\n"
+    menu_options+="11 | 󰅙  Exit | ${dim}Close the command palette${reset}"
 
     local selection=$(echo -e "$menu_options" | fzf \
         --ansi \
@@ -269,15 +306,16 @@ function main_menu() {
 
     case "$choice" in
         1) apps_menu ;;
-        2) install_app ;;
-        3) uninstall_app ;;
-        4) shortcuts_menu ;;
-        5) trigger_zsh_func "dot-pull" ;;
-        6) trigger_zsh_func "dot-sync" ;;
-        7) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
-        8) trigger_zsh_func "dot-scan" ;;
-        9) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
-        10|*) exit 0 ;;
+        2) manuals_menu ;;
+        3) install_app ;;
+        4) uninstall_app ;;
+        5) shortcuts_menu ;;
+        6) trigger_zsh_func "dot-pull" ;;
+        7) trigger_zsh_func "dot-sync" ;;
+        8) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
+        9) trigger_zsh_func "dot-scan" ;;
+        10) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
+        11|*) exit 0 ;;
     esac
 }
 

@@ -55,21 +55,21 @@ function dot-sync() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
 
-        echo "🛡️ Running pre-sync security check..."
+        echo "󰒃  Running pre-sync security check..."
         dot-scan
 
-        echo "🩺 Checking dependencies..."
+        echo "󰋼  Checking dependencies..."
         local BREW_CORE="$DOT_PATH/mac/Brewfile.core"
         local BREW_APPS="$DOT_PATH/mac/Brewfile.apps"
 
         # Self-healing: Ensure dependencies are installed/updated
         if ! brew bundle check --file="$BREW_CORE" &>/dev/null || ! brew bundle check --file="$BREW_APPS" &>/dev/null; then
-            echo "🩹 Healing: Installing missing or outdated dependencies..."
+            echo "🩹  Healing: Installing missing or outdated dependencies..."
             brew bundle --file="$BREW_CORE"
             brew bundle --file="$BREW_APPS"
         fi
 
-        echo "🍺 Updating Brewfile..."
+        echo "󰇊  Updating Brewfile..."
         local TEMP_BREW=$(mktemp)
 
         # Dump current state to temp
@@ -85,18 +85,18 @@ function dot-sync() {
 
         rm "$TEMP_BREW"
 
-        echo "🔄 Syncing configurations to GitHub..."
+        echo "  Syncing configurations to GitHub..."
         git add -A
         git commit -m "Sync: $(date +'%Y-%m-%d %H:%M') [$(hostname)]"
         if git push origin main; then
-            echo "✅ Dotfiles and Brewfile pushed to GitHub."
+            echo "󰄬  Dotfiles and Brewfile pushed to GitHub."
         else
-            echo "❌ Failed to push to GitHub. Check your connection or git status."
+            echo "󰅙  Failed to push to GitHub. Check your connection or git status."
         fi
 
         cd "$current_dir"
     else
-        echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
+        echo "󰅙  Error: Dotfiles directory not found at $DOT_PATH"
     fi
 }
 
@@ -106,13 +106,13 @@ function dot-pull() {
 
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
-        echo "📡 Fetching updates from GitHub..."
+        echo "󰇚  Fetching updates from GitHub..."
         if git pull --verbose origin main; then
-            echo "📦 Installing any new dependencies from Brewfile..."
-            brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.core"
-            brew bundle --verbose --file="$DOT_PATH/$OS_ENV/Brewfile.apps"
+            echo "󰏔  Installing any new dependencies from Brewfile..."
+            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.core"
+            brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.apps"
             
-            echo "🛡️ Running post-pull security scan..."
+            echo "󰒃  Running post-pull security scan..."
             dot-scan
 
             # Reload configs automatically
@@ -120,12 +120,12 @@ function dot-pull() {
         fi
         cd "$current_dir"
     else
-        echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
+        echo "󰅙  Error: Dotfiles directory not found at $DOT_PATH"
     fi
 }
 
 function dot-reload() {
-    echo "🔄 Reloading configurations..."
+    echo "  Reloading configurations..."
     if [ -f "$HOME/.zshrc" ]; then
         source "$HOME/.zshrc"
     else
@@ -140,7 +140,7 @@ function dot-reload() {
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
         tmux source-file ~/.tmux.conf 2>/dev/null
     fi
-    echo "✅ Cockpit reloaded."
+    echo "󰄬  Cockpit reloaded."
 }
 
 # Always update security tools on start

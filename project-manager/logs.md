@@ -1,3 +1,36 @@
+## [2026-04-28-13-15-00] - Comprehensive Tmux Greenish Theming
+- **Feature**: Applied the unified Peppermint Teal theme to the entire Tmux interface.
+- **Details**:
+    - Redesigned the Tmux status bar with a modern "Powerline" aesthetic using Peppermint Teal (`#14b8a6`) and consistent Nerd Font glyphs (`󱓞`, `󱐋`, `󰃭`, `󱑎`).
+    - Themed the Tmux message line (command prompt) and selection mode with high-contrast Teal.
+    - Standardized window status formatting to use focal icons and subtle separators for a cleaner look.
+    - Synchronized all Tmux UI elements with the master design principles in `DESIGN.md`.
+
+## [2026-04-28-13-00-00] - Immersive Greenish Design Unification
+- **Feature**: Redesigned the Command Palette and Tmux environment for a high-contrast, greenish (teal) focus.
+- **Details**:
+    - Updated `common/tmux.conf` to style the command palette popup with a rounded Peppermint Teal (`#14b8a6`) border and pure black background.
+    - Injected a custom `fzf` theme into `common/palette.sh` that utilizes the full Peppermint palette, emphasizing Teal highlights and Green success markers.
+    - Formalized the "Teal-Centric" design principles in `DESIGN.md`.
+    - Synchronized component styling across Tmux popups, the Command Palette UI, and the Micro editor for a seamless, immersive terminal experience.
+
+## [2026-04-28-12-30-00] - Project-Wide Design Unification
+- **Feature**: Established a unified, bidirectionally synced design system across all applications.
+- **Details**:
+    - Centralized design principles in `DESIGN.md`, establishing it as the source of truth for the Peppermint palette.
+    - Synchronized `common/design/peppermint.json` with the updated hex codes (e.g., Peppermint Cyan `#14b8a6`).
+    - Updated `common/micro/colorschemes/PolyMark.micro` to use the standardized Peppermint hex codes.
+    - Refined `common/tmux.conf` status bar to use the pure black background for a seamless "Sublime Focus" look.
+    - Ensured consistent aesthetics across Glow, Command Palette, and editor environments through terminal-level color alignment.
+
+## [2026-04-28-12-00-00] - Aesthetic Standardization with Nerd Font Glyphs
+- **Feature**: Replaced all standard emojis with high-fidelity Nerd Font glyphs.
+- **Details**:
+    - Updated `common/palette.sh` with consistent glyphs for all menu options, prompts, and headers.
+    - Standardized `common/security.sh` to use Nerd Font icons for success, warning, and error states.
+    - Updated `dot-sync`, `dot-pull`, and `dot-reload` functions in `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc` to use consistent Nerd Font glyphs for feedback.
+    - Improved visual hierarchy and professional appearance across the entire environment.
+
 ## [2026-04-28-11-45-00] - Self-Healing Lynis Permissions
 - **Feature**: Automated resolution of Lynis file ownership issues.
 - **Details**:
