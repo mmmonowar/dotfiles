@@ -26,13 +26,14 @@
 
 ## 📦 Declarative Package Management
 - **Brewfiles**: OS-specific lists for CLI tools (e.g., `btop`, `fzf`, `ranger`, `superfile`) and VSCode extensions.
-- **Automated Maintenance**: `dot-sync` automatically runs `brew bundle dump` before pushing; `dot-pull` runs `brew bundle` after pulling.
+- **Automated Maintenance**: `dot-sync` automatically checks and installs/updates missing dependencies (self-healing) before pushing; `dot-pull` runs `brew bundle` after pulling.
+- **Self-Updating Environment**: Gemini CLI automatically updates in the background upon every shell startup to ensure the latest features and security patches are applied.
 - **Verbose Output**: All installation, uninstallation, and synchronization processes provide detailed real-time feedback via the `--verbose` flag.
 - **Consistency**: Ensures the same environment can be reproduced across different machines.
 
 ## 🐚 Shell Automation (Zsh)
 - **Automated Startup**: Configured to auto-switch from Bash to Zsh and immediately initialize the Tmux cockpit upon terminal entry.
-- **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading.
+- **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading with built-in self-healing logic.
 - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
 - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).

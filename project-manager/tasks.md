@@ -31,6 +31,8 @@
 ## ✅ Shell Automation (Zsh)
 - [x] Implement automated Zsh and Tmux startup via `.bashrc`
 - [x] Create `dot-sync` and `dot-pull` for Git automation
+- [x] Implement self-healing logic in `dot-sync` to automatically install missing dependencies
+- [x] Implement automatic background Gemini CLI updates on shell startup
 - [x] Implement Smart Brewfile Sync (auto-dump/auto-install)
 - [x] Set any installation via dotfiles to be verbose
 - [x] Optimize Homebrew performance (disable auto-cleanup)

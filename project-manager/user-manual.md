@@ -83,7 +83,7 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 - **Automated Cockpit**: Terminal launch automatically switches to Zsh and initializes a Tmux "default" session.
 - **Smart Dashboard**: A dedicated `Dashboard` session starts with `btop` and `docker ps` on launch.
 - **`search <query>`**: Instant DuckDuckGo search from the command line via `ddgr`.
-- **`dot-sync`**: Automated workflow that runs `brew bundle dump`, git adds, commits with a timestamp, and pushes.
+- **`dot-sync`**: Automated workflow that checks for missing dependencies (self-healing), runs `brew bundle dump`, git adds, commits with a timestamp, and pushes.
 - **`dot-pull`**: Automated workflow that pulls latest changes and runs `brew bundle` to stay in sync.
 
 ---
@@ -94,6 +94,9 @@ PolyTerm prioritizes the security of your development environment with integrate
 
 ### The `dot-scan` Command
 Run `dot-scan` at any time to perform a comprehensive security audit of your repository and system.
+
+### Gemini CLI Auto-Updates
+The Gemini CLI is configured to automatically check for and apply updates in the background whenever a new terminal session is started. This ensures your environment always benefits from the latest features, security patches, and improvements without manual intervention.
 
 **What it checks:**
 1.  **Package Vulnerabilities**: Scans for outdated Homebrew packages and **automatically upgrades** them to the latest secure versions.
@@ -106,7 +109,7 @@ Run `dot-scan` at any time to perform a comprehensive security audit of your rep
 Security scans are automatically performed during:
 -   **Installation**: Ensures your fresh setup is secure from the start.
 -   **`dot-pull`**: Scans for vulnerabilities immediately after updating your configurations.
--   **`dot-sync`**: Performs a pre-sync check to ensure no sensitive data is pushed to GitHub.
+-   **`dot-sync`**: Performs a pre-sync dependency check (self-healing) and security scan to ensure no sensitive data is pushed to GitHub.
 
 ---
 

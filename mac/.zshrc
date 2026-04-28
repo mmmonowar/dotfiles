@@ -52,10 +52,19 @@ function dot-sync() {
 
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
-        
+
+        echo "🩺 Checking dependencies..."
+        local BREW_CORE="$DOT_PATH/mac/Brewfile.core"
+        local BREW_APPS="$DOT_PATH/mac/Brewfile.apps"
+
+        # Self-healing: Ensure dependencies are installed/updated
+        if ! brew bundle check --file="$BREW_CORE" &>/dev/null || ! brew bundle check --file="$BREW_APPS" &>/dev/null; then
+            echo "🩹 Healing: Installing missing or outdated dependencies..."
+            brew bundle --file="$BREW_CORE"
+            brew bundle --file="$BREW_APPS"
+        fi
+
         echo "🍺 Updating Brewfile..."
-        local BREW_CORE="$DOT_PATH/$OS_ENV/Brewfile.core"
-        local BREW_APPS="$DOT_PATH/$OS_ENV/Brewfile.apps"
         local TEMP_BREW=$(mktemp)
 
         # Dump current state to temp
@@ -79,7 +88,7 @@ function dot-sync() {
         else
             echo "❌ Failed to push to GitHub. Check your connection or git status."
         fi
-        
+
         cd "$current_dir"
     else
         echo "❌ Error: Dotfiles directory not found at $DOT_PATH"
@@ -127,3 +136,6 @@ function dot-reload() {
     fi
     echo "✅ Cockpit reloaded."
 }
+
+# Always update gemini-cli on start
+(brew upgrade gemini-cli &>/dev/null &)

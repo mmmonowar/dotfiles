@@ -1,3 +1,11 @@
+## [2026-04-28-10-30-00] - Self-Healing Sync & Gemini CLI Auto-Update
+- **Feature**: Implemented self-healing `dot-sync` and background Gemini CLI updates.
+- **Details**:
+    - Enhanced `dot-sync` across all platforms (`linux`, `wsl`, `mac`) to perform a pre-sync dependency check using `brew bundle check`.
+    - Added automated healing logic to `dot-sync` that installs missing or outdated dependencies from both core and apps Brewfiles before performing a sync.
+    - Integrated automatic background updates for Gemini CLI (`brew upgrade gemini-cli`) into the Zsh startup sequence of all platforms.
+    - Updated `project-manager/features.md`, `project-manager/user-manual.md`, and `project-manager/tasks.md` to reflect these improvements.
+
 ## [2026-04-25-16-34-38] - Sublime Focus Aesthetic for Tmux
 - **Feature**: Implemented "Sublime Focus" design system for Tmux.
 - **Details**:
