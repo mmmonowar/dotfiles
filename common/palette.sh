@@ -169,16 +169,17 @@ function apps_menu() {
         done
     fi
 
-    # 4. Generate the final list quickly using awk
+    # 4. Generate the final list quickly using awk with dimmed descriptions
     local list_items=$(awk -F'|' '
         NR==FNR { cache[$1]=$2; next }
         { 
             desc = cache[$1] ? cache[$1] : "󰒓  CLI Tool"
-            print $1 " | " desc
+            print $1 " | \033[2m" desc "\033[0m"
         }
     ' "$META_PATH" <(printf "%s\n" "${apps[@]}"))
 
     local selection=$(echo -e "$list_items" | fzf \
+        --ansi \
         --height 100% \
         --reverse \
         --border rounded \
@@ -197,30 +198,33 @@ function apps_menu() {
 
 function shortcuts_menu() {
     local mod="Alt"
+    local dim="\033[2m"
+    local reset="\033[0m"
 
-    local menu_items="󰐕  New Session ($mod+,) | new-session\n"
-    menu_items+="󰑐  Cycle Sessions ($mod+0) | switch-client -n\n"
-    menu_items+="󰆴  Kill Session ($mod+w) | kill-session\n"
-    menu_items+="󰈔  New Window ($mod+m) | new-window\n"
-    menu_items+="󰅙  Kill Window ($mod+e) | kill-window\n"
-    menu_items+="󰁞  Next Window ($mod+Up) | next-window\n"
-    menu_items+="󰁆  Previous Window ($mod+Down) | previous-window\n"
-    menu_items+="󰁍  Previous Pane ($mod+Left) | select-pane -t :.-\n"
-    menu_items+="󰁔  Next Pane ($mod+Right) | select-pane -t :.+\n"
-    menu_items+="󰐕  Create Pane ($mod+1) | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
-    menu_items+="󰅖  Close Pane ($mod+2) | kill-pane; select-layout tiled"
+    local menu_items="󰐕  New Session ($mod+,) | ${dim}Create a fresh tmux session${reset} | new-session\n"
+    menu_items+="󰑐  Cycle Sessions ($mod+0) | ${dim}Switch to the next active session${reset} | switch-client -n\n"
+    menu_items+="󰆴  Kill Session ($mod+w) | ${dim}Terminate the current session${reset} | kill-session\n"
+    menu_items+="󰈔  New Window ($mod+m) | ${dim}Create a new tmux window${reset} | new-window\n"
+    menu_items+="󰅙  Kill Window ($mod+e) | ${dim}Close the current window${reset} | kill-window\n"
+    menu_items+="󰁞  Next Window ($mod+Up) | ${dim}Switch to the next window${reset} | next-window\n"
+    menu_items+="󰁆  Previous Window ($mod+Down) | ${dim}Switch to the previous window${reset} | previous-window\n"
+    menu_items+="󰁍  Previous Pane ($mod+Left) | ${dim}Switch to the previous pane${reset} | select-pane -t :.-\n"
+    menu_items+="󰁔  Next Pane ($mod+Right) | ${dim}Switch to the next pane${reset} | select-pane -t :.+\n"
+    menu_items+="󰐕  Create Pane ($mod+1) | ${dim}Split window and balance layout${reset} | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
+    menu_items+="󰅖  Close Pane ($mod+2) | ${dim}Close the active pane${reset} | kill-pane; select-layout tiled"
 
     local selection=$(echo -e "$menu_items" | fzf \
+        --ansi \
         --height 100% \
         --reverse \
         --border rounded \
         --prompt "  " \
         --header "Select a Shortcut to Execute" \
         --delimiter ' \| ' \
-        --with-nth 1)
+        --with-nth 1,2)
 
     if [[ -n "$selection" ]]; then
-        local cmd=$(echo "$selection" | cut -d '|' -f 2 | xargs)
+        local cmd=$(echo "$selection" | cut -d '|' -f 3 | xargs)
         
         if [[ "$cmd" == "kill-session" ]]; then
             clear
@@ -237,16 +241,29 @@ function shortcuts_menu() {
 }
 
 function main_menu() {
-    local menu_options="1 | 󰀶  Launch App\n2 | 󰏔  Install App\n3 | 󰆴  Uninstall App\n4 |   Execute Shortcut\n5 | 󰇚  Pull Changes\n6 | 󰇶  Push Changes\n7 |   Reload All Configs\n8 | 󰒃  Security Scan\n9 |   Fix Alt Keys\n10 | 󰅙  Exit"
+    local dim="\033[2m"
+    local reset="\033[0m"
+    
+    local menu_options="1 | 󰀶  Launch App | ${dim}Search and launch installed CLI tools${reset}\n"
+    menu_options+="2 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset}\n"
+    menu_options+="3 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset}\n"
+    menu_options+="4 |   Execute Shortcut | ${dim}Run Tmux window and pane commands${reset}\n"
+    menu_options+="5 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset}\n"
+    menu_options+="6 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset}\n"
+    menu_options+="7 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset}\n"
+    menu_options+="8 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset}\n"
+    menu_options+="9 |   Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset}\n"
+    menu_options+="10 | 󰅙  Exit | ${dim}Close the command palette${reset}"
 
     local selection=$(echo -e "$menu_options" | fzf \
+        --ansi \
         --height 100% \
         --reverse \
         --border rounded \
         --prompt "  " \
         --header "󰍜  Command Palette ($OS_ENV)" \
         --delimiter ' \| ' \
-        --with-nth 2)
+        --with-nth 2,3)
 
     local choice=$(echo "$selection" | cut -d '|' -f 1 | xargs)
 
