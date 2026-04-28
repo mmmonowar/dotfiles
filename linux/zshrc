@@ -74,6 +74,9 @@ function dot-sync() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
         
+        echo "🛡️ Running pre-sync security check..."
+        dot-scan
+
         echo "🩺 Checking dependencies..."
         local BREW_CORE="$DOT_PATH/$OS_ENV/Brewfile.core"
         local BREW_APPS="$DOT_PATH/$OS_ENV/Brewfile.apps"
@@ -170,5 +173,5 @@ if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
 fi
 export PATH="$HOME/Apps:$PATH"
 
-# Always update gemini-cli on start
-(brew upgrade gemini-cli &>/dev/null &)
+# Always update security tools on start
+(brew upgrade gemini-cli shellcheck lynis &>/dev/null &)

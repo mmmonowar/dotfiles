@@ -1,3 +1,18 @@
+## [2026-04-28-11-45-00] - Self-Healing Lynis Permissions
+- **Feature**: Automated resolution of Lynis file ownership issues.
+- **Details**:
+    - Added a self-healing step to `common/security.sh` that detects if Lynis files are not owned by root (common in Homebrew installations).
+    - Automatically applies `chown root:root` to the necessary directories when run with `sudo` to satisfy Lynis's security requirements.
+    - Ensures `dot-scan` can run uninterrupted during sync and pull workflows.
+
+## [2026-04-28-11-30-00] - Continuous Security Tool Maintenance
+- **Feature**: Automated installation and background updates for security tools.
+- **Details**:
+    - Updated all `.zshrc` files to background-upgrade `shellcheck` and `lynis` on startup.
+    - Enhanced `common/security.sh` to automatically install `shellcheck` if missing.
+    - Standardized `dot-sync` across all platforms to trigger `dot-scan` as the first step of the sync process.
+    - Updated `project-manager/system-manual.md` to reflect the proactive maintenance of security tools.
+
 ## [2026-04-28-11-15-00] - Suppress ShellCheck Warnings in Zsh Configs
 - **Bug Fix**: Resolved false positive `shellcheck` warnings for Zsh-specific syntax.
 - **Details**: Added `shellcheck` disable directives (SC1091, SC2296, SC2298, SC2299) to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`. This allows the `dot-scan` security audit to pass while maintaining advanced Zsh path detection and sourcing logic.

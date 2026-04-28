@@ -34,6 +34,11 @@ function dot-scan() {
     fi
 
     # 3. Static Analysis of Shell Scripts
+    if ! command -v shellcheck &> /dev/null; then
+        echo -e "\n🔎 ${YELLOW}shellcheck not found. Installing...${NC}"
+        brew install shellcheck
+    fi
+
     if command -v shellcheck &> /dev/null; then
         echo -e "\n🐚 ${YELLOW}Scanning shell scripts with shellcheck...${NC}"
         # Scan all .sh files and zshrc files in the repo
@@ -85,6 +90,24 @@ function dot-scan() {
 
     if command -v lynis &> /dev/null; then
         echo -e "\n🔎 ${YELLOW}Running system security audit (Lynis - quick check)...${NC}"
+        
+        # Self-healing for Lynis permissions on Homebrew
+        # Lynis requires its files to be owned by root when running with sudo
+        local LYNIS_PATH
+        LYNIS_PATH=$(command -v lynis)
+        if [[ "$LYNIS_PATH" == *"/linuxbrew/"* || "$LYNIS_PATH" == *"/Cellar/"* ]]; then
+             local LYNIS_BASE_DIR
+             LYNIS_BASE_DIR=$(dirname "$(dirname "$LYNIS_PATH")")
+             if [ -d "$LYNIS_BASE_DIR/include" ]; then
+                 # If the include directory is not owned by root, fix it
+                 # We use sudo to check ownership to avoid platform-specific stat flags
+                 if ! sudo [ -O "$LYNIS_BASE_DIR/include" ]; then
+                     echo -e "🩹 ${BLUE}Heal: Aligning Lynis permissions for root execution...${NC}"
+                     sudo chown -R 0:0 "$LYNIS_BASE_DIR" 2>/dev/null || true
+                 fi
+             fi
+        fi
+
         # Use absolute path for sudo because Homebrew bin might not be in sudo's PATH
         local LYNIS_CMD
         LYNIS_CMD=$(command -v lynis)

@@ -180,5 +180,5 @@ if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
 fi
 export PATH="$HOME/Apps:$PATH"
 
-# Always update gemini-cli on start
-(brew upgrade gemini-cli &>/dev/null &)
+# Always update security tools on start
+(brew upgrade gemini-cli shellcheck lynis &>/dev/null &)

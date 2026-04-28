@@ -55,6 +55,9 @@ function dot-sync() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
 
+        echo "🛡️ Running pre-sync security check..."
+        dot-scan
+
         echo "🩺 Checking dependencies..."
         local BREW_CORE="$DOT_PATH/mac/Brewfile.core"
         local BREW_APPS="$DOT_PATH/mac/Brewfile.apps"
@@ -140,5 +143,5 @@ function dot-reload() {
     echo "✅ Cockpit reloaded."
 }
 
-# Always update gemini-cli on start
-(brew upgrade gemini-cli &>/dev/null &)
+# Always update security tools on start
+(brew upgrade gemini-cli shellcheck lynis &>/dev/null &)

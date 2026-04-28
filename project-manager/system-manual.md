@@ -51,8 +51,8 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 
 ### 2. Automatic Updates
 -   **Location**: End of `[os]/zshrc`.
--   **Logic**: Spawns a background process `(brew upgrade gemini-cli &)` on shell startup.
--   **Failure Impact**: If removed, the agent might run on outdated versions, potentially missing security fixes or new tool capabilities.
+-   **Logic**: Spawns a background process `(brew upgrade gemini-cli shellcheck lynis &)` on shell startup to keep maintenance and security tools current.
+-   **Failure Impact**: If removed, tools might run on outdated versions, potentially missing security fixes or new tool capabilities.
 
 ### 3. Command Palette UI
 -   **Location**: `common/palette.sh`.
@@ -64,7 +64,9 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 ## 🛡️ Security & Integrity
 
 ### Security Scan (`dot-scan`)
--   **Logic**: Uses absolute paths for `sudo` execution (e.g., `sudo /home/linuxbrew/.../lynis`) to ensure stability across environment variables.
+-   **Logic**: Performs self-healing for security tools; automatically installs `shellcheck` or `lynis` if they are missing before running the audit.
+-   **Integration**: Standardized as the pre-sync step for `dot-sync` across all platforms to ensure zero-vulnerability code pushes.
+-   **Execution**: Uses absolute paths for `sudo` execution (e.g., `sudo /home/linuxbrew/.../lynis`) to ensure stability across environment variables.
 -   **File Risk**: If `common/security.sh` is altered with malicious intent, it could execute unauthorized commands with elevated privileges.
 
 ### Dependency Chain
