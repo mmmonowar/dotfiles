@@ -1,3 +1,7 @@
+## [2026-04-28-11-15-00] - Suppress ShellCheck Warnings in Zsh Configs
+- **Bug Fix**: Resolved false positive `shellcheck` warnings for Zsh-specific syntax.
+- **Details**: Added `shellcheck` disable directives (SC1091, SC2296, SC2298, SC2299) to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`. This allows the `dot-scan` security audit to pass while maintaining advanced Zsh path detection and sourcing logic.
+
 ## [2026-04-28-11-00-00] - Fix Lynis PATH in Security Scan
 - **Bug Fix**: Resolved `sudo-rs: 'lynis': command not found` error.
 - **Details**: Updated `common/security.sh` to use the absolute path of the `lynis` binary when executing with `sudo`. This prevents issues where `sudo` resets the `PATH` and cannot find Homebrew-installed tools.

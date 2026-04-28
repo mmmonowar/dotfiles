@@ -5,6 +5,8 @@
 ## ✨ Highlights
 - **One-Command Install**: Setup your entire environment in seconds.
 - **Unified Command Palette**: `Alt+p` to launch apps, manage packages, and execute shortcuts.
+- **Self-Healing Sync**: `dot-sync` automatically repairs your environment by installing missing dependencies.
+- **Auto-Updating Agent**: Gemini CLI stays up-to-date automatically in the background.
 - **Cross-Platform**: Seamlessly transition between Mac and Linux with consistent keybindings.
 - **Declarative**: All packages managed via Homebrew Brewfiles.
 

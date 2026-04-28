@@ -3,6 +3,7 @@
 # 1. PATH & ENVIRONMENT
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
+# shellcheck disable=SC2296,SC2298,SC2299
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
 export OS_ENV="mac"
 
@@ -41,6 +42,7 @@ export LSCOLORS=Gxfxcxdxbxegedabagacad
 # Enable auto-completion coloring
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
+# shellcheck disable=SC1091
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias kbcheck='hidutil property --get "UserKeyMapping"'
@@ -126,6 +128,7 @@ function dot-reload() {
     else
         # If ~/.zshrc doesn't exist, source the current file directly
         # This handles cases where symlinks aren't set up yet
+        # shellcheck disable=SC2296
         source "${(%):-%x}"
     fi
     

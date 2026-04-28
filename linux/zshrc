@@ -6,6 +6,7 @@
 # 1. PATH & ENVIRONMENT
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
+# shellcheck disable=SC2296,SC2298,SC2299
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
 export OS_ENV="linux"
 
@@ -149,6 +150,7 @@ function dot-reload() {
     else
         # If ~/.zshrc doesn't exist, source the current file directly
         # This handles cases where symlinks aren't set up yet
+        # shellcheck disable=SC2296
         source "${(%):-%x}"
     fi
     
@@ -163,6 +165,7 @@ function dot-reload() {
 # 7. PLUGINS
 # -----------------------------------------------------------------------------
 if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    # shellcheck disable=SC1091
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh # [cite: 10]
 fi
 export PATH="$HOME/Apps:$PATH"
