@@ -1,3 +1,7 @@
+## [2026-04-28-11-00-00] - Fix Lynis PATH in Security Scan
+- **Bug Fix**: Resolved `sudo-rs: 'lynis': command not found` error.
+- **Details**: Updated `common/security.sh` to use the absolute path of the `lynis` binary when executing with `sudo`. This prevents issues where `sudo` resets the `PATH` and cannot find Homebrew-installed tools.
+
 ## [2026-04-28-10-30-00] - Self-Healing Sync & Gemini CLI Auto-Update
 - **Feature**: Implemented self-healing `dot-sync` and background Gemini CLI updates.
 - **Details**:

@@ -85,8 +85,10 @@ function dot-scan() {
 
     if command -v lynis &> /dev/null; then
         echo -e "\n🔎 ${YELLOW}Running system security audit (Lynis - quick check)...${NC}"
-        # We run a subset of lynis or a quick audit to avoid it being too slow
-        sudo lynis audit system --quick --no-log
+        # Use absolute path for sudo because Homebrew bin might not be in sudo's PATH
+        local LYNIS_CMD
+        LYNIS_CMD=$(command -v lynis)
+        sudo "$LYNIS_CMD" audit system --quick --no-log
     fi
 
     echo -e "\n${BLUE}==========================================${NC}"
