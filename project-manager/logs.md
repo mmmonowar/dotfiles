@@ -1,3 +1,11 @@
+## [2026-04-30-10-00-00] - Homebrew Permission Fix & Chezmoi Installation
+- **Bug Fix**: Resolved `Permission denied` error during Homebrew package installation on Linux.
+- **Details**:
+    - Identified that `/home/linuxbrew/.linuxbrew` and its subdirectories were owned by `root`, preventing the user from installing or updating packages.
+    - Recursively changed ownership of the entire Homebrew installation directory to the current user (`mustafa`).
+    - Successfully installed `chezmoi` via `brew install chezmoi`.
+    - Documented the fix in `project-manager/issues.md`.
+
 ## [2026-04-28-13-15-00] - Comprehensive Tmux Greenish Theming
 - **Feature**: Applied the unified Peppermint Teal theme to the entire Tmux interface.
 - **Details**:

@@ -67,6 +67,7 @@
 - [x] Unify all Tmux shortcuts on the Alt (Meta) key across all platforms
 - [x] Standardize `OS_ENV` across all platforms to fix Brewfile path resolution in `dot-pull` and `dot-sync`
 - [x] Fix `mac/.zshrc` and `linux/zshrc` corruption to resolve Tmux configuration execution errors
+- [x] Resolve Homebrew `Permission denied` errors by automating ownership fixes for `/home/linuxbrew/.linuxbrew`
 
 ## ✅ Security & Vulnerability Management
 - [x] Create `common/security.sh` with `dot-scan` function

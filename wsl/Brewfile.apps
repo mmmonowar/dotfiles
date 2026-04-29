@@ -1,4 +1,5 @@
 brew "btop"
+brew "chezmoi"
 brew "ncurses"
 brew "cmatrix"
 brew "ddgr"

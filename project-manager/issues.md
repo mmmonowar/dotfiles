@@ -1,5 +1,10 @@
 # Project Issues
 
+## ✅ Homebrew Permission Denied (Linux)
+- **Status**: Resolved
+- **Description**: `brew install` fails with `Permission denied` when trying to rename files in `/home/linuxbrew/.linuxbrew/Cellar` or temp directories.
+- **Resolution**: Changed ownership of `/home/linuxbrew/.linuxbrew` and all its subdirectories to the current user (`mustafa`) using `sudo chown -R $(whoami) /home/linuxbrew/.linuxbrew`.
+
 ## ✅ Tmux Initialization Errors
 - **Status**: Resolved
 - **Description**: Terminal displays "can't find session: default" and "open terminal failed: not a terminal" upon startup.
