@@ -7,6 +7,11 @@
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
 export OS_ENV="mac"
 
+# Load UX Settings
+if [[ -f "$DOTFILES_ROOT/common/.polyterm_settings" ]]; then
+    source "$DOTFILES_ROOT/common/.polyterm_settings"
+fi
+
 export PATH="/opt/homebrew/bin:$PATH"
 
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
@@ -55,8 +60,10 @@ function dot-sync() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
 
-        echo "󰒃  Running pre-sync security check..."
-        dot-scan
+        if [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]]; then
+            echo "󰒃  Running pre-sync security check..."
+            dot-scan
+        fi
 
         echo "󰋼  Checking dependencies..."
         local BREW_CORE="$DOT_PATH/mac/Brewfile.core"
@@ -112,8 +119,10 @@ function dot-pull() {
             brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.core"
             brew bundle --verbose --file="$DOT_PATH/mac/Brewfile.apps"
             
-            echo "󰒃  Running post-pull security scan..."
-            dot-scan
+            if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
+                echo "󰒃  Running post-pull security scan..."
+                dot-scan
+            fi
 
             # Reload configs automatically
             dot-reload

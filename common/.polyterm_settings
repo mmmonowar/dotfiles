@@ -1,0 +1,3 @@
+# PolyTerm User Experience Settings
+export POLYTERM_SCAN_ON_PUSH=false
+export POLYTERM_SCAN_ON_PULL=false

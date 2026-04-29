@@ -23,10 +23,31 @@ export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8
 REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile.apps"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
+SETTINGS_FILE="${REPO_PATH}/common/.polyterm_settings"
+
+# 5. Load Settings
+if [[ -f "$SETTINGS_FILE" ]]; then
+    source "$SETTINGS_FILE"
+fi
 
 # ==========================================
 # 🛠️  HELPER FUNCTIONS
 # ==========================================
+
+function update_setting() {
+    local key=$1
+    local value=$2
+    if grep -q "export $key=" "$SETTINGS_FILE"; then
+        if [[ "$OS_ENV" == "mac" ]]; then
+            sed -i '' "s/^export $key=.*/export $key=$value/" "$SETTINGS_FILE"
+        else
+            sed -i "s/^export $key=.*/export $key=$value/" "$SETTINGS_FILE"
+        fi
+    else
+        echo "export $key=$value" >> "$SETTINGS_FILE"
+    fi
+    source "$SETTINGS_FILE"
+}
 
 function trigger_zsh_func() {
     local func_name=$1
@@ -276,6 +297,52 @@ function manuals_menu() {
     fi
 }
 
+function settings_menu() {
+    local dim="\033[2m"
+    local reset="\033[0m"
+    
+    local scan_push_status="[OFF]"
+    [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && scan_push_status="[ON]"
+    
+    local scan_pull_status="[OFF]"
+    [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
+
+    local settings_options="1 | 󰒃  Security Check on Push $scan_push_status | ${dim}Run security audit before syncing to GitHub${reset}\n"
+    settings_options+="2 | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Run security audit after pulling from GitHub${reset}"
+
+    local selection=$(echo -e "$settings_options" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󰒓  " \
+        --header "󰍜  User Experience Settings" \
+        --delimiter ' \| ' \
+        --with-nth 2,3)
+
+    local choice=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+
+    case "$choice" in
+        1)
+            if [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]]; then
+                update_setting "POLYTERM_SCAN_ON_PUSH" "false"
+            else
+                update_setting "POLYTERM_SCAN_ON_PUSH" "true"
+            fi
+            settings_menu
+            ;;
+        2)
+            if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
+                update_setting "POLYTERM_SCAN_ON_PULL" "false"
+            else
+                update_setting "POLYTERM_SCAN_ON_PULL" "true"
+            fi
+            settings_menu
+            ;;
+        *) main_menu ;;
+    esac
+}
+
 function main_menu() {
     local dim="\033[2m"
     local reset="\033[0m"
@@ -289,8 +356,9 @@ function main_menu() {
     menu_options+="7 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset}\n"
     menu_options+="8 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset}\n"
     menu_options+="9 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset}\n"
-    menu_options+="10 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset}\n"
-    menu_options+="11 | 󰅙  Exit | ${dim}Close the command palette${reset}"
+    menu_options+="10 | 󰒓  Settings | ${dim}Tweak security and UX preferences${reset}\n"
+    menu_options+="11 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset}\n"
+    menu_options+="12 | 󰅙  Exit | ${dim}Close the command palette${reset}"
 
     local selection=$(echo -e "$menu_options" | fzf \
         --ansi \
@@ -314,10 +382,12 @@ function main_menu() {
         7) trigger_zsh_func "dot-sync" ;;
         8) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
         9) trigger_zsh_func "dot-scan" ;;
-        10) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
-        11|*) exit 0 ;;
+        10) settings_menu ;;
+        11) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
+        12|*) exit 0 ;;
     esac
 }
+
 
 # ==========================================
 # 🏁  INITIALIZATION

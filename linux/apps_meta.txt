@@ -20,3 +20,4 @@ termscp|Feature rich terminal file transfer and explorer
 tmux|Terminal multiplexer
 tree|Display directories as trees (with optional color/HTML output)
 zsh|UNIX shell (command interpreter)
+chezmoi|Manage your dotfiles across multiple diverse machines, securely

@@ -13,6 +13,7 @@
 - [x] Integrate Nerd Font glyphs for consistent UI
 - [x] Implement confirmation prompts for destructive actions
 - [x] Implement interactive install/uninstall functions
+- [x] Implement persistent "Settings" menu for UX preferences (Security toggles)
 - [x] Bind `Alt+p` to trigger palette popup in `tmux.conf`
 
 ## ✅ Advanced Tmux Configuration

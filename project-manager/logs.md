@@ -1,3 +1,12 @@
+## [2026-04-30-11-00-00] - Command Palette Settings & UX Preferences
+- **Feature**: Implemented a "Settings" menu in the Command Palette for persistent UX configuration.
+- **Details**:
+    - Created `common/.polyterm_settings` to store user preferences as environment variables.
+    - Added a "Settings" option (10) to the main Command Palette menu.
+    - Implemented sub-menus to toggle "Security Check on Push" and "Security Check on Pull".
+    - Updated `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc` to source these settings and respect the toggles in `dot-sync` and `dot-pull`.
+    - Integrated a self-healing `update_setting` function in `palette.sh` for cross-platform file modification.
+
 ## [2026-04-30-10-00-00] - Homebrew Permission Fix & Chezmoi Installation
 - **Bug Fix**: Resolved `Permission denied` error during Homebrew package installation on Linux.
 - **Details**:
