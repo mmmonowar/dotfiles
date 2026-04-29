@@ -7,7 +7,9 @@
 
 ## ✅ Unified Command Palette
 - [x] Create `palette.sh` with `fzf` integration
+- [x] Implement unified search discovery (flattened menu items) in main palette
 - [x] Implement application launching from Brewfile
+- [x] Implement dynamic documentation browser (Project Documents) for `project-manager/`
 - [x] Implement dynamic app descriptions (blurbs) via `brew info`
 - [x] Implement Executable Shortcut menu
 - [x] Integrate Nerd Font glyphs for consistent UI

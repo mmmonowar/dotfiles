@@ -1,3 +1,19 @@
+## [2026-04-30-11-30-00] - Unified Search Discovery Scope
+- **Feature**: Expanded the Command Palette search scope to include all nested items.
+- **Details**:
+    - Refactored `apps_menu`, `documents_menu`, `settings_menu`, and `shortcuts_menu` to support a "list-only" mode.
+    - Updated `main_menu` to aggregate all leaf-node actions into the primary `fzf` instance.
+    - Implemented a robust type-based dispatcher in `main_menu` to handle apps, docs, settings, and shortcuts directly from the top level.
+    - Maintained hierarchical navigation via category items (Launch App..., etc.) for structured browsing.
+
+## [2026-04-30-11-15-00] - Dynamic Project Documents Menu
+- **Feature**: Replaced static "Read Manuals" with a dynamic "Project Documents" menu.
+- **Details**:
+    - Implemented `documents_menu` in `palette.sh` that recursively finds all `.md` files in `project-manager/`.
+    - Integrated prettified display names for documentation files.
+    - Updated `main_menu` to provide instant access to the full `project-manager/` document suite.
+    - Standardized `glow` as the primary reader for project documentation.
+
 ## [2026-04-30-11-00-00] - Command Palette Settings & UX Preferences
 - **Feature**: Implemented a "Settings" menu in the Command Palette for persistent UX configuration.
 - **Details**:

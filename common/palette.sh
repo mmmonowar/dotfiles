@@ -221,21 +221,22 @@ function apps_menu() {
 }
 
 function shortcuts_menu() {
+    local query=$1
     local mod="Alt"
     local dim="\033[2m"
     local reset="\033[0m"
 
-    local menu_items="󰐕  New Session ($mod+,) | ${dim}Create a fresh tmux session${reset} | new-session\n"
-    menu_items+="󰑐  Cycle Sessions ($mod+0) | ${dim}Switch to the next active session${reset} | switch-client -n\n"
-    menu_items+="󰆴  Kill Session ($mod+w) | ${dim}Terminate the current session${reset} | kill-session\n"
-    menu_items+="󰈔  New Window ($mod+m) | ${dim}Create a new tmux window${reset} | new-window\n"
-    menu_items+="󰅙  Kill Window ($mod+e) | ${dim}Close the current window${reset} | kill-window\n"
-    menu_items+="󰁞  Next Window ($mod+Up) | ${dim}Switch to the next window${reset} | next-window\n"
-    menu_items+="󰁆  Previous Window ($mod+Down) | ${dim}Switch to the previous window${reset} | previous-window\n"
-    menu_items+="󰁍  Previous Pane ($mod+Left) | ${dim}Switch to the previous pane${reset} | select-pane -t :.-\n"
-    menu_items+="󰁔  Next Pane ($mod+Right) | ${dim}Switch to the next pane${reset} | select-pane -t :.+\n"
-    menu_items+="󰐕  Create Pane ($mod+1) | ${dim}Split window and balance layout${reset} | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
-    menu_items+="󰅖  Close Pane ($mod+2) | ${dim}Close the active pane${reset} | kill-pane; select-layout tiled"
+    local menu_items="1 | 󰐕  New Session ($mod+,) | ${dim}Create a fresh tmux session${reset} | new-session\n"
+    menu_items+="2 | 󰑐  Cycle Sessions ($mod+0) | ${dim}Switch to the next active session${reset} | switch-client -n\n"
+    menu_items+="3 | 󰆴  Kill Session ($mod+w) | ${dim}Terminate the current session${reset} | kill-session\n"
+    menu_items+="4 | 󰈔  New Window ($mod+m) | ${dim}Create a new tmux window${reset} | new-window\n"
+    menu_items+="5 | 󰅙  Kill Window ($mod+e) | ${dim}Close the current window${reset} | kill-window\n"
+    menu_items+="6 | 󰁞  Next Window ($mod+Up) | ${dim}Switch to the next window${reset} | next-window\n"
+    menu_items+="7 | 󰁆  Previous Window ($mod+Down) | ${dim}Switch to the previous window${reset} | previous-window\n"
+    menu_items+="8 | 󰁍  Previous Pane ($mod+Left) | ${dim}Switch to the previous pane${reset} | select-pane -t :.-\n"
+    menu_items+="9 | 󰁔  Next Pane ($mod+Right) | ${dim}Switch to the next pane${reset} | select-pane -t :.+\n"
+    menu_items+="10 | 󰐕  Create Pane ($mod+1) | ${dim}Split window and balance layout${reset} | split-window -c \"#{pane_current_path}\"; select-layout tiled\n"
+    menu_items+="11 | 󰅖  Close Pane ($mod+2) | ${dim}Close the active pane${reset} | kill-pane; select-layout tiled"
 
     local selection=$(echo -e "$menu_items" | fzf \
         --ansi \
@@ -243,61 +244,85 @@ function shortcuts_menu() {
         --reverse \
         --border rounded \
         --prompt "  " \
-        --header "Select a Shortcut to Execute" \
+        --query "$query" \
+        --header "Select Shortcut (Type index or name)" \
         --delimiter ' \| ' \
-        --with-nth 1,2)
+        --with-nth 1,2,3)
 
     if [[ -n "$selection" ]]; then
-        local cmd=$(echo "$selection" | cut -d '|' -f 3 | xargs)
-        
-        if [[ "$cmd" == "kill-session" ]]; then
-            clear
-            if ! confirm_action "Kill current session?"; then
-                shortcuts_menu
-                return
-            fi
-        fi
-
-        tmux run-shell "tmux $cmd"
+        local cmd=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        execute_shortcut "$cmd"
     else
         main_menu
     fi
 }
 
-function manuals_menu() {
+function execute_shortcut() {
+    local cmd=$1
+    if [[ "$cmd" == "kill-session" ]]; then
+        clear
+        if ! confirm_action "Kill current session?"; then
+            shortcuts_menu
+            return
+        fi
+    fi
+    tmux run-shell "tmux $cmd"
+}
+
+function documents_menu() {
+    local query=$1
     local dim="\033[2m"
     local reset="\033[0m"
-    local manuals_path="${REPO_PATH}/project-manager"
+    local docs_path="${REPO_PATH}/project-manager"
     
-    local manual_options="1 | 󰈙  User Manual | ${dim}Guide on usage, installation, and shortcuts${reset} | ${manuals_path}/user-manual.md\n"
-    manual_options+="2 | 󰒓  System Manual | ${dim}Technical architecture and file interdependencies${reset} | ${manuals_path}/system-manual.md\n"
-    manual_options+="3 | 󰈙  Feature List | ${dim}Detailed breakdown of environment capabilities${reset} | ${manuals_path}/features.md"
+    if [[ ! -d "$docs_path" ]]; then
+        echo -e "󰅙  Project Manager directory missing!"
+        sleep 2
+        main_menu
+        return
+    fi
 
-    local selection=$(echo -e "$manual_options" | fzf \
+    local list_items=""
+    local idx=1
+    while IFS= read -r file; do
+        local rel_path="${file#$docs_path/}"
+        local display_name=$(echo "$rel_path" | sed -E 's/\.md$//; s/[\/-]/ /g; s/\b(.)/\u\1/g')
+        list_items+="$idx | 󰈙  $display_name | ${dim}Read $rel_path${reset} | $file\n"
+        ((idx++))
+    done < <(find "$docs_path" -type f -name "*.md" | sort)
+
+    local selection=$(echo -e "$list_items" | fzf \
         --ansi \
         --height 100% \
         --reverse \
         --border rounded \
         --prompt "󱓡  " \
-        --header "Select a Manual to Read (glow)" \
+        --query "$query" \
+        --header "Select Document (Type index or name)" \
         --delimiter ' \| ' \
-        --with-nth 2,3)
+        --with-nth 1,2,3)
 
     if [[ -n "$selection" ]]; then
-        local manual_file=$(echo "$selection" | cut -d '|' -f 4 | xargs)
-        clear
-        if command -v glow &>/dev/null; then
-            glow -p "$manual_file"
-        else
-            less "$manual_file"
-        fi
-        main_menu
+        local selected_file=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        read_document "$selected_file"
+        documents_menu
     else
         main_menu
     fi
 }
 
+function read_document() {
+    local file=$1
+    clear
+    if command -v glow &>/dev/null; then
+        glow -p "$file"
+    else
+        less "$file"
+    fi
+}
+
 function settings_menu() {
+    local query=$1
     local dim="\033[2m"
     local reset="\033[0m"
     
@@ -307,8 +332,8 @@ function settings_menu() {
     local scan_pull_status="[OFF]"
     [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
 
-    local settings_options="1 | 󰒃  Security Check on Push $scan_push_status | ${dim}Run security audit before syncing to GitHub${reset}\n"
-    settings_options+="2 | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Run security audit after pulling from GitHub${reset}"
+    local settings_options="1 | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SCAN_PUSH\n"
+    settings_options+="2 | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SCAN_PULL"
 
     local selection=$(echo -e "$settings_options" | fzf \
         --ansi \
@@ -316,81 +341,225 @@ function settings_menu() {
         --reverse \
         --border rounded \
         --prompt "󰒓  " \
-        --header "󰍜  User Experience Settings" \
+        --query "$query" \
+        --header "Select Setting (Type index or name)" \
         --delimiter ' \| ' \
-        --with-nth 2,3)
+        --with-nth 1,2,3)
 
-    local choice=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+    if [[ -n "$selection" ]]; then
+        local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        toggle_setting "$choice"
+        settings_menu
+    else
+        main_menu
+    fi
+}
 
-    case "$choice" in
-        1)
+function toggle_setting() {
+    local setting=$1
+    case "$setting" in
+        SCAN_PUSH)
             if [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]]; then
                 update_setting "POLYTERM_SCAN_ON_PUSH" "false"
             else
                 update_setting "POLYTERM_SCAN_ON_PUSH" "true"
             fi
-            settings_menu
             ;;
-        2)
+        SCAN_PULL)
             if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
                 update_setting "POLYTERM_SCAN_ON_PULL" "false"
             else
                 update_setting "POLYTERM_SCAN_ON_PULL" "true"
             fi
-            settings_menu
             ;;
-        *) main_menu ;;
     esac
 }
 
-function main_menu() {
-    local dim="\033[2m"
-    local reset="\033[0m"
-    
-    local menu_options="1 | 󱓞  Launch App | ${dim}Search and launch installed CLI tools${reset}\n"
-    menu_options+="2 | 󱓡  Read Manuals | ${dim}View User and System documentation with glow${reset}\n"
-    menu_options+="3 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset}\n"
-    menu_options+="4 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset}\n"
-    menu_options+="5 |   Execute Shortcut | ${dim}Run Tmux window and pane commands${reset}\n"
-    menu_options+="6 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset}\n"
-    menu_options+="7 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset}\n"
-    menu_options+="8 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset}\n"
-    menu_options+="9 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset}\n"
-    menu_options+="10 | 󰒓  Settings | ${dim}Tweak security and UX preferences${reset}\n"
-    menu_options+="11 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset}\n"
-    menu_options+="12 | 󰅙  Exit | ${dim}Close the command palette${reset}"
+function apps_menu() {
+    local query=$1
+    if [[ ! -f "$BREWFILE_PATH" ]]; then
+        echo -e "󰅙  Brewfile missing at:\n$BREWFILE_PATH"
+        sleep 2
+        main_menu
+        return
+    fi
 
-    local selection=$(echo -e "$menu_options" | fzf \
+    local apps=()
+    while IFS= read -r line; do
+        apps+=("$line")
+    done < <(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2)
+    
+    local missing_apps=()
+    for app in "${apps[@]}"; do
+        if ! grep -q "^${app}|" "$META_PATH" 2>/dev/null; then
+            missing_apps+=("$app")
+        fi
+    done
+
+    if [[ ${#missing_apps[@]} -gt 0 ]]; then
+        echo "󰇥  Fetching new app descriptions..."
+        for app in "${missing_apps[@]}"; do
+            get_app_description "$app" > /dev/null
+        done
+    fi
+
+    # Generate the final list with indices
+    local list_items=$(awk -F'|' '
+        NR==FNR { cache[$1]=$2; next }
+        { 
+            idx++
+            desc = cache[$1] ? cache[$1] : "󰒓  CLI Tool"
+            print idx " | " $1 " | \033[2m" desc "\033[0m"
+        }
+    ' "$META_PATH" <(printf "%s\n" "${apps[@]}"))
+
+    local selection=$(echo -e "$list_items" | fzf \
         --ansi \
         --height 100% \
         --reverse \
         --border rounded \
-        --prompt "  " \
-        --header "󰍜  Command Palette ($OS_ENV)" \
+        --prompt "󱐋  " \
+        --query "$query" \
+        --header "Select App (Type index or name)" \
         --delimiter ' \| ' \
-        --with-nth 2,3)
+        --with-nth 1,2,3)
 
-    local choice=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+    if [[ -n "$selection" ]]; then
+        local selected_app=$(echo "$selection" | cut -d '|' -f 2 | xargs)
+        trigger_zsh_func "$selected_app"
+    else
+        main_menu
+    fi
+}
 
-    case "$choice" in
-        1) apps_menu ;;
-        2) manuals_menu ;;
-        3) install_app ;;
-        4) uninstall_app ;;
-        5) shortcuts_menu ;;
-        6) trigger_zsh_func "dot-pull" ;;
-        7) trigger_zsh_func "dot-sync" ;;
-        8) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
-        9) trigger_zsh_func "dot-scan" ;;
-        10) settings_menu ;;
-        11) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r ;;
-        12|*) exit 0 ;;
+function list_all_items() {
+    local query=$1
+    local dim="\033[2m"
+    local reset="\033[0m"
+    local mod="Alt"
+    local idx=0
+
+    if [[ -z "$query" ]]; then
+        echo -e "1 | 󱓞  Launch App... | ${dim}Browse and launch installed CLI tools${reset} | CAT | apps"
+        echo -e "2 | 󰈙  Project Documents... | ${dim}Read all documentation in project-manager/${reset} | CAT | docs"
+        echo -e "3 | 󰒓  Settings... | ${dim}Tweak security and UX preferences${reset} | CAT | settings"
+        echo -e "4 |   Execute Shortcut... | ${dim}Run Tmux window and pane commands${reset} | CAT | shortcuts"
+        echo -e "5 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset} | ACTION | install"
+        echo -e "6 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
+        echo -e "7 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
+        echo -e "8 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset} | ACTION | push"
+        echo -e "9 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
+        echo -e "10 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset} | ACTION | scan"
+        echo -e "11 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
+        echo -e "12 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
+    else
+        # Flattened Global Discovery
+        # 1. Apps
+        if [[ -f "$META_PATH" ]]; then
+            while IFS='|' read -r app desc; do
+                ((idx++))
+                echo -e "$idx | 󱓞  $app | ${dim}$desc${reset} | APP | $app"
+            done < "$META_PATH"
+        fi
+        # 2. Documents
+        local docs_path="${REPO_PATH}/project-manager"
+        if [[ -d "$docs_path" ]]; then
+            while IFS= read -r file; do
+                ((idx++))
+                local rel_path="${file#$docs_path/}"
+                local display_name=$(echo "$rel_path" | sed -E 's/\.md$//; s/[\/-]/ /g; s/\b(.)/\u\1/g')
+                echo -e "$idx | 󰈙  $display_name | ${dim}Read $rel_path${reset} | DOC | $file"
+            done < <(find "$docs_path" -type f -name "*.md" | sort)
+        fi
+        # 3. Settings
+        local scan_push_status="[OFF]"; [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && scan_push_status="[ON]"
+        local scan_pull_status="[OFF]"; [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
+        ((idx++))
+        echo -e "$idx | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SETTING | SCAN_PUSH"
+        ((idx++))
+        echo -e "$idx | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SETTING | SCAN_PULL"
+        # 4. Shortcuts
+        ((idx++)); echo -e "$idx | 󰐕  New Session ($mod+,) | ${dim}Create fresh session${reset} | SHORTCUT | new-session"
+        ((idx++)); echo -e "$idx | 󰑐  Cycle Sessions ($mod+0) | ${dim}Switch next session${reset} | SHORTCUT | switch-client -n"
+        ((idx++)); echo -e "$idx | 󰆴  Kill Session ($mod+w) | ${dim}Terminate session${reset} | SHORTCUT | kill-session"
+        ((idx++)); echo -e "$idx | 󰈔  New Window ($mod+m) | ${dim}Create new window${reset} | SHORTCUT | new-window"
+        ((idx++)); echo -e "$idx | 󰅙  Kill Window ($mod+e) | ${dim}Close window${reset} | SHORTCUT | kill-window"
+        # 5. Actions
+        ((idx++)); echo -e "$idx | 󰏔  Install App | ${dim}Install via Homebrew${reset} | ACTION | install"
+        ((idx++)); echo -e "$idx | 󰆴  Uninstall App | ${dim}Remove and sync${reset} | ACTION | uninstall"
+        ((idx++)); echo -e "$idx | 󰇚  Pull Changes | ${dim}Fetch from GitHub${reset} | ACTION | pull"
+        ((idx++)); echo -e "$idx | 󰇶  Push Changes | ${dim}Sync to GitHub${reset} | ACTION | push"
+        ((idx++)); echo -e "$idx |   Reload All Configs | ${dim}Refresh env${reset} | ACTION | reload"
+        ((idx++)); echo -e "$idx | 󰒃  Security Scan | ${dim}Run audit${reset} | ACTION | scan"
+    fi
+}
+
+function main_menu() {
+    # fzf with visible search field and index-based selection support
+    local selection=$(list_all_items "" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "  " \
+        --header "Search Palette (Type index or keywords)" \
+        --delimiter ' \| ' \
+        --with-nth 1,2,3 \
+        --info=inline \
+        --bind "change:reload($0 --list {q})")
+
+    if [[ -z "$selection" ]]; then exit 0; fi
+
+    local type arg
+    # Dispatcher: Detect selection source
+    if [[ "$selection" =~ ^[0-9]+[[:space:]]+\| ]]; then
+        type=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        arg=$(echo "$selection" | cut -d '|' -f 5 | xargs)
+    else
+        type=$(echo "$selection" | cut -d '|' -f 3 | xargs)
+        arg=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+    fi
+
+    case "$type" in
+        CAT)
+            case "$arg" in
+                apps) apps_menu ;;
+                docs) documents_menu ;;
+                settings) settings_menu ;;
+                shortcuts) shortcuts_menu ;;
+            esac
+            ;;
+        APP) trigger_zsh_func "$arg" ;;
+        DOC) read_document "$arg"; documents_menu ;;
+        SETTING) toggle_setting "$arg"; settings_menu ;;
+        SHORTCUT) execute_shortcut "$arg" ;;
+        ACTION)
+            case "$arg" in
+                install) install_app ;;
+                uninstall) uninstall_app ;;
+                pull) trigger_zsh_func "dot-pull" ;;
+                push) trigger_zsh_func "dot-sync" ;;
+                reload) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
+                scan) trigger_zsh_func "dot-scan" ;;
+                fix_alt) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
+                exit) exit 0 ;;
+            esac
+            ;;
     esac
 }
+
+
+
 
 
 # ==========================================
 # 🏁  INITIALIZATION
 # ==========================================
+
+# Check if script is called for listing (fzf reload callback)
+if [[ "$1" == "--list" ]]; then
+    list_all_items "$2"
+    exit 0
+fi
 
 main_menu

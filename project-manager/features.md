@@ -6,7 +6,9 @@
 
 ## 🎛️ Unified Command Palette (`palette.sh`)
 - **VSCode-Style Popup**: Triggered via `Alt+p` in Tmux for a centralized control hub.
-- **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile` with **dynamic blurbs** (fetched from Homebrew).
+- **Unified Discovery**: A flattened search scope that allows you to find apps, documents, settings, and shortcuts directly from the main menu.
+- **App Launcher**: `fzf`-powered interface to quickly launch tools defined in your `Brewfile` with **dynamic blurbs**.
+- **Project Documents**: Dynamic document browser to read all files in `project-manager/` using `glow`.
 - **User Experience Settings**: Dedicated "Settings" menu to toggle persistent preferences like security scans on push/pull.
 - **Executable Shortcuts**: Instant access to trigger all custom Tmux keybindings directly from the palette.
 - **Safety Measures**: Integrated confirmation prompts for destructive actions (uninstallation, session killing) to prevent accidental execution.
