@@ -1,4 +1,6 @@
 color-link default "#c8c8c8,#000000"
+color-link cursor-line "#2a2a2a"
+color-link cursor "#14b8a6"
 color-link date.header "#dab853,bold"
 color-link area.name "#14b8a6,bold"
 color-link project.name "#14b8a6,bold"

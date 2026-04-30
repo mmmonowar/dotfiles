@@ -1,3 +1,23 @@
+## [2026-04-30-12-15-00] - Micro Editor TrueColor Type Fix
+- **Bug Fix**: Resolved type error for the `truecolor` setting in Micro.
+- **Details**:
+    - Changed `"truecolor": true` to `"truecolor": "auto"` in `common/micro/settings.json`.
+    - This fixes the error message: `Error: setting 'truecolor' has incorrect type (bool), using default value: auto (string)`.
+
+## [2026-04-30-12-00-00] - Micro Editor Cursor Visibility Fix
+- **Bug Fix**: Improved cursor visibility in the Micro editor.
+- **Details**:
+    - Updated `common/micro/colorschemes/PolyMark.micro` to explicitly define cursor and cursor-line colors.
+    - Set the cursor to Peppermint Teal (`#14b8a6`) for high contrast and focus.
+    - Set the current line highlight (`cursor-line`) to Peppermint Bright Black (`#2a2a2a`) to subtly distinguish the active line without visual clutter.
+
+## [2026-04-30-11-45-00] - Micro Editor Theme Activation
+- **Feature**: Enabled the PolyMark colorscheme as the default for the Micro editor.
+- **Details**:
+    - Updated `common/micro/settings.json` to explicitly set `"colorscheme": "PolyMark"`.
+    - Enabled `"truecolor": true` within Micro settings to ensure consistent rendering of hex colors across all platforms.
+    - This ensures that the custom PolyOS aesthetic is automatically applied in Linux, WSL, and macOS environments without manual configuration.
+
 ## [2026-04-30-11-30-00] - Unified Search Discovery Scope
 - **Feature**: Expanded the Command Palette search scope to include all nested items.
 - **Details**:

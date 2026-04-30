@@ -1,5 +1,10 @@
 # Project Issues
 
+## ✅ Micro PolyMark Theme Missing (Linux)
+- **Status**: Resolved
+- **Description**: The PolyMark colorscheme was present in the repository but not activated by default in the Micro editor, leading to it appearing "missing" on Linux.
+- **Resolution**: Updated `common/micro/settings.json` to explicitly set `colorscheme: PolyMark` and enable `truecolor: "auto"` for consistent cross-platform activation.
+
 ## ✅ Homebrew Permission Denied (Linux)
 - **Status**: Resolved
 - **Description**: `brew install` fails with `Permission denied` when trying to rename files in `/home/linuxbrew/.linuxbrew/Cellar` or temp directories.

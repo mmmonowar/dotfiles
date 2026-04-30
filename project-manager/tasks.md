@@ -65,7 +65,7 @@
 - [x] Fix Tmux "not a terminal" startup error
 - [x] Diagnose monochrome display issue in Micro
 - [x] Verify TrueColor support in Tmux/Terminal
-- [x] Validate Micro colorscheme hex code compatibility
+- [x] Validate Micro colorscheme hex code compatibility and activation
 - [x] Implement Alt/Option key compatibility for macOS and Ubuntu
 - [x] Unify all Tmux shortcuts on the Alt (Meta) key across all platforms
 - [x] Standardize `OS_ENV` across all platforms to fix Brewfile path resolution in `dot-pull` and `dot-sync`
