@@ -17,6 +17,7 @@ else
 fi
 
 # 3. FZF Theming (Peppermint Greenish/Dark)
+# Added query color for high visibility
 export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8a6,fg:#c8c8c8,header:#449fd0,info:#dab853,pointer:#14b8a6,marker:#89d287,fg+:#dfdfdf,prompt:#14b8a6,hl+:#14b8a6,query:#89d287"
 
 # 4. Dynamic Paths
@@ -39,13 +40,14 @@ function update_setting() {
     local value=$2
     if grep -q "export $key=" "$SETTINGS_FILE"; then
         if [[ "$OS_ENV" == "mac" ]]; then
-            sed -i '' "s/^export $key=.*/export $key=$value/" "$SETTINGS_FILE"
+            sed -i '' "s|^export $key=.*|export $key=$value|" "$SETTINGS_FILE"
         else
-            sed -i "s/^export $key=.*/export $key=$value/" "$SETTINGS_FILE"
+            sed -i "s|^export $key=.*|export $key=$value|" "$SETTINGS_FILE"
         fi
     else
         echo "export $key=$value" >> "$SETTINGS_FILE"
     fi
+    # Re-source to update current environment
     source "$SETTINGS_FILE"
 }
 
@@ -96,6 +98,53 @@ function get_app_description() {
     fi
 }
 
+function read_document() {
+    local file=$1
+    clear
+    if command -v glow &>/dev/null; then
+        glow -p "$file"
+    else
+        less "$file"
+    fi
+}
+
+function open_scratchpad() {
+    local path_var="POLYTERM_SCRATCHPAD_${OS_ENV^^}"
+    local path="${!path_var}"
+    if [[ -z "$path" ]]; then
+        # Fallback to general linux if env specific is missing
+        path="$POLYTERM_SCRATCHPAD_LINUX"
+    fi
+    
+    if [[ -n "$path" ]]; then
+        trigger_zsh_func "micro \"$path\""
+    else
+        echo "󰅙  Scratchpad path not configured!"
+        sleep 2
+        main_menu
+    fi
+}
+
+function update_scratchpad_path() {
+    local os=$1
+    local key="POLYTERM_SCRATCHPAD_${os^^}"
+    local current_val="${!key}"
+    
+    clear
+    echo "󰒓  Update Scratchpad Path ($os)"
+    echo "-----------------------------"
+    echo "Current: $current_val"
+    printf "Enter new absolute path (or Enter to cancel): "
+    read -r new_path
+    
+    if [[ -n "$new_path" ]]; then
+        update_setting "$key" "$new_path"
+        echo "󰄬  Path updated."
+        sleep 1
+    fi
+    settings_menu
+}
+
 # ==========================================
 # 📦  PACKAGE MANAGEMENT
 # ==========================================
@@ -130,8 +179,10 @@ function uninstall_app() {
     done < <(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2)
     
     local list_items=""
+    local idx=1
     for app in "${apps[@]}"; do
-        list_items+="$app\n"
+        list_items+="$idx | $app\n"
+        ((idx++))
     done
 
     local selection
@@ -143,14 +194,15 @@ function uninstall_app() {
         --header "Select App to Uninstall")
 
     if [[ -n "$selection" ]]; then
+        local app_name=$(echo "$selection" | cut -d '|' -f 2 | xargs)
         clear
-        if confirm_action "Uninstall $selection and sync to GitHub?"; then
+        if confirm_action "Uninstall $app_name and sync to GitHub?"; then
             if [[ "$OS_ENV" == "mac" ]]; then
-                sed -i '' "/^$selection|/d" "$META_PATH" 2>/dev/null
+                sed -i '' "/^$app_name|/d" "$META_PATH" 2>/dev/null
             else
-                sed -i "/^$selection|/d" "$META_PATH" 2>/dev/null
+                sed -i "/^$app_name|/d" "$META_PATH" 2>/dev/null
             fi
-            trigger_and_sync "brew uninstall --verbose $selection"
+            trigger_and_sync "brew uninstall --verbose $app_name"
         else
             uninstall_app
         fi
@@ -164,6 +216,7 @@ function uninstall_app() {
 # ==========================================
 
 function apps_menu() {
+    local query=$1
     if [[ ! -f "$BREWFILE_PATH" ]]; then
         echo -e "󰅙  Brewfile missing at:\n$BREWFILE_PATH"
         sleep 2
@@ -171,13 +224,11 @@ function apps_menu() {
         return
     fi
 
-    # 1. Get apps from Brewfile
     local apps=()
     while IFS= read -r line; do
         apps+=("$line")
     done < <(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2)
     
-    # 2. Check for missing descriptions to avoid unnecessary "Loading" delay
     local missing_apps=()
     for app in "${apps[@]}"; do
         if ! grep -q "^${app}|" "$META_PATH" 2>/dev/null; then
@@ -185,7 +236,6 @@ function apps_menu() {
         fi
     done
 
-    # 3. Only fetch if something is missing
     if [[ ${#missing_apps[@]} -gt 0 ]]; then
         echo "󰇥  Fetching new app descriptions..."
         for app in "${missing_apps[@]}"; do
@@ -193,12 +243,12 @@ function apps_menu() {
         done
     fi
 
-    # 4. Generate the final list quickly using awk with dimmed descriptions
     local list_items=$(awk -F'|' '
         NR==FNR { cache[$1]=$2; next }
         { 
+            idx++
             desc = cache[$1] ? cache[$1] : "󰒓  CLI Tool"
-            print $1 " | \033[2m" desc "\033[0m"
+            print idx " | " $1 " | \033[2m" desc "\033[0m"
         }
     ' "$META_PATH" <(printf "%s\n" "${apps[@]}"))
 
@@ -208,13 +258,104 @@ function apps_menu() {
         --reverse \
         --border rounded \
         --prompt "󱐋  " \
-        --header "󱓞  Launch App (Brewfile: $OS_ENV)" \
+        --query "$query" \
+        --header "Select App (Type index or name)" \
         --delimiter ' \| ' \
-        --with-nth 1,2)
+        --with-nth 1,2,3)
 
     if [[ -n "$selection" ]]; then
-        local selected_app=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+        local selected_app=$(echo "$selection" | cut -d '|' -f 2 | xargs)
         trigger_zsh_func "$selected_app"
+    else
+        main_menu
+    fi
+}
+
+function documents_menu() {
+    local query=$1
+    local dim="\033[2m"
+    local reset="\033[0m"
+    local docs_path="${REPO_PATH}/project-manager"
+    
+    if [[ ! -d "$docs_path" ]]; then
+        echo -e "󰅙  Project Manager directory missing!"
+        sleep 2
+        main_menu
+        return
+    fi
+
+    local list_items=""
+    local idx=1
+    while IFS= read -r file; do
+        local rel_path="${file#$docs_path/}"
+        local display_name=$(echo "$rel_path" | sed -E 's/\.md$//; s/[\/-]/ /g; s/\b(.)/\u\1/g')
+        list_items+="$idx | 󰈙  $display_name | ${dim}Read $rel_path${reset} | $file\n"
+        ((idx++))
+    done < <(find "$docs_path" -type f -name "*.md" | sort)
+
+    local selection=$(echo -e "$list_items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󱓡  " \
+        --query "$query" \
+        --header "Select Document (Type index or name)" \
+        --delimiter ' \| ' \
+        --with-nth 1,2,3)
+
+    if [[ -n "$selection" ]]; then
+        local selected_file=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        read_document "$selected_file"
+        documents_menu
+    else
+        main_menu
+    fi
+}
+
+function settings_menu() {
+    local query=$1
+    local dim="\033[2m"
+    local reset="\033[0m"
+    
+    local scan_push_status="[OFF]"
+    [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && scan_push_status="[ON]"
+    
+    local scan_pull_status="[OFF]"
+    [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
+
+    local settings_options="1 | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SCAN_PUSH\n"
+    settings_options+="2 | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SCAN_PULL\n"
+    settings_options+="3 | 󰈙  Scratchpad Path (Linux) | ${dim}$POLYTERM_SCRATCHPAD_LINUX${reset} | PATH_LINUX\n"
+    settings_options+="4 | 󰈙  Scratchpad Path (WSL) | ${dim}$POLYTERM_SCRATCHPAD_WSL${reset} | PATH_WSL\n"
+    settings_options+="5 | 󰈙  Scratchpad Path (Mac) | ${dim}$POLYTERM_SCRATCHPAD_MAC${reset} | PATH_MAC"
+
+    local selection=$(echo -e "$settings_options" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󰒓  " \
+        --query "$query" \
+        --header "Select Setting (Type index or name)" \
+        --delimiter ' \| ' \
+        --with-nth 1,2,3)
+
+    if [[ -n "$selection" ]]; then
+        local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        case "$choice" in
+            SCAN_PUSH)
+                update_setting "POLYTERM_SCAN_ON_PUSH" "$([[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && echo false || echo true)"
+                settings_menu
+                ;;
+            SCAN_PULL)
+                update_setting "POLYTERM_SCAN_ON_PULL" "$([[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && echo false || echo true)"
+                settings_menu
+                ;;
+            PATH_LINUX) update_scratchpad_path "linux" ;;
+            PATH_WSL) update_scratchpad_path "wsl" ;;
+            PATH_MAC) update_scratchpad_path "mac" ;;
+        esac
     else
         main_menu
     fi
@@ -269,169 +410,6 @@ function execute_shortcut() {
     tmux run-shell "tmux $cmd"
 }
 
-function documents_menu() {
-    local query=$1
-    local dim="\033[2m"
-    local reset="\033[0m"
-    local docs_path="${REPO_PATH}/project-manager"
-    
-    if [[ ! -d "$docs_path" ]]; then
-        echo -e "󰅙  Project Manager directory missing!"
-        sleep 2
-        main_menu
-        return
-    fi
-
-    local list_items=""
-    local idx=1
-    while IFS= read -r file; do
-        local rel_path="${file#$docs_path/}"
-        local display_name=$(echo "$rel_path" | sed -E 's/\.md$//; s/[\/-]/ /g; s/\b(.)/\u\1/g')
-        list_items+="$idx | 󰈙  $display_name | ${dim}Read $rel_path${reset} | $file\n"
-        ((idx++))
-    done < <(find "$docs_path" -type f -name "*.md" | sort)
-
-    local selection=$(echo -e "$list_items" | fzf \
-        --ansi \
-        --height 100% \
-        --reverse \
-        --border rounded \
-        --prompt "󱓡  " \
-        --query "$query" \
-        --header "Select Document (Type index or name)" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
-
-    if [[ -n "$selection" ]]; then
-        local selected_file=$(echo "$selection" | cut -d '|' -f 4 | xargs)
-        read_document "$selected_file"
-        documents_menu
-    else
-        main_menu
-    fi
-}
-
-function read_document() {
-    local file=$1
-    clear
-    if command -v glow &>/dev/null; then
-        glow -p "$file"
-    else
-        less "$file"
-    fi
-}
-
-function settings_menu() {
-    local query=$1
-    local dim="\033[2m"
-    local reset="\033[0m"
-    
-    local scan_push_status="[OFF]"
-    [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && scan_push_status="[ON]"
-    
-    local scan_pull_status="[OFF]"
-    [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
-
-    local settings_options="1 | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SCAN_PUSH\n"
-    settings_options+="2 | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SCAN_PULL"
-
-    local selection=$(echo -e "$settings_options" | fzf \
-        --ansi \
-        --height 100% \
-        --reverse \
-        --border rounded \
-        --prompt "󰒓  " \
-        --query "$query" \
-        --header "Select Setting (Type index or name)" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
-
-    if [[ -n "$selection" ]]; then
-        local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
-        toggle_setting "$choice"
-        settings_menu
-    else
-        main_menu
-    fi
-}
-
-function toggle_setting() {
-    local setting=$1
-    case "$setting" in
-        SCAN_PUSH)
-            if [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]]; then
-                update_setting "POLYTERM_SCAN_ON_PUSH" "false"
-            else
-                update_setting "POLYTERM_SCAN_ON_PUSH" "true"
-            fi
-            ;;
-        SCAN_PULL)
-            if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
-                update_setting "POLYTERM_SCAN_ON_PULL" "false"
-            else
-                update_setting "POLYTERM_SCAN_ON_PULL" "true"
-            fi
-            ;;
-    esac
-}
-
-function apps_menu() {
-    local query=$1
-    if [[ ! -f "$BREWFILE_PATH" ]]; then
-        echo -e "󰅙  Brewfile missing at:\n$BREWFILE_PATH"
-        sleep 2
-        main_menu
-        return
-    fi
-
-    local apps=()
-    while IFS= read -r line; do
-        apps+=("$line")
-    done < <(grep '^brew "' "$BREWFILE_PATH" | cut -d '"' -f 2)
-    
-    local missing_apps=()
-    for app in "${apps[@]}"; do
-        if ! grep -q "^${app}|" "$META_PATH" 2>/dev/null; then
-            missing_apps+=("$app")
-        fi
-    done
-
-    if [[ ${#missing_apps[@]} -gt 0 ]]; then
-        echo "󰇥  Fetching new app descriptions..."
-        for app in "${missing_apps[@]}"; do
-            get_app_description "$app" > /dev/null
-        done
-    fi
-
-    # Generate the final list with indices
-    local list_items=$(awk -F'|' '
-        NR==FNR { cache[$1]=$2; next }
-        { 
-            idx++
-            desc = cache[$1] ? cache[$1] : "󰒓  CLI Tool"
-            print idx " | " $1 " | \033[2m" desc "\033[0m"
-        }
-    ' "$META_PATH" <(printf "%s\n" "${apps[@]}"))
-
-    local selection=$(echo -e "$list_items" | fzf \
-        --ansi \
-        --height 100% \
-        --reverse \
-        --border rounded \
-        --prompt "󱐋  " \
-        --query "$query" \
-        --header "Select App (Type index or name)" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
-
-    if [[ -n "$selection" ]]; then
-        local selected_app=$(echo "$selection" | cut -d '|' -f 2 | xargs)
-        trigger_zsh_func "$selected_app"
-    else
-        main_menu
-    fi
-}
-
 function list_all_items() {
     local query=$1
     local dim="\033[2m"
@@ -440,18 +418,20 @@ function list_all_items() {
     local idx=0
 
     if [[ -z "$query" ]]; then
+        # Hierarchical Main Menu
         echo -e "1 | 󱓞  Launch App... | ${dim}Browse and launch installed CLI tools${reset} | CAT | apps"
         echo -e "2 | 󰈙  Project Documents... | ${dim}Read all documentation in project-manager/${reset} | CAT | docs"
         echo -e "3 | 󰒓  Settings... | ${dim}Tweak security and UX preferences${reset} | CAT | settings"
         echo -e "4 |   Execute Shortcut... | ${dim}Run Tmux window and pane commands${reset} | CAT | shortcuts"
-        echo -e "5 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset} | ACTION | install"
-        echo -e "6 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
-        echo -e "7 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
-        echo -e "8 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset} | ACTION | push"
-        echo -e "9 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
-        echo -e "10 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset} | ACTION | scan"
-        echo -e "11 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
-        echo -e "12 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
+        echo -e "5 | 󰈙  Scratchpad | ${dim}Open worklog scratch-pad in micro${reset} | ACTION | scratchpad"
+        echo -e "6 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset} | ACTION | install"
+        echo -e "7 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
+        echo -e "8 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
+        echo -e "9 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset} | ACTION | push"
+        echo -e "10 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
+        echo -e "11 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset} | ACTION | scan"
+        echo -e "12 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
+        echo -e "13 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
     else
         # Flattened Global Discovery
         # 1. Apps
@@ -474,17 +454,20 @@ function list_all_items() {
         # 3. Settings
         local scan_push_status="[OFF]"; [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && scan_push_status="[ON]"
         local scan_pull_status="[OFF]"; [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
-        ((idx++))
-        echo -e "$idx | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SETTING | SCAN_PUSH"
-        ((idx++))
-        echo -e "$idx | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SETTING | SCAN_PULL"
-        # 4. Shortcuts
+        ((idx++)); echo -e "$idx | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SETTING | SCAN_PUSH"
+        ((idx++)); echo -e "$idx | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SETTING | SCAN_PULL"
+        ((idx++)); echo -e "$idx | 󰈙  Scratchpad Path (Linux) | ${dim}$POLYTERM_SCRATCHPAD_LINUX${reset} | ACTION | path_linux"
+        ((idx++)); echo -e "$idx | 󰈙  Scratchpad Path (WSL) | ${dim}$POLYTERM_SCRATCHPAD_WSL${reset} | ACTION | path_wsl"
+        ((idx++)); echo -e "$idx | 󰈙  Scratchpad Path (Mac) | ${dim}$POLYTERM_SCRATCHPAD_MAC${reset} | ACTION | path_mac"
+        # 4. Scratchpad
+        ((idx++)); echo -e "$idx | 󰈙  Scratchpad | ${dim}Open worklog scratch-pad in micro${reset} | ACTION | scratchpad"
+        # 5. Shortcuts
         ((idx++)); echo -e "$idx | 󰐕  New Session ($mod+,) | ${dim}Create fresh session${reset} | SHORTCUT | new-session"
         ((idx++)); echo -e "$idx | 󰑐  Cycle Sessions ($mod+0) | ${dim}Switch next session${reset} | SHORTCUT | switch-client -n"
         ((idx++)); echo -e "$idx | 󰆴  Kill Session ($mod+w) | ${dim}Terminate session${reset} | SHORTCUT | kill-session"
         ((idx++)); echo -e "$idx | 󰈔  New Window ($mod+m) | ${dim}Create new window${reset} | SHORTCUT | new-window"
         ((idx++)); echo -e "$idx | 󰅙  Kill Window ($mod+e) | ${dim}Close window${reset} | SHORTCUT | kill-window"
-        # 5. Actions
+        # 6. Actions
         ((idx++)); echo -e "$idx | 󰏔  Install App | ${dim}Install via Homebrew${reset} | ACTION | install"
         ((idx++)); echo -e "$idx | 󰆴  Uninstall App | ${dim}Remove and sync${reset} | ACTION | uninstall"
         ((idx++)); echo -e "$idx | 󰇚  Pull Changes | ${dim}Fetch from GitHub${reset} | ACTION | pull"
@@ -495,7 +478,6 @@ function list_all_items() {
 }
 
 function main_menu() {
-    # fzf with visible search field and index-based selection support
     local selection=$(list_all_items "" | fzf \
         --ansi \
         --height 100% \
@@ -511,7 +493,6 @@ function main_menu() {
     if [[ -z "$selection" ]]; then exit 0; fi
 
     local type arg
-    # Dispatcher: Detect selection source
     if [[ "$selection" =~ ^[0-9]+[[:space:]]+\| ]]; then
         type=$(echo "$selection" | cut -d '|' -f 4 | xargs)
         arg=$(echo "$selection" | cut -d '|' -f 5 | xargs)
@@ -531,10 +512,20 @@ function main_menu() {
             ;;
         APP) trigger_zsh_func "$arg" ;;
         DOC) read_document "$arg"; documents_menu ;;
-        SETTING) toggle_setting "$arg"; settings_menu ;;
+        SETTING)
+            case "$arg" in
+                SCAN_PUSH) update_setting "POLYTERM_SCAN_ON_PUSH" "$([[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && echo false || echo true)" ;;
+                SCAN_PULL) update_setting "POLYTERM_SCAN_ON_PULL" "$([[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && echo false || echo true)" ;;
+            esac
+            settings_menu
+            ;;
         SHORTCUT) execute_shortcut "$arg" ;;
         ACTION)
             case "$arg" in
+                scratchpad) open_scratchpad ;;
+                path_linux) update_scratchpad_path "linux" ;;
+                path_wsl) update_scratchpad_path "wsl" ;;
+                path_mac) update_scratchpad_path "mac" ;;
                 install) install_app ;;
                 uninstall) uninstall_app ;;
                 pull) trigger_zsh_func "dot-pull" ;;
@@ -548,15 +539,10 @@ function main_menu() {
     esac
 }
 
-
-
-
-
 # ==========================================
 # 🏁  INITIALIZATION
 # ==========================================
 
-# Check if script is called for listing (fzf reload callback)
 if [[ "$1" == "--list" ]]; then
     list_all_items "$2"
     exit 0
