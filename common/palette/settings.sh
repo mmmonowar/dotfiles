@@ -74,14 +74,14 @@ function scratchpad_menu() {
     local query=$1
     local dim="\033[2m"
     local reset="\033[0m"
-    local path_var="POLYTERM_SCRATCHPAD_$OS_ENV_UPPER"
-    local current_path="${!path_var}"
     
-    local options="1 | 󰈙  Open Scratchpad | ${dim}Open in micro: $current_path${reset} | OPEN\n"
-    options+="2 | 󰒓  Set Path (Current OS: $OS_ENV) | ${dim}Update $path_var${reset} | SET_CURRENT\n"
-    options+="3 | 󰒓  Set Path (Linux) | ${dim}$POLYTERM_SCRATCHPAD_LINUX${reset} | SET_LINUX\n"
-    options+="4 | 󰒓  Set Path (WSL) | ${dim}$POLYTERM_SCRATCHPAD_WSL${reset} | SET_WSL\n"
-    options+="5 | 󰒓  Set Path (Mac) | ${dim}$POLYTERM_SCRATCHPAD_MAC${reset} | SET_MAC"
+    local linux_mark=""; [[ "$OS_ENV" == "linux" ]] && linux_mark=" (Current)"
+    local wsl_mark=""; [[ "$OS_ENV" == "wsl" ]] && wsl_mark=" (Current)"
+    local mac_mark=""; [[ "$OS_ENV" == "mac" ]] && mac_mark=" (Current)"
+    
+    local options="1 | 󰒓  Set Path (Linux)$linux_mark | ${dim}$POLYTERM_SCRATCHPAD_LINUX${reset} | SET_LINUX\n"
+    options+="2 | 󰒓  Set Path (WSL)$wsl_mark | ${dim}$POLYTERM_SCRATCHPAD_WSL${reset} | SET_WSL\n"
+    options+="3 | 󰒓  Set Path (Mac)$mac_mark | ${dim}$POLYTERM_SCRATCHPAD_MAC${reset} | SET_MAC"
 
     local selection=$(echo -e "$options" | fzf \
         --ansi \
@@ -97,8 +97,6 @@ function scratchpad_menu() {
     if [[ -n "$selection" ]]; then
         local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
         case "$choice" in
-            OPEN) open_scratchpad ;;
-            SET_CURRENT) update_scratchpad_path "$OS_ENV" ;;
             SET_LINUX) update_scratchpad_path "linux" ;;
             SET_WSL) update_scratchpad_path "wsl" ;;
             SET_MAC) update_scratchpad_path "mac" ;;

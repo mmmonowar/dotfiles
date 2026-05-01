@@ -6,6 +6,7 @@
 - **Fix**: Resolved compatibility issue with macOS Bash 3.2 by removing the unsupported `read -i` flag in the path update prompt.
 - **Improvement**: Enhanced `dot-reload` to explicitly perform a manual Tmux configuration reload (`tmux source-file`) regardless of whether it's called from within a Tmux session, provided the server is running.
 - **Refactoring**: Modularized `common/palette.sh` by splitting it into a collection of functional subscripts in `common/palette/`. This improves maintainability and organization of the command palette logic.
+- **Cleanup**: Removed redundant "Open Scratchpad" and duplicate "Set Path" entries from the Scratchpad Settings menu for a cleaner UI.
 
 ## [2026-05-01-12-30-00] - Enhanced hledger Symbolic Linking & Visibility
 - **Feature**: Upgraded hledger synchronization to a robust symbolic link-based approach.
