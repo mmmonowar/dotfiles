@@ -23,3 +23,6 @@ watch|Executes a program periodically, showing output fullscreen
 x-cmd|Bootstrap 1000+ command-line tools in seconds
 zoxide|Shell extension to navigate your filesystem faster
 zsh-syntax-highlighting|Fish shell like syntax highlighting for zsh
+chezmoi|Manage your dotfiles across multiple diverse machines, securely
+hledger|Easy plain text accounting with command-line, terminal and web UIs
+lazygit|Simple terminal UI for git commands
