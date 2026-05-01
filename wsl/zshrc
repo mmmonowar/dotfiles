@@ -119,6 +119,11 @@ function dot-sync() {
 
         rm "$TEMP_BREW"
 
+        # Sync hledger journal if the destination repository exists
+        if [[ -f "$DOT_PATH/common/hledger-sync.sh" ]]; then
+            source "$DOT_PATH/common/hledger-sync.sh"
+        fi
+
         echo "  Syncing configurations to GitHub..."
         git add -A
         git commit -m "Sync: $(date +'%Y-%m-%d %H:%M') [$(hostname)]"
@@ -169,15 +174,16 @@ function dot-reload() {
         source "$HOME/.zshrc"
     else
         # If ~/.zshrc doesn't exist, source the current file directly
-        # This handles cases where symlinks aren't set up yet
         # shellcheck disable=SC2296
         source "${(%):-%x}"
     fi
     
-    # Update tmux environment to reflect potential repo location changes
-    if [[ -n "$TMUX" ]]; then
+    # Reload tmux config if the server is running
+    if tmux info &>/dev/null; then
+        # Update tmux environment to reflect potential repo location changes
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
         tmux source-file ~/.tmux.conf 2>/dev/null
+        echo "󰄬  Tmux configuration reloaded."
     fi
     echo "󰄬  Cockpit reloaded."
 }

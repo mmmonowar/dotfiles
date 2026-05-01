@@ -1,3 +1,29 @@
+## [2026-05-01-13-00-00] - Scratchpad Management Enhancements
+- **Feature**: Added a dedicated "Scratchpad Settings" menu in the command palette.
+- **Improvement**: Users can now update scratchpad paths for Mac, WSL, and Linux directly from the UI.
+- **Refinement**: Consolidated scratchpad path settings into a single menu entry in the Settings menu.
+- **Resilience**: Improved `open_scratchpad` to handle missing files and offer to create them.
+- **Fix**: Resolved compatibility issue with macOS Bash 3.2 by removing the unsupported `read -i` flag in the path update prompt.
+- **Improvement**: Enhanced `dot-reload` to explicitly perform a manual Tmux configuration reload (`tmux source-file`) regardless of whether it's called from within a Tmux session, provided the server is running.
+- **Refactoring**: Modularized `common/palette.sh` by splitting it into a collection of functional subscripts in `common/palette/`. This improves maintainability and organization of the command palette logic.
+
+## [2026-05-01-12-30-00] - Enhanced hledger Symbolic Linking & Visibility
+- **Feature**: Upgraded hledger synchronization to a robust symbolic link-based approach.
+- **Details**:
+    - Redesigned `common/hledger-sync.sh` to move accounting data to the repository and establish a symbolic link from `~/.hledger.journal`.
+    - Changed the storage filename in the repository from `.hledger.journal` (hidden) to `hledger.journal` (visible) for better discoverability.
+    - Implemented automated migration logic that handles existing local files and hidden repository files.
+    - This ensures all hledger data "stays" in the `Accounting-Management-System` repository for seamless cross-device synchronization via Git.
+    - Updated project documentation to reflect the improved accounting integration.
+
+## [2026-05-01-12-00-00] - hledger Journal Synchronization
+- **Feature**: Automated synchronization of the `hledger` journal to the Accounting Management System repository.
+- **Details**:
+    - Created `common/hledger-sync.sh` to handle the conditional synchronization of `~/.hledger.journal`.
+    - Integrated the sync script into `dot-sync` across all platforms (`mac`, `linux`, `wsl`).
+    - The sync only triggers if the source file exists and the destination repository (`~/GitHub/INTxK/Accounting-Management-System`) is present on the system.
+    - Updated `project-manager/` documentation to reflect the new accounting integration.
+
 ## [2026-04-30-12-15-00] - Micro Editor TrueColor Type Fix
 - **Bug Fix**: Resolved type error for the `truecolor` setting in Micro.
 - **Details**:

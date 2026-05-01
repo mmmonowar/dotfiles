@@ -46,6 +46,7 @@ The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive men
 ### Features:
 - **Launch App**: Search and launch CLI tools defined in your Brewfile with dynamic descriptions.
 - **Install/Uninstall**: Add or remove Homebrew packages with automatic GitHub synchronization.
+- **Scratchpad**: Instant access to your daily worklog (`micro`). Configurable paths for Mac, WSL, and Linux via the **Settings** menu.
 - **Execute Shortcut**: Trigger complex Tmux window/pane operations via a menu.
 - **Maintenance**: Access `dot-sync`, `dot-pull`, and environment reloading in one click.
 - **Alt-Key Fix**: A built-in utility to diagnose and fix keyboard shortcut issues.
@@ -74,7 +75,7 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 
 ### System & Navigation
 - **`Alt+p`**: Open Command Palette
-- **`Alt+r`**: Reload Configuration (`dot-reload`)
+- **`Alt+r`**: Reload Configuration (`dot-reload`). This reloads both Zsh and Tmux configs even if executed from a non-Tmux shell.
 
 ---
 

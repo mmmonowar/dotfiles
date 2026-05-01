@@ -16,6 +16,7 @@
 - [x] Implement confirmation prompts for destructive actions
 - [x] Implement interactive install/uninstall functions
 - [x] Implement persistent "Settings" menu for UX preferences (Security toggles)
+- [x] Implement dedicated Scratchpad Settings menu for cross-platform path management
 - [x] Bind `Alt+p` to trigger palette popup in `tmux.conf`
 
 ## ✅ Advanced Tmux Configuration
@@ -34,6 +35,7 @@
 ## ✅ Shell Automation (Zsh)
 - [x] Implement automated Zsh and Tmux startup via `.bashrc`
 - [x] Create `dot-sync` and `dot-pull` for Git automation
+- [x] Implement automated `hledger` journal synchronization and symbolic linking in `dot-sync`
 - [x] Implement self-healing logic in `dot-sync` to automatically install missing dependencies
 - [x] Implement automatic background Gemini CLI updates on shell startup
 - [x] Implement Smart Brewfile Sync (auto-dump/auto-install)

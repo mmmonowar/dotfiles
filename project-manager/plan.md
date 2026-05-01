@@ -17,12 +17,14 @@
     - [x] Implement dynamic metadata (blurb) fetching for apps.
     - [x] Integrate an interactive "Execute Shortcut" menu in the palette.
     - [x] Refine UI ergonomics (Nerd Fonts, alignment, and safety prompts).
+    - [x] Implement dedicated Scratchpad Settings menu for cross-platform path management.
     - [x] Implement centralized Peppermint Design System and theme synchronization.
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.
 - **Steps**:
     - [x] Standardize `dot-pull` and `dot-sync` across platforms.
+    - [x] Integrate automated `hledger` journal synchronization and symbolic linking into `dot-sync`.
     - [x] Integrate `brew bundle dump` into `dot-sync`.
     - [x] Integrate `brew bundle` into `dot-pull`.
     - [x] Automate `dot-sync` within the Command Palette for package operations.

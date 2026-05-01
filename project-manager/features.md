@@ -14,6 +14,7 @@
 - **Safety Measures**: Integrated confirmation prompts for destructive actions (uninstallation, session killing) to prevent accidental execution.
 - **Modern UI**: Replaced standard emojis with consistent **Nerd Font glyphs** for a professional, high-fidelity terminal experience.
 - **Package Management**: Interactive UI to install or uninstall Homebrew packages with **automatic synchronization** to GitHub.
+- **Scratchpad Management**: Quick-access worklog with customizable paths per OS, directly configurable from the UI.
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 
 ## 🗖 Advanced Tmux Configuration
@@ -37,6 +38,7 @@
 ## 🐚 Shell Automation (Zsh)
 - **Automated Startup**: Configured to auto-switch from Bash to Zsh and immediately initialize the Tmux cockpit upon terminal entry.
 - **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading with built-in self-healing logic.
+- **Accounting Integration**: Automated symbolic linking of the `hledger` journal file (`~/.hledger.journal`) to the `Accounting-Management-System` repository. This ensures that all accounting data "stays" in the dedicated repository and is visible as `hledger.journal` for easy tracking, while remaining fully accessible to the `hledger` CLI on any device.
 - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
 - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).

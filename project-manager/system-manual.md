@@ -28,9 +28,24 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 | Path | Purpose | Interdependencies | If Damaged/Deleted |
 | :--- | :--- | :--- | :--- |
 | `tmux.conf` | Shared Tmux settings and keybindings. | Referenced by `~/.tmux.conf` | Tmux loses its custom layout, shortcuts, and themes. |
-| `palette.sh` | Interactive Command Palette logic (FZF). | Triggered by Tmux (`Alt+p`) | The Command Palette will not open; interactive package management fails. |
+| `palette.sh` | Main entry point for the Command Palette. | Sources `common/palette/*.sh` | The Command Palette will not open; interactive package management fails. |
+| `palette/` | Modular subscripts for the Command Palette. | Loaded by `palette.sh` | Specific palette functions (Apps, Docs, Settings) will fail. |
 | `security.sh` | Logic for `dot-scan` and security audits. | Called by `dot-sync` and `dot-pull` | Security checks and vulnerability scanning will fail. |
 | `micro/` | Custom syntax and theme for Micro editor. | Symlinked to `~/.config/micro` | Micro editor reverts to default colors and loses PolyMark support. |
+
+---
+
+## 📂 Directory & File Map (Sub-Scripts)
+
+### `common/palette/` (Modular Logic)
+| Path | Purpose | Key Functionality |
+| :--- | :--- | :--- |
+| `helpers.sh` | Shared utilities | `update_setting`, `trigger_zsh_func`, `confirm_action`. |
+| `apps.sh` | Package Management | `install_app`, `uninstall_app`, `apps_menu`. |
+| `docs.sh` | Document Browser | `documents_menu` (scans `project-manager/`). |
+| `settings.sh` | System Preferences | `settings_menu`, `scratchpad_menu`, `open_scratchpad`. |
+| `shortcuts.sh` | Tmux Automation | `shortcuts_menu`, `execute_shortcut`. |
+| `menu.sh` | Palette Core | `main_menu`, `list_all_items` (Global Search logic). |
 
 ### 3. OS-Specific Directories (`linux/`, `mac/`, `wsl/`)
 | Path | Purpose | Interdependencies | If Damaged/Deleted |
@@ -49,14 +64,14 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 -   **Logic**: Before updating the `Brewfile`, it runs `brew bundle check`. If unsatisfied, it automatically runs `brew bundle` to install/update dependencies.
 -   **Failure Impact**: If the healing logic is corrupted, users might push incomplete configurations or use an out-of-sync environment.
 
-### 2. Automatic Updates
--   **Location**: End of `[os]/zshrc`.
--   **Logic**: Spawns a background process `(brew upgrade gemini-cli shellcheck lynis &)` on shell startup to keep maintenance and security tools current.
--   **Failure Impact**: If removed, tools might run on outdated versions, potentially missing security fixes or new tool capabilities.
+### 2. Integrated Reloading (`dot-reload`)
+-   **Location**: Defined in `[os]/zshrc`.
+-   **Logic**: Sources the local `.zshrc` and explicitly triggers `tmux source-file ~/.tmux.conf`.
+-   **Improvement**: It now detects if a Tmux server is running and reloads the configuration even if the command is executed from a standard shell pane, ensuring consistent environment state.
 
 ### 3. Command Palette UI
--   **Location**: `common/palette.sh`.
--   **Logic**: Uses `fzf` with `--ansi` and dimmed descriptions (`\033[2m`) for visual hierarchy.
+-   **Location**: `common/palette.sh` (Entry) → `common/palette/*.sh` (Implementation).
+-   **Logic**: Uses `fzf` with `--ansi`. Settings are persisted in `common/.polyterm_settings`.
 -   **Failure Impact**: Corruption leads to UI rendering issues or script execution errors when selecting menu items.
 
 ---
@@ -72,7 +87,8 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 ### Dependency Chain
 1.  **Shell** (`zshrc`) → loads **Functions** (`dot-sync`, `dot-pull`).
 2.  **Tmux** (`tmux.conf`) → triggers **Scripts** (`palette.sh`).
-3.  **Palette** (`palette.sh`) → executes **Shell Functions** (via `tmux send-keys`).
+3.  **Palette** (`palette.sh`) → sources **Library** (`common/palette/*.sh`).
+4.  **Library** → executes **Shell Functions** (via `tmux send-keys`).
 
 ---
 
