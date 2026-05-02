@@ -22,3 +22,4 @@ zsh|UNIX shell (command interpreter)
 hledger|Easy plain text accounting with command-line, terminal and web UIs
 pandoc|Swiss-army knife of markup format conversion
 rust|Safe, concurrent, practical language
+chezmoi|Manage your dotfiles across multiple diverse machines, securely
