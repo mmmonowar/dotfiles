@@ -107,6 +107,10 @@ safe_link "$TARGET_DIR/common/tmux.conf" "$HOME/.tmux.conf"
 mkdir -p "$HOME/.config"
 safe_link "$TARGET_DIR/common/micro" "$HOME/.config/micro"
 
+# Symlink gemini settings
+mkdir -p "$HOME/.gemini"
+safe_link "$TARGET_DIR/common/gemini/settings.json" "$HOME/.gemini/settings.json"
+
 # Symlink glow config
 mkdir -p "$HOME/.config/glow"
 safe_link "$TARGET_DIR/common/glow.yml" "$HOME/.config/glow/glow.yml"

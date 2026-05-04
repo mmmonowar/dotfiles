@@ -72,5 +72,6 @@
 - **Steps**:
     - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.
     - [x] Implement conditional AI model aliases and billing tracking to optimize LLM usage costs.
+    - [x] Enable cross-platform synchronization of non-sensitive Gemini CLI settings.
     - [ ] Research methods to speed up `brew bundle dump`.
     - [ ] Audit configurations for cross-platform redundancies.

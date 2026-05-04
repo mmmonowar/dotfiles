@@ -26,6 +26,14 @@
     - The sync only triggers if the source file exists and the destination repository (`~/GitHub/INTxK/Accounting-Management-System`) is present on the system.
     - Updated `project-manager/` documentation to reflect the new accounting integration.
 =======
+## [2026-05-04-12-15-00] - Gemini CLI Settings Synchronization
+- **Feature**: Enabled cross-platform sync for non-sensitive Gemini CLI settings.
+- **Details**:
+    - Created `common/gemini/settings.json` to store shared model, chat, and safety configurations.
+    - Updated `application-package/install.sh` to automatically symlink `~/.gemini/settings.json` to the repository version.
+    - This ensures consistent behavior (e.g., temperature, safety thresholds) across WSL, Linux, and macOS environments.
+    - Documented the new integration in `features.md`, `tasks.md`, and `plan.md`.
+
 ## [2026-05-04-12-00-00] - Conditional AI & LLM Aliases
 - **Feature**: Implemented model-specific Gemini CLI aliases conditional on git user email.
 - **Details**:

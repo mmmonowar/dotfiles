@@ -45,6 +45,10 @@
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).
 - **Aesthetics**: Support for `zsh-syntax-highlighting` and customized `ls` colors across platforms.
 
+## 🤖 Gemini CLI Integration
+- **Model-Specific Aliases**: Context-aware aliases (`gemini`, `gemini-flash`, `gemini-pro`) and billing monitoring (`check-spend`) conditionally enabled based on git user email.
+- **Configuration Sync**: Non-sensitive settings (model choice, safety thresholds, temperature) are synchronized across platforms via `common/gemini/settings.json`.
+
 ## 🚀 One-Command Installation
 - **Unified Installer**: A single `install.sh` script that works across macOS, WSL, and generic Linux.
 - **Remote Execution**: Supports bootstrap installation via `curl | bash` for rapid environment setup.
