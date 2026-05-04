@@ -12,6 +12,14 @@
     - This prevents accidental long-running sessions and optimizes resource usage.
     - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the change.
 
+## [2026-05-04-14-45-00] - Cargo Dependency Repair
+- **Feature**: Fixed `libllhttp.so.9.3` shared library error for `cargo`.
+- **Details**:
+    - Identified broken dependency link between `rust`, `libgit2`, and `llhttp` following a Homebrew update.
+    - Executed `brew upgrade libgit2 rust` and `brew reinstall libgit2 rust` to re-link binaries.
+    - Verified fix with `cargo --version`.
+    - Performed `brew cleanup` to reclaim 430MB+ of space and remove obsolete library versions.
+
 ## [2026-05-04-14-35-00] - 'Kill Gemini' Palette Item
 - **Feature**: Added a 'Kill Gemini' menu item to the command palette.
 - **Details**:

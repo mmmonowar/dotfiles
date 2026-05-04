@@ -28,3 +28,8 @@
     - Provided clear in-terminal instructions for configuring macOS Terminal.app and iTerm2 to use "Option as Meta".
     - Added a "Fix Alt Keys" entry to the Command Palette for instant troubleshooting.
 
+## ✅ Cargo Shared Library Error (libllhttp)
+- **Status**: Resolved
+- **Description**: `cargo` failed with `libllhttp.so.9.3: cannot open shared object file` after a background Homebrew update.
+- **Resolution**: Upgraded and reinstalled `libgit2` (which depends on `llhttp`) and `rust`. This correctly linked the binaries to the newer `llhttp` version (9.4.1) and resolved the dependency mismatch.
+
