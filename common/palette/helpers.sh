@@ -52,3 +52,31 @@ function read_document() {
         less "$file"
     fi
 }
+
+function kill_gemini_processes() {
+    clear
+    if confirm_action "Kill all Gemini processes across all sessions?"; then
+        echo -e "\n󰅙  Terminating Gemini processes..."
+        
+        # Get current process PID and its parent
+        local current_pid=$$
+        local parent_pid=$(ps -o ppid= -p "$current_pid" | xargs)
+        
+        # Identify all gemini-related processes
+        # We filter out the current PID and the parent PID to avoid killing the active agent
+        local pids=$(pgrep -f "gemini" | grep -vE "($current_pid|$parent_pid)")
+        
+        if [[ -n "$pids" ]]; then
+            echo "$pids" | xargs kill -9 2>/dev/null
+            echo -e "󰄬  Processes terminated."
+        else
+            echo -e "󰄬  No other Gemini processes found."
+        fi
+        
+        printf "\nPress Enter to return..."
+        read -r
+        main_menu
+    else
+        main_menu
+    fi
+}

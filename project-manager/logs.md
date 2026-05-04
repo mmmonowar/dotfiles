@@ -1,4 +1,50 @@
-<<<<<<< HEAD
+## [2026-05-04-13-30-00] - Local-Only Zsh Overrides
+- **Feature**: Implemented support for machine-specific Zsh configurations.
+- **Details**:
+    - Added logic to `linux/zshrc`, `mac/.zshrc`, and `wsl/zshrc` to source `~/.zshrc_local` if it exists.
+    - This allows for local environment tailoring (e.g., custom environment variables, machine-specific aliases) without syncing them to Git.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new capability.
+
+## [2026-05-04-13-00-00] - Gemini CLI Alias Timeout
+- **Feature**: Added a 1-hour session timeout to all Gemini CLI aliases.
+- **Details**:
+    - Updated `linux/zshrc`, `mac/.zshrc`, and `wsl/zshrc` to wrap `gemini`, `gemini-flash`, and `gemini-pro` with the `timeout 1h` command.
+    - This prevents accidental long-running sessions and optimizes resource usage.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the change.
+
+## [2026-05-04-14-35-00] - 'Kill Gemini' Palette Item
+- **Feature**: Added a 'Kill Gemini' menu item to the command palette.
+- **Details**:
+    - Implemented `kill_gemini_processes` in `common/palette/helpers.sh` which uses `pgrep` and `kill -9`.
+    - Integrated logic to exclude the current active agent's PID and its parent from termination.
+    - Added menu item "Kill Gemini" to `common/palette/menu.sh`.
+    - Updated project documentation to reflect the new capability.
+
+## [2026-05-04-12-30-00] - Gemini CLI Safety Wrapper
+- **Feature**: Implemented `ask_gemini` to filter large files.
+- **Details**:
+    - Added `ask_gemini` function to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
+    - The function prevents Gemini from processing files larger than 50,000 bytes, providing a safety warning to manage cost and context window.
+    - Handles platform-specific `stat` syntax for macOS and Linux.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
+
+## [2026-05-04-12-15-00] - Gemini CLI Settings Synchronization
+- **Feature**: Enabled cross-platform sync for non-sensitive Gemini CLI settings.
+- **Details**:
+    - Created `common/gemini/settings.json` to store shared model, chat, and safety configurations.
+    - Updated `application-package/install.sh` to automatically symlink `~/.gemini/settings.json` to the repository version.
+    - This ensures consistent behavior (e.g., temperature, safety thresholds) across WSL, Linux, and macOS environments.
+    - Documented the new integration in `features.md`, `tasks.md`, and `plan.md`.
+
+## [2026-05-04-12-00-00] - Conditional AI & LLM Aliases
+- **Feature**: Implemented model-specific Gemini CLI aliases conditional on git user email.
+- **Details**:
+    - Added a new section `8. AI & LLM ALIASES` to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
+    - Aliases `gemini` (flash-lite), `gemini-flash` (flash-3.0), and `gemini-pro` (pro-3.1) are only enabled if `git config user.email` matches `developer11.intxk@gmail.com`.
+    - Integrated `check-spend` alias to monitor Google Cloud billing quotas and maintain the $4.50 budget cap.
+    - This optimizes for cost-effective LLM usage while providing easy access to more powerful models when needed.
+    - Updated project management documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
+
 ## [2026-05-01-13-00-00] - Scratchpad Management Enhancements
 - **Feature**: Added a dedicated "Scratchpad Settings" menu in the command palette.
 - **Improvement**: Users can now update scratchpad paths for Mac, WSL, and Linux directly from the UI.
@@ -25,32 +71,6 @@
     - Integrated the sync script into `dot-sync` across all platforms (`mac`, `linux`, `wsl`).
     - The sync only triggers if the source file exists and the destination repository (`~/GitHub/INTxK/Accounting-Management-System`) is present on the system.
     - Updated `project-manager/` documentation to reflect the new accounting integration.
-=======
-## [2026-05-04-12-30-00] - Gemini CLI Safety Wrapper
-- **Feature**: Implemented `ask_gemini` to filter large files.
-- **Details**:
-    - Added `ask_gemini` function to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
-    - The function prevents Gemini from processing files larger than 50,000 bytes, providing a safety warning to manage cost and context window.
-    - Handles platform-specific `stat` syntax for macOS and Linux.
-    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
-
-## [2026-05-04-12-15-00] - Gemini CLI Settings Synchronization
-- **Feature**: Enabled cross-platform sync for non-sensitive Gemini CLI settings.
-- **Details**:
-    - Created `common/gemini/settings.json` to store shared model, chat, and safety configurations.
-    - Updated `application-package/install.sh` to automatically symlink `~/.gemini/settings.json` to the repository version.
-    - This ensures consistent behavior (e.g., temperature, safety thresholds) across WSL, Linux, and macOS environments.
-    - Documented the new integration in `features.md`, `tasks.md`, and `plan.md`.
-
-## [2026-05-04-12-00-00] - Conditional AI & LLM Aliases
-- **Feature**: Implemented model-specific Gemini CLI aliases conditional on git user email.
-- **Details**:
-    - Added a new section `8. AI & LLM ALIASES` to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
-    - Aliases `gemini` (flash-lite), `gemini-flash` (flash-3.0), and `gemini-pro` (pro-3.1) are only enabled if `git config user.email` matches `developer11.intxk@gmail.com`.
-    - Integrated `check-spend` alias to monitor Google Cloud billing quotas and maintain the $4.50 budget cap.
-    - This optimizes for cost-effective LLM usage while providing easy access to more powerful models when needed.
-    - Updated project management documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
->>>>>>> 51730ab (Sync: 2026-05-04 11:48 [DESKTOP-KGEA1II])
 
 ## [2026-04-30-12-15-00] - Micro Editor TrueColor Type Fix
 - **Bug Fix**: Resolved type error for the `truecolor` setting in Micro.

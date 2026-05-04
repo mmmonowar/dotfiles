@@ -166,15 +166,15 @@ function dot-reload() {
 if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]; then
     # Default to the most cost-effective model
     # 1 million tokens = ~$0.07 (This will make $5 last forever)
-    alias gemini="gemini --model flash-lite"
+    alias gemini="timeout 1h gemini --model flash-lite"
 
     # Use this for your actual TUI design/logic questions
     # 1 million tokens = ~$0.35
-    alias gemini-flash="gemini --model flash-3.0"
+    alias gemini-flash="timeout 1h gemini --model flash-3.0"
 
     # Only use this when you are totally stuck
     # 1 million tokens = ~$7.00 (This is the only one that could break a $5 budget)
-    alias gemini-pro="gemini --model pro-3.1"
+    alias gemini-pro="timeout 1h gemini --model pro-3.1"
 
     # Simple alias to check if you're over-pacing for your $4.50 cap
     alias check-spend="gcloud beta billing quotas list --format='table(limit,usage)'"
@@ -190,4 +190,11 @@ if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]
         fi
         gemini "$@"
     }
+fi
+
+# 9. LOCAL OVERRIDES (Not synced via Git)
+# -----------------------------------------------------------------------------
+if [[ -f "$HOME/.zshrc_local" ]]; then
+    # shellcheck disable=SC1090
+    source "$HOME/.zshrc_local"
 fi

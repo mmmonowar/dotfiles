@@ -44,9 +44,11 @@
 - [x] Implement `search` alias via `ddgr`
 - [x] Set up SSH agent auto-initialization for WSL
 - [x] Implement integrated `dot-reload` for Zsh and Tmux
-- [x] Implement conditional AI aliases for Gemini CLI (flash-lite, flash-3.0, pro-3.1) and billing monitoring
+- [x] Implement conditional AI aliases for Gemini CLI (flash-lite, flash-3.0, pro-3.1) with 1h session timeout and billing monitoring
+- [x] Implement support for local-only, machine-specific Zsh overrides (`~/.zshrc_local`)
 - [x] Implement Gemini CLI safety wrapper (`ask_gemini`) for large file filtering
 - [x] Implement cross-platform synchronization for Gemini CLI settings.
+- [x] Implement 'Kill Gemini' menu item in command palette to terminate processes across sessions.
 
 ## ✅ Micro Editor Customization
 - [x] Define `PolyMark.yaml` syntax rules

@@ -122,8 +122,14 @@ function main_menu() {
                 push) trigger_zsh_func "dot-sync" ;;
                 reload) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
                 scan) trigger_zsh_func "dot-scan" ;;
+                kill_gemini) kill_gemini_processes ;;
                 fix_alt) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
                 exit) exit 0 ;;
+            esac
+            ;;
+    esac
+}
+              exit) exit 0 ;;
             esac
             ;;
     esac

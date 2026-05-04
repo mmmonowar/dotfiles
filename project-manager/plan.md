@@ -71,8 +71,10 @@
 - **Goal**: Ensure long-term stability and performance.
 - **Steps**:
     - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.
-    - [x] Implement conditional AI model aliases and billing tracking to optimize LLM usage costs.
+    - [x] Implement conditional AI model aliases with 1h session timeout and billing tracking to optimize LLM usage costs.
+    - [x] Implement support for local-only Zsh overrides (`~/.zshrc_local`).
     - [x] Implement a large-file safety filter (`ask_gemini`) for Gemini CLI interactions.
     - [x] Enable cross-platform synchronization of non-sensitive Gemini CLI settings.
+    - [x] Implement 'Kill Gemini' menu item for rapid process termination.
     - [ ] Research methods to speed up `brew bundle dump`.
     - [ ] Audit configurations for cross-platform redundancies.

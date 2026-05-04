@@ -40,14 +40,16 @@
 - **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading with built-in self-healing logic.
 - **Accounting Integration**: Automated symbolic linking of the `hledger` journal file (`~/.hledger.journal`) to the `Accounting-Management-System` repository. This ensures that all accounting data "stays" in the dedicated repository and is visible as `hledger.journal` for easy tracking, while remaining fully accessible to the `hledger` CLI on any device.
 - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
-- **AI & LLM Aliases**: Context-aware aliases for Gemini CLI (`gemini`, `gemini-flash`, `gemini-pro`), billing monitoring (`check-spend`), and a large-file safety wrapper (`ask_gemini`) that are conditionally enabled based on the git user email, optimizing for cost and performance.
+- **Local Overrides**: Support for machine-specific, non-synced configurations via `~/.zshrc_local` for local environment tailoring.
+- **AI & LLM Aliases**: Context-aware aliases for Gemini CLI (`gemini`, `gemini-flash`, `gemini-pro`) with a 1-hour session timeout, billing monitoring (`check-spend`), and a large-file safety wrapper (`ask_gemini`) that are conditionally enabled based on the git user email, optimizing for cost and performance.
 - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).
 - **Aesthetics**: Support for `zsh-syntax-highlighting` and customized `ls` colors across platforms.
 
 ## 🤖 Gemini CLI Integration
-- **Model-Specific Aliases**: Context-aware aliases (`gemini`, `gemini-flash`, `gemini-pro`) and billing monitoring (`check-spend`) conditionally enabled based on git user email.
-- **Configuration Sync**: Non-sensitive settings (model choice, safety thresholds, temperature) are synchronized across platforms via `common/gemini/settings.json`.
+- [x] **Model-Specific Aliases**: Context-aware aliases (`gemini`, `gemini-flash`, `gemini-pro`) and billing monitoring (`check-spend`) conditionally enabled based on git user email.
+- [x] **Configuration Sync**: Non-sensitive settings (model choice, safety thresholds, temperature) are synchronized across platforms via `common/gemini/settings.json`.
+- [x] **Process Management**: 'Kill Gemini' command palette item to instantly terminate all Gemini-related processes across all tmux sessions while preserving the active agent.
 
 ## 🚀 One-Command Installation
 - **Unified Installer**: A single `install.sh` script that works across macOS, WSL, and generic Linux.
