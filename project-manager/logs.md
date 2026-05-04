@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## [2026-05-01-13-00-00] - Scratchpad Management Enhancements
 - **Feature**: Added a dedicated "Scratchpad Settings" menu in the command palette.
 - **Improvement**: Users can now update scratchpad paths for Mac, WSL, and Linux directly from the UI.
@@ -24,6 +25,15 @@
     - Integrated the sync script into `dot-sync` across all platforms (`mac`, `linux`, `wsl`).
     - The sync only triggers if the source file exists and the destination repository (`~/GitHub/INTxK/Accounting-Management-System`) is present on the system.
     - Updated `project-manager/` documentation to reflect the new accounting integration.
+=======
+## [2026-05-04-12-00-00] - Conditional AI & LLM Aliases
+- **Feature**: Implemented model-specific Gemini CLI aliases conditional on git user email.
+- **Details**:
+    - Added a new section `8. AI & LLM ALIASES` to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
+    - Aliases `gemini` (flash-lite), `gemini-flash` (flash-3.0), and `gemini-pro` (pro-3.1) are only enabled if `git config user.email` matches `developer11.intxk@gmail.com`.
+    - This optimizes for cost-effective LLM usage while providing easy access to more powerful models when needed.
+    - Updated project management documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
+>>>>>>> 51730ab (Sync: 2026-05-04 11:48 [DESKTOP-KGEA1II])
 
 ## [2026-04-30-12-15-00] - Micro Editor TrueColor Type Fix
 - **Bug Fix**: Resolved type error for the `truecolor` setting in Micro.

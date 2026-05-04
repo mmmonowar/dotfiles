@@ -160,3 +160,19 @@ function dot-reload() {
 
 # Always update security tools on start
 (brew upgrade gemini-cli shellcheck lynis &>/dev/null &)
+
+# 8. AI & LLM ALIASES
+# -----------------------------------------------------------------------------
+if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]; then
+    # Default to the most cost-effective model
+    # 1 million tokens = ~$0.07 (This will make $5 last forever)
+    alias gemini="gemini --model flash-lite"
+
+    # Use this for your actual TUI design/logic questions
+    # 1 million tokens = ~$0.35
+    alias gemini-flash="gemini --model flash-3.0"
+
+    # Only use this when you are totally stuck
+    # 1 million tokens = ~$7.00 (This is the only one that could break a $5 budget)
+    alias gemini-pro="gemini --model pro-3.1"
+fi
