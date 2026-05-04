@@ -26,6 +26,14 @@
     - The sync only triggers if the source file exists and the destination repository (`~/GitHub/INTxK/Accounting-Management-System`) is present on the system.
     - Updated `project-manager/` documentation to reflect the new accounting integration.
 =======
+## [2026-05-04-12-30-00] - Gemini CLI Safety Wrapper
+- **Feature**: Implemented `ask_gemini` to filter large files.
+- **Details**:
+    - Added `ask_gemini` function to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
+    - The function prevents Gemini from processing files larger than 50,000 bytes, providing a safety warning to manage cost and context window.
+    - Handles platform-specific `stat` syntax for macOS and Linux.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
+
 ## [2026-05-04-12-15-00] - Gemini CLI Settings Synchronization
 - **Feature**: Enabled cross-platform sync for non-sensitive Gemini CLI settings.
 - **Details**:

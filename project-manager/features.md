@@ -40,7 +40,7 @@
 - **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading with built-in self-healing logic.
 - **Accounting Integration**: Automated symbolic linking of the `hledger` journal file (`~/.hledger.journal`) to the `Accounting-Management-System` repository. This ensures that all accounting data "stays" in the dedicated repository and is visible as `hledger.journal` for easy tracking, while remaining fully accessible to the `hledger` CLI on any device.
 - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
-- **AI & LLM Aliases**: Context-aware aliases for Gemini CLI (`gemini`, `gemini-flash`, `gemini-pro`) and billing monitoring (`check-spend`) that are conditionally enabled based on the git user email, optimizing for cost and performance.
+- **AI & LLM Aliases**: Context-aware aliases for Gemini CLI (`gemini`, `gemini-flash`, `gemini-pro`), billing monitoring (`check-spend`), and a large-file safety wrapper (`ask_gemini`) that are conditionally enabled based on the git user email, optimizing for cost and performance.
 - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.
 - **Automated SSH**: Automatic SSH agent initialization and key loading (WSL).
 - **Aesthetics**: Support for `zsh-syntax-highlighting` and customized `ls` colors across platforms.

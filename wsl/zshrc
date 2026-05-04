@@ -216,4 +216,16 @@ if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]
 
     # Simple alias to check if you're over-pacing for your $4.50 cap
     alias check-spend="gcloud beta billing quotas list --format='table(limit,usage)'"
+
+    # Simple safety wrapper for large files
+    ask_gemini() {
+        if [[ -f "$1" ]]; then
+            local file_size=$(stat -c%s "$1")
+            if (( file_size > 50000 )); then
+                echo "󰒃  Safety: File is too large ($file_size bytes). Use grep or tail first."
+                return 1
+            fi
+        fi
+        gemini "$@"
+    }
 fi

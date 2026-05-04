@@ -45,6 +45,7 @@
 - [x] Set up SSH agent auto-initialization for WSL
 - [x] Implement integrated `dot-reload` for Zsh and Tmux
 - [x] Implement conditional AI aliases for Gemini CLI (flash-lite, flash-3.0, pro-3.1) and billing monitoring
+- [x] Implement Gemini CLI safety wrapper (`ask_gemini`) for large file filtering
 - [x] Implement cross-platform synchronization for Gemini CLI settings.
 
 ## ✅ Micro Editor Customization
