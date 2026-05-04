@@ -175,4 +175,7 @@ if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]
     # Only use this when you are totally stuck
     # 1 million tokens = ~$7.00 (This is the only one that could break a $5 budget)
     alias gemini-pro="gemini --model pro-3.1"
+
+    # Simple alias to check if you're over-pacing for your $4.50 cap
+    alias check-spend="gcloud beta billing quotas list --format='table(limit,usage)'"
 fi

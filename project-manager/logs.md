@@ -31,6 +31,7 @@
 - **Details**:
     - Added a new section `8. AI & LLM ALIASES` to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
     - Aliases `gemini` (flash-lite), `gemini-flash` (flash-3.0), and `gemini-pro` (pro-3.1) are only enabled if `git config user.email` matches `developer11.intxk@gmail.com`.
+    - Integrated `check-spend` alias to monitor Google Cloud billing quotas and maintain the $4.50 budget cap.
     - This optimizes for cost-effective LLM usage while providing easy access to more powerful models when needed.
     - Updated project management documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
 >>>>>>> 51730ab (Sync: 2026-05-04 11:48 [DESKTOP-KGEA1II])

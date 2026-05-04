@@ -71,6 +71,6 @@
 - **Goal**: Ensure long-term stability and performance.
 - **Steps**:
     - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.
-    - [x] Implement conditional AI model aliases to optimize LLM usage costs.
+    - [x] Implement conditional AI model aliases and billing tracking to optimize LLM usage costs.
     - [ ] Research methods to speed up `brew bundle dump`.
     - [ ] Audit configurations for cross-platform redundancies.
