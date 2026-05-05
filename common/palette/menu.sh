@@ -17,15 +17,16 @@ function list_all_items() {
         echo -e "2 | 󰈙  Project Documents... | ${dim}Read all documentation in project-manager/${reset} | CAT | docs"
         echo -e "3 | 󰒓  Settings... | ${dim}Tweak security and UX preferences${reset} | CAT | settings"
         echo -e "4 |   Execute Shortcut... | ${dim}Run Tmux window and pane commands${reset} | CAT | shortcuts"
-        echo -e "5 | 󰈙  Scratchpad | ${dim}Open worklog scratch-pad in micro${reset} | ACTION | scratchpad"
-        echo -e "6 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset} | ACTION | install"
-        echo -e "7 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
-        echo -e "8 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
-        echo -e "9 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset} | ACTION | push"
-        echo -e "10 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
-        echo -e "11 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset} | ACTION | scan"
-        echo -e "12 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
-        echo -e "13 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
+        echo -e "5 | 󰒓  PolyOS-dev... | ${dim}Manage PolyOS development repositories and tools${reset} | CAT | polyos_dev"
+        echo -e "6 | 󰈙  Scratchpad | ${dim}Open worklog scratch-pad in micro${reset} | ACTION | scratchpad"
+        echo -e "7 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset} | ACTION | install"
+        echo -e "8 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
+        echo -e "9 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
+        echo -e "10 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset} | ACTION | push"
+        echo -e "11 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
+        echo -e "12 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset} | ACTION | scan"
+        echo -e "13 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
+        echo -e "14 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
     else
         # Flattened Global Discovery
         # 1. Apps
@@ -64,9 +65,88 @@ function list_all_items() {
         ((idx++)); echo -e "$idx | 󰆴  Uninstall App | ${dim}Remove and sync${reset} | ACTION | uninstall"
         ((idx++)); echo -e "$idx | 󰇚  Pull Changes | ${dim}Fetch from GitHub${reset} | ACTION | pull"
         ((idx++)); echo -e "$idx | 󰇶  Push Changes | ${dim}Sync to GitHub${reset} | ACTION | push"
+        ((idx++)); echo -e "$idx | 󰇚  poly-sync | ${dim}Clone or update all PolyOS repositories from GitHub${reset} | ACTION | poly-sync"
         ((idx++)); echo -e "$idx |   Reload All Configs | ${dim}Refresh env${reset} | ACTION | reload"
         ((idx++)); echo -e "$idx | 󰒃  Security Scan | ${dim}Run audit${reset} | ACTION | scan"
     fi
+}
+
+function documents_menu() {
+    local docs_path="${REPO_PATH}/project-manager"
+    if [[ ! -d "$docs_path" ]]; then
+        echo -e "󰅙  Documentation path missing at:
+$docs_path"
+        sleep 2
+        main_menu
+        return
+    fi
+
+    local list_items=""
+    local idx=0
+    while IFS= read -r file; do
+        ((idx++))
+        local rel_path="${file#$docs_path/}"
+        local display_name=$(echo "$rel_path" | sed -E 's/\.md$//; s/[\/-]/ /g; s/\b(.)/\u\1/g')
+        list_items+="$idx | 󰈙  $display_name | \033[2mRead $rel_path\033[0m | DOC | $file
+"
+    done < <(find "$docs_path" -type f -name "*.md" | sort)
+    list_items+="$((idx+1)) | 󰅙  Back | \033[2mReturn to main menu\033[0m | ACTION | main_menu"
+
+    local selection=$(echo -e "$list_items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󰈙  " \
+        --header "Project Documentation" \
+        --delimiter ' \| ' \
+        --with-nth 1,2,3)
+
+    if [[ -z "$selection" ]]; then main_menu; return; fi
+
+    local type arg
+    type=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+    arg=$(echo "$selection" | cut -d '|' -f 5 | xargs)
+
+    case "$type" in
+        DOC) read_document "$arg"; documents_menu ;;
+        ACTION) main_menu ;;
+    esac
+}
+
+function polyos_dev_menu() {
+    local dim="\033[2m"
+    local reset="\033[0m"
+    
+    local list_items=""
+    list_items+="1 | 󰇚  poly-sync | ${dim}Clone or update all PolyOS repositories from GitHub${reset} | ACTION | poly-sync
+"
+    list_items+="2 | 󰅙  Back | ${dim}Return to main menu${reset} | ACTION | main_menu"
+
+    local selection=$(echo -e "$list_items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󰒓  " \
+        --header "PolyOS Development Tools" \
+        --delimiter ' \| ' \
+        --with-nth 1,2,3)
+
+    if [[ -z "$selection" ]]; then main_menu; return; fi
+
+    local type arg
+    type=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+    arg=$(echo "$selection" | cut -d '|' -f 5 | xargs)
+
+    case "$type" in
+        ACTION)
+            case "$arg" in
+                poly-sync) trigger_zsh_func "poly-sync" ;;
+                main_menu) main_menu ;;
+            esac
+            ;;
+    esac
 }
 
 function main_menu() {
@@ -100,6 +180,7 @@ function main_menu() {
                 docs) documents_menu ;;
                 settings) settings_menu ;;
                 shortcuts) shortcuts_menu ;;
+                polyos_dev) polyos_dev_menu ;;
             esac
             ;;
         APP) trigger_zsh_func "$arg" ;;
@@ -120,16 +201,12 @@ function main_menu() {
                 uninstall) uninstall_app ;;
                 pull) trigger_zsh_func "dot-pull" ;;
                 push) trigger_zsh_func "dot-sync" ;;
+                poly-sync) trigger_zsh_func "poly-sync" ;;
                 reload) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
                 scan) trigger_zsh_func "dot-scan" ;;
                 kill_gemini) kill_gemini_processes ;;
                 fix_alt) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
                 exit) exit 0 ;;
-            esac
-            ;;
-    esac
-}
-              exit) exit 0 ;;
             esac
             ;;
     esac

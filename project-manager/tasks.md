@@ -17,6 +17,7 @@
 - [x] Implement interactive install/uninstall functions
 - [x] Implement persistent "Settings" menu for UX preferences (Security toggles)
 - [x] Implement dedicated Scratchpad Settings menu for cross-platform path management
+- [x] Implement PolyOS-dev sub-menu and `poly-sync` integration in the Command Palette
 - [x] Bind `Alt+p` to trigger palette popup in `tmux.conf`
 
 ## ✅ Advanced Tmux Configuration
@@ -37,6 +38,7 @@
 - [x] Create `dot-sync` and `dot-pull` for Git automation
 - [x] Implement automated `hledger` journal synchronization and symbolic linking in `dot-sync`
 - [x] Implement self-healing logic in `dot-sync` to automatically install missing dependencies
+- [x] Implement `poly-sync` alias to clone/update all PolyOS repositories from GitHub
 - [x] Implement automatic background Gemini CLI updates on shell startup
 - [x] Implement Smart Brewfile Sync (auto-dump/auto-install)
 - [x] Set any installation via dotfiles to be verbose

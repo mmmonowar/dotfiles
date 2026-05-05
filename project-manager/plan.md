@@ -28,6 +28,7 @@
     - [x] Integrate `brew bundle dump` into `dot-sync`.
     - [x] Integrate `brew bundle` into `dot-pull`.
     - [x] Automate `dot-sync` within the Command Palette for package operations.
+    - [x] Implement `poly-sync` to automate cloning and updating PolyOS development repositories from GitHub.
     - [x] Enhance Tmux session management workflows.
 
 ### 4. PolyMark Syntax & Theme Translation

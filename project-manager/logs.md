@@ -1,3 +1,18 @@
+## [2026-05-05-11-30-00] - Fix poly-sync JSON field error
+- **Bug Fix**: Resolved `Unknown JSON field: "fullName"` error in `poly-sync` alias.
+- **Details**:
+    - Changed the GitHub CLI field from `fullName` (invalid) to `nameWithOwner` (correct) in the `poly-sync` alias across `wsl/zshrc`, `linux/zshrc`, and `mac/.zshrc`.
+    - This fix ensures that the command correctly fetches the repository list and continues to intelligently clone or pull repositories.
+
+## [2026-05-05-11-00-00] - PolyOS-dev & poly-sync Integration
+- **Feature**: Implemented a robust `poly-sync` command and integrated it into the Command Palette.
+- **Details**:
+    - Added a robust `poly-sync` alias to `wsl/zshrc`, `linux/zshrc`, and `mac/.zshrc`. This version uses `gh` JSON output and a `while` loop to intelligently **clone new repositories or pull updates for existing ones**, ensuring the local workspace is always in sync with GitHub.
+    - Implemented a new `PolyOS-dev` category in the Command Palette (`common/palette/menu.sh`) with a sub-menu for `poly-sync`.
+    - Integrated `poly-sync` into the flattened global discovery search of the Command Palette.
+    - Fixed a code duplication issue in `common/palette/menu.sh` and standardized the menu structure.
+    - Updated project documentation (`plan.md`, `features.md`, `tasks.md`, `logs.md`) to reflect the new capabilities.
+
 ## [2026-05-04-13-30-00] - Local-Only Zsh Overrides
 - **Feature**: Implemented support for machine-specific Zsh configurations.
 - **Details**:

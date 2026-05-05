@@ -14,6 +14,7 @@
 - **Safety Measures**: Integrated confirmation prompts for destructive actions (uninstallation, session killing) to prevent accidental execution.
 - **Modern UI**: Replaced standard emojis with consistent **Nerd Font glyphs** for a professional, high-fidelity terminal experience.
 - **Package Management**: Interactive UI to install or uninstall Homebrew packages with **automatic synchronization** to GitHub.
+- **PolyOS-dev Integration**: Dedicated sub-menu for PolyOS development tools, featuring `poly-sync` for automated cloning and updating of project repositories from GitHub.
 - **Scratchpad Management**: Quick-access worklog with customizable paths per OS, directly configurable from the UI.
 - **Workflow Sync**: Integrated commands to pull latest changes or sync local updates to GitHub.
 
