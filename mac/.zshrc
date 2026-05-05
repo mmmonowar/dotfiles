@@ -29,6 +29,7 @@ fi
 # Add this to your ~/.zshrc or ~/.bashrc
 alias search='ddgr --reg en-us --num 5'
 alias glow='glow -w 80'
+alias poly-sync="gh repo list INTxK --topic polyos --limit 1000 | awk '{print \$1}' | xargs -L1 gh repo clone"
 
 # Reload the tmux config for the current session
 alias reload-tmux='dot-reload'
