@@ -1,3 +1,13 @@
+## [2026-05-14-10-00-00] - GUI-style Selection & Copy for Micro and Tmux
+- **Feature**: Implemented `Shift+Arrow` selection and `Ctrl+c` copy functionality.
+- **Details**:
+    - **Micro**: Updated `common/micro/bindings.json` to explicitly support `ShiftUp`, `ShiftDown`, `ShiftLeft`, `ShiftRight` for selection and `Ctrl-c` for copying.
+    - **Tmux**: 
+        - Implemented `is_editor` detection logic to prevent keybinding conflicts with text editors like `micro` or `vim`.
+        - Added root-level bindings for `Shift+Arrows` to automatically enter `copy-mode` and begin selection when not in an editor.
+        - Enhanced `copy-mode-vi` to support `Shift+Arrow` selection (GUI-like) and `Ctrl-c` to copy selection to the system clipboard (using `pbcopy` on macOS and `xclip` on Linux) and cancel copy mode.
+    - Updated project documentation (`features.md`, `tasks.md`, `logs.md`) to reflect the new capabilities.
+
 ## [2026-05-05-11-30-00] - Fix poly-sync JSON field error
 - **Bug Fix**: Resolved `Unknown JSON field: "fullName"` error in `poly-sync` alias.
 - **Details**:

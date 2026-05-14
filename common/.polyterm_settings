@@ -1,6 +1,6 @@
 # PolyTerm User Experience Settings
 export POLYTERM_SCAN_ON_PUSH=false
-export POLYTERM_SCAN_ON_PULL=false
+export POLYTERM_SCAN_ON_PULL="true"
 
 # Scratchpad Paths
 export POLYTERM_SCRATCHPAD_LINUX="/home/mustafa/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"

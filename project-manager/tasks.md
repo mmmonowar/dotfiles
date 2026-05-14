@@ -56,6 +56,7 @@
 - [x] Define `PolyMark.yaml` syntax rules
 - [x] Create `PolyMark.micro` colorscheme
 - [x] Link `common/micro/` configurations to `~/.config/micro/`
+- [x] Implement GUI-style text selection (Shift+Arrows) and copy (Ctrl+C) for Micro and Tmux
 
 ## ✅ PolyMark Translation
 - [x] Parse `polymark.sublime-syntax` contexts and matches

@@ -19,6 +19,7 @@
     - [x] Refine UI ergonomics (Nerd Fonts, alignment, and safety prompts).
     - [x] Implement dedicated Scratchpad Settings menu for cross-platform path management.
     - [x] Implement centralized Peppermint Design System and theme synchronization.
+    - [x] Implement GUI-style text selection (Shift+Arrows) and copy (Ctrl+C) for Micro and Tmux.
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.

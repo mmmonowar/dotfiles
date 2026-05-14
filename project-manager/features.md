@@ -23,6 +23,7 @@
 - [x] **2x2 Grid Management**: Custom bindings (`Alt+1`, `Alt+2`) for rapid tiling and pane management (limited to 4 panes for focus).
 - [x] **Smart Dashboard**: Auto-starts a session named "Dashboard" with `btop` and `docker ps` on launch.
 - [x] **Dynamic Clipboard**: Context-aware clipboard integration using `pbcopy` (macOS) and `xclip` (Linux).
+- [x] **GUI-style Selection**: Support for `Shift+Arrow` keys to enter copy-mode and select text in the scrollback, with `Ctrl+c` to copy to the system clipboard.
 - [x] **Aesthetics**: Integrated with **Catppuccin** theme and a custom-formatted status bar.
 - [x] **Sublime-Inspired Aesthetics**: Enhanced Tmux configuration with pure black backgrounds (`#000000`), vibrant teal active borders (`#14b8a6`), and subtle dark grey inactive borders (`#2a2a2a`) for an immersive editor-like feel.
 - [x] **Clean Interface**: Border text labels are disabled (`pane-border-status off`) to maximize screen real estate and minimize visual noise.
@@ -67,6 +68,7 @@
 ## 📝 Micro Editor Customization
 - **PolyMark Syntax**: Custom syntax highlighting rules defined in `PolyMark.yaml`.
 - **Theming**: A dedicated `PolyMark.micro` colorscheme for a consistent editing experience.
+- **GUI-style Selection**: Support for `Shift+Arrow` keys for text selection and `Ctrl+c` for copying to the system clipboard, ensuring a familiar editor experience.
 
 ## 🔄 PolyMark Translation (Sublime to Micro)
 - **Automated Mapping**: Logic to translate `.sublime-syntax` YAML rules to Micro's `.yaml` syntax.

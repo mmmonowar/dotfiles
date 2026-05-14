@@ -73,6 +73,11 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
     - **Visual Padding**: An empty border header creates "air" at the top of each pane for a cleaner look.
     - **Active Highlighting**: The active pane is displayed with a bright blue border and full background brightness, while inactive panes are slightly dimmed for better focus.
 
+### Selection & Clipboard
+- **`Shift+Arrows`**: While not in an editor, holding Shift and pressing an arrow key will automatically enter Tmux **copy-mode** and begin text selection.
+- **`Ctrl+c`**: While in copy-mode, copies the current selection to the system clipboard and exits copy-mode.
+- **`Mouse Support`**: Mouse dragging also triggers selection and copies to the clipboard on release.
+
 ### System & Navigation
 - **`Alt+p`**: Open Command Palette
 - **`Alt+r`**: Reload Configuration (`dot-reload`). This reloads both Zsh and Tmux configs even if executed from a non-Tmux shell.
@@ -120,6 +125,8 @@ Security scans are automatically performed during:
 PolyTerm includes a customized **Micro** editor configuration located in `common/micro`.
 - **Syntax**: Features the custom **PolyMark** syntax highlighting.
 - **Theme**: Uses the `PolyMark.micro` colorscheme for a high-contrast, aesthetic editing experience.
+- **Selection**: Supports **GUI-style selection** using `Shift+Arrows`.
+- **Copying**: Use **`Ctrl+c`** to copy selected text to the system clipboard.
 - **Deployment**: Configurations are automatically symlinked to `~/.config/micro`.
 
 ---

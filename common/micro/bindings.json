@@ -1,1 +1,7 @@
-{}
+{
+    "ShiftUp": "SelectUp",
+    "ShiftDown": "SelectDown",
+    "ShiftLeft": "SelectLeft",
+    "ShiftRight": "SelectRight",
+    "Ctrl-c": "Copy"
+}
