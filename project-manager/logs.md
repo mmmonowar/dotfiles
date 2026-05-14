@@ -1,3 +1,16 @@
+## [2026-05-14-11-00-00] - Tmux Robustness & Selection Fix
+- **Feature**: Fixed Tmux configuration errors and improved selection/copy reliability.
+- **Details**:
+    - **Tmux**: 
+        - Fixed a syntax error in the `M-1` (Smart Pane Creation) binding where `$(...)` was expanding too early during sourcing.
+        - Refined `is_editor` detection to be more robust across platforms (macOS/Linux) and added `hledger` to the list.
+        - Disabled **`extended-keys`** which was causing character leakage (`[1;2A`) in iTerm2 and Ghostty.
+        - Optimized the **`is_editor`** check for macOS, making it faster and more reliable by using direct TTY filtering.
+        - Added **`Ctrl+Shift+Arrows`** as a fallback for macOS users where `Shift+Arrows` might be intercepted by the terminal or OS for window management.
+        - Enhanced `Shift+Arrow` selection and `Ctrl+c` copy-to-clipboard functionality to ensure it takes effect correctly.
+        - Added explicit `copy-mode-vi` bindings for `S-Up`, `S-Down`, `S-Left`, and `S-Right` to allow seamless selection extension.
+    - **Documentation**: Updated `issues.md` and `logs.md` to reflect the fixes.
+
 ## [2026-05-14-10-00-00] - GUI-style Selection & Copy for Micro and Tmux
 - **Feature**: Implemented `Shift+Arrow` selection and `Ctrl+c` copy functionality.
 - **Details**:

@@ -1,5 +1,10 @@
 # Project Issues
 
+## ✅ Tmux Sourcing & Selection Issues
+- **Status**: Resolved
+- **Description**: Sourcing `.tmux.conf` resulted in syntax errors (early expansion of `$(...)`) and `Shift+Arrow` selection/`Ctrl+c` copy didn't always take effect.
+- **Resolution**: Fixed `M-1` binding by using single quotes to delay shell expansion. Refined `is_editor` detection for better macOS compatibility. Added explicit `copy-mode-vi` bindings for `Shift+Arrows` to ensure seamless selection.
+
 ## ✅ Micro PolyMark Theme Missing (Linux)
 - **Status**: Resolved
 - **Description**: The PolyMark colorscheme was present in the repository but not activated by default in the Micro editor, leading to it appearing "missing" on Linux.
