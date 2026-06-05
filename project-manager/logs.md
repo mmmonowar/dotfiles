@@ -1,14 +1,15 @@
-## [2026-06-05-13-15-00] - Minimalist Tmux Status Bar & Aesthetic Refinement
-- **Feature**: Redesigned the Tmux status bar for a cleaner, high-contrast aesthetic.
+## [2026-06-05-13-30-00] - Peppermint Minimalist Tmux Status Bar
+- **Feature**: Re-aligned the minimalist tmux status bar with the master Peppermint Design System.
 - **Details**:
-    - **Seamless Background**: Set the status bar background to `default` (transparent) to match the terminal background.
-    - **Subtle Branding**: Placed the session name on the far left using a low-contrast gray (`#6c7086`).
-    - **Focused Window List**:
-        - Inactive windows now use a subtle gray dot.
-        - The active window is highlighted with a bright blue dot, bold text, and modern focus icons (`⸎`).
-    - **Clean Right Side**: Simplified the date and time display (`YYYY-MM-DD hh:mm:ss`) with a minimalist gray style.
-    - **Faint Pane Borders**: Updated pane borders to be incredibly faint (`#1e1e2e` and `#313244`) for a distraction-free environment.
-    - **Global Theme Sync**: Synchronized the message line and copy mode selection colors with the new minimalist palette.
+    - **Palette Alignment**: Swapped temporary Catppuccin colors for the official Peppermint palette (Teal `#14b8a6`, Pure Black `#000000`, Bright Black `#2a2a2a`, White `#b4b4b4`).
+    - **Immersive Canvas**: Re-established the pure black (`#000000`) background for the status bar and panes to ensure a seamless "Sublime Focus" experience.
+    - **Refined Accents**:
+        - Active window highlights and focal icons (`⸎`) now use Peppermint Teal.
+        - Inactive elements and session name use Peppermint White for subtle contrast.
+    - **UI Synchronization**: Updated the message line, command prompt, and selection highlights to use Peppermint Teal.
+    - **Pane Borders**: Restored Peppermint Bright Black for inactive borders and Peppermint Teal for active borders.
+
+## [2026-06-05-13-15-00] - Minimalist Tmux Status Bar & Aesthetic Refinement (Superseded)
 
 ## [2026-06-05-12-00-00] - WSL Zsh Regex Module Fix
 - **Feature**: Documented fix for WSL Zsh regex module loading error.

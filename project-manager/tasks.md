@@ -25,9 +25,9 @@
 - [x] Implement 2x2 grid management (Alt+1, Alt+2)
 - [x] Configure Smart Dashboard (btop/docker) auto-start
 - [x] Set up cross-platform clipboard (pbcopy/xclip)
-- [x] Integrate minimalist, transparent status bar with focal icons
+- [x] Integrate minimalist Peppermint status bar with focal icons
 - [x] Implement centralized Peppermint Design System (`DESIGN.md` and `common/design/`)
-- [x] Apply Sublime Focus aesthetic to Tmux (transparent bg, blue active accents, faint borders)
+- [x] Apply Sublime Focus aesthetic to Tmux (pure black bg, teal active accents, bright black borders)
 
 ## ✅ Declarative Package Management
 - [x] Define `mac/Brewfile` with core CLI tools and VSCode extensions
