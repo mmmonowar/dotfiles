@@ -1,3 +1,9 @@
+## [2026-06-05-12-00-00] - WSL Zsh Regex Module Fix
+- **Feature**: Documented fix for WSL Zsh regex module loading error.
+- **Details**:
+    - Identified that `zsh/regex` failing to load with `regex.bundle` or `.so` missing on WSL is due to a stale completion cache (`.zcompdump`) after Zsh upgrades.
+    - Added troubleshooting steps to `project-manager/issues.md` instructing the user to remove `~/.zcompdump*` and restart the shell, or reinstall Zsh via Homebrew.
+
 ## [2026-05-14-11-00-00] - Tmux Robustness & Selection Fix
 - **Feature**: Fixed Tmux configuration errors and improved selection/copy reliability.
 - **Details**:

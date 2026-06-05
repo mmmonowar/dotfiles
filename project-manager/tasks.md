@@ -81,6 +81,7 @@
 - [x] Standardize `OS_ENV` across all platforms to fix Brewfile path resolution in `dot-pull` and `dot-sync`
 - [x] Fix `mac/.zshrc` and `linux/zshrc` corruption to resolve Tmux configuration execution errors
 - [x] Resolve Homebrew `Permission denied` errors by automating ownership fixes for `/home/linuxbrew/.linuxbrew`
+- [x] Document fix for WSL Zsh regex module loading error
 
 ## ✅ Security & Vulnerability Management
 - [x] Create `common/security.sh` with `dot-scan` function

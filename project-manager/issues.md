@@ -38,3 +38,8 @@
 - **Description**: `cargo` failed with `libllhttp.so.9.3: cannot open shared object file` after a background Homebrew update.
 - **Resolution**: Upgraded and reinstalled `libgit2` (which depends on `llhttp`) and `rust`. This correctly linked the binaries to the newer `llhttp` version (9.4.1) and resolved the dependency mismatch.
 
+## ✅ Zsh Regex Module Load Error (WSL)
+- **Status**: Resolved
+- **Description**: Zsh failed to load module `zsh/regex` with `cannot open shared object file: No such file or directory` or looking for `regex.bundle` instead of a `.so` file on WSL. This is usually caused by a stale completion cache after a Homebrew Zsh upgrade.
+- **Resolution**: Cleared the corrupted cache using `rm -f ~/.zcompdump*` and restarted the shell using `exec zsh`. If the issue persists, `brew reinstall zsh` ensures the modules are correctly placed.
+
