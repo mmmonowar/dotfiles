@@ -1,3 +1,15 @@
+## [2026-06-05-13-15-00] - Minimalist Tmux Status Bar & Aesthetic Refinement
+- **Feature**: Redesigned the Tmux status bar for a cleaner, high-contrast aesthetic.
+- **Details**:
+    - **Seamless Background**: Set the status bar background to `default` (transparent) to match the terminal background.
+    - **Subtle Branding**: Placed the session name on the far left using a low-contrast gray (`#6c7086`).
+    - **Focused Window List**:
+        - Inactive windows now use a subtle gray dot.
+        - The active window is highlighted with a bright blue dot, bold text, and modern focus icons (`⸎`).
+    - **Clean Right Side**: Simplified the date and time display (`YYYY-MM-DD hh:mm:ss`) with a minimalist gray style.
+    - **Faint Pane Borders**: Updated pane borders to be incredibly faint (`#1e1e2e` and `#313244`) for a distraction-free environment.
+    - **Global Theme Sync**: Synchronized the message line and copy mode selection colors with the new minimalist palette.
+
 ## [2026-06-05-12-00-00] - WSL Zsh Regex Module Fix
 - **Feature**: Documented fix for WSL Zsh regex module loading error.
 - **Details**:

@@ -24,8 +24,8 @@
 - [x] **Smart Dashboard**: Auto-starts a session named "Dashboard" with `btop` and `docker ps` on launch.
 - [x] **Dynamic Clipboard**: Context-aware clipboard integration using `pbcopy` (macOS) and `xclip` (Linux).
 - [x] **GUI-style Selection**: Support for `Shift+Arrow` keys to enter copy-mode and select text in the scrollback, with `Ctrl+c` to copy to the system clipboard.
-- [x] **Aesthetics**: Integrated with **Catppuccin** theme and a custom-formatted status bar.
-- [x] **Sublime-Inspired Aesthetics**: Enhanced Tmux configuration with pure black backgrounds (`#000000`), vibrant teal active borders (`#14b8a6`), and subtle dark grey inactive borders (`#2a2a2a`) for an immersive editor-like feel.
+- [x] **Aesthetics**: Integrated with a custom-formatted minimalist status bar featuring a transparent background, subtle gray inactive elements, and a high-contrast blue focal window with modern icons (`⸎`).
+- [x] **Sublime-Inspired Aesthetics**: Enhanced Tmux configuration with transparent backgrounds, vibrant blue active accents (`#89b4fa`), and incredibly faint pane borders (`#1e1e2e`) for an immersive editor-like feel.
 - [x] **Clean Interface**: Border text labels are disabled (`pane-border-status off`) to maximize screen real estate and minimize visual noise.
 - [x] **Peppermint Design System**: Centralized design language in `DESIGN.md` for consistent high-contrast ergonomics.
 - [x] **Plugin Power**: Managed via `tpm` with support for `resurrect` and `continuum` for session persistence.
