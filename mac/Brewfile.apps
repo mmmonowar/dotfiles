@@ -17,3 +17,4 @@ brew "rust"
 brew "superfile"
 brew "tailscale"
 brew "watch"
+brew "tako8ki/tap/gobang", trusted: true
