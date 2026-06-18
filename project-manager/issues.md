@@ -53,25 +53,25 @@
 - **Description**: The unified installer `application-package/install.sh` uses `mapfile` on line 133 to read the selected apps. However, `mapfile` is a Bash 4.0+ feature, whereas macOS's default shell `/bin/bash` is version 3.2. Running the installer on a fresh Mac fails with `install.sh: line 133: mapfile: command not found`.
 - **Resolution**: Replaced the `mapfile` command with a standard `while read -r` loop that appends items to the `all_apps` array, ensuring compatibility with macOS's stock Bash 3.2 shell.
 
-## [ISSUE-11] 🛠️ Unsafe Global Shortcut in Tmux (Alt+r)
-- **Status**: Active
+## [ISSUE-11] ✅ Unsafe Global Shortcut in Tmux (Alt+r)
+- **Status**: Resolved
 - **Description**: Sourcing `tmux.conf` sets up a global shortcut `bind-key -n M-r send-keys "source ~/.zshrc && dot-reload" C-m` that executes `dot-reload` by sending keys directly to the active pane. If `Alt+r` is pressed while editing a file in `micro` or `vim`, or running an interactive command, the reload text will be written directly into the file buffer, causing potential code corruption.
-- **Proposed Resolution**: Guard the shortcut using the `is_editor` check to only allow shell reload when no interactive editor is running.
+- **Resolution**: Guarded the shortcut in `common/tmux.conf` using the `is_editor` helper. If an editor is active, `Alt+r` keys are forwarded to the editor; otherwise, the shell reload command is executed safely.
 
 ## [ISSUE-12] 🛠️ Broken Operator Precedence in Security Scanner find Command
 - **Status**: Active
 - **Description**: In `common/security.sh`, the shell script scanner evaluates file paths using: `find "$DOT_PATH" -maxdepth 3 -name "*.sh" -o -name "*zshrc" -not -path "*/.git/*"`. Because the `-o` operator has lower precedence than implicit `-and`, this is evaluated as `( -name "*.sh" ) OR ( -name "*zshrc" -not -path "*/.git/*" )`, which causes `.sh` files inside `.git` directories to be processed incorrectly.
 - **Proposed Resolution**: Add parentheses to group the search patterns: `\( -name "*.sh" -o -name "*zshrc" \)`.
 
-## [ISSUE-13] 🛠️ Slow macOS Shell Startup (brew --prefix evaluation)
-- **Status**: Active
+## [ISSUE-13] ✅ Slow macOS Shell Startup (brew --prefix evaluation)
+- **Status**: Resolved
 - **Description**: Sourcing `zsh-syntax-highlighting` in `mac/.zshrc` uses `$(brew --prefix)/share/zsh-syntax-highlighting/...`. Sourcing this executes the `brew` command, which starts a Ruby interpreter and takes 100-200ms, noticeably slowing down terminal startup time.
-- **Proposed Resolution**: Use static fallback path checks (e.g. checking `/opt/homebrew` and `/usr/local`) to avoid calling `brew --prefix` on every shell load.
+- **Resolution**: Replaced the dynamic `brew --prefix` subshell execution in `mac/.zshrc` with static fallback paths (checking `/opt/homebrew` and `/usr/local` directly first), falling back to dynamic search only if static paths are missing.
 
-## [ISSUE-14] 🛠️ Cask and tap package omission in Command Palette Uninstall Menu
-- **Status**: Active
+## [ISSUE-14] ✅ Cask and tap package omission in Command Palette Uninstall Menu
+- **Status**: Resolved
 - **Description**: The Command Palette uninstall function (`uninstall_app` in `common/palette/apps.sh`) queries `Brewfile.apps` using `grep '^brew "'`, which matches standard Homebrew formulae but entirely omits `cask` packages (e.g., `cask "keepassxc"`) and tap packages with additional options, making them unmanageable through the palette.
-- **Proposed Resolution**: Update the grep pattern and parser to detect `cask` and extended `brew` entries.
+- **Resolution**: Rewrote `common/palette/apps.sh` to extract both `brew` and `cask` entries from `Brewfile.apps`, splitting them by type. Modified dynamic description fetching, launch scripts (using `open -a` for macOS casks to launch them in the background), and uninstallation commands (`brew uninstall --cask`) to fully support casks.
 
 ## [ISSUE-15] 🛠️ Redundant Catppuccin Plugin in Tmux Configuration
 - **Status**: Active

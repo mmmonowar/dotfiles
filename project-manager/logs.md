@@ -1,3 +1,11 @@
+## [2026-06-19-01-41-00] - Resolved Tmux Shortcut, macOS Shell Latency & Cask Support (ISSUE-11, ISSUE-13 & ISSUE-14)
+- **Feature**: Hardened text safety in Tmux shortcuts, optimized macOS shell startup speed, and completed cask app integration in palette.
+- **Details**:
+    - **Tmux Shortcut Safety**: Updated `common/tmux.conf` to check the `is_editor` helper block before executing shell reload via `Alt+r` (prevents inserting reload command string into active files in micro/vim).
+    - **Shell Startup Performance**: Replaced the synchronous `$(brew --prefix)` execution in `mac/.zshrc` with static searches for `/opt/homebrew` and `/usr/local` syntax highlighting binaries, removing 100-200ms of lag on new terminal creation.
+    - **Cask/Tap Palette Integration**: Rewrote `common/palette/apps.sh` to extract both `brew` and `cask` packages from `Brewfile.apps`. Added background execution for macOS casks (`open -a`) and specific cask uninstallation logic (`brew uninstall --cask`).
+    - **Issues Tracker**: Marked `[ISSUE-11]`, `[ISSUE-13]`, and `[ISSUE-14]` as resolved in `project-manager/issues.md`.
+
 ## [2026-06-19-01-38-00] - Resolved Relative Symlink & Homebrew Desynchronization (ISSUE-16 & ISSUE-18)
 - **Feature**: Standardized repository path prioritization and symlink resolution in polyterm and Command Palette.
 - **Details**:

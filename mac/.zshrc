@@ -48,8 +48,16 @@ export LSCOLORS=Gxfxcxdxbxegedabagacad
 # Enable auto-completion coloring
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
-# shellcheck disable=SC1091
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Sourcing zsh-syntax-highlighting (optimized shell startup by avoiding slow brew --prefix subshell)
+if [[ -f "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+elif [[ -f "/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source "/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+else
+    # Fallback to dynamic evaluation if installed in custom prefix
+    # shellcheck disable=SC1091
+    source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 alias kbcheck='hidutil property --get "UserKeyMapping"'
 alias fixkb='~/kb_toggle.sh'
