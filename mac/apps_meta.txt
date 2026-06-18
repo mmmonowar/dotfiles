@@ -29,3 +29,5 @@ lazygit|Simple terminal UI for git commands
 tako8ki/tap/gobang|Cross-platform TUI database management tool written in Rust
 dbmate|Lightweight, framework-agnostic database migration tool
 micasa|TUI for tracking home projects, maintenance schedules, appliances and quotes
+papis|Powerful command-line document and bibliography manager
+yazi|Blazing fast terminal file manager written in Rust, based on async I/O
