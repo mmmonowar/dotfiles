@@ -199,3 +199,6 @@ if [[ -f "$HOME/.zshrc_local" ]]; then
     # shellcheck disable=SC1090
     source "$HOME/.zshrc_local"
 fi
+
+# Created by `pipx` on 2026-06-18 16:49:18
+export PATH="$PATH:/Users/mustafa.fl/.local/bin"
