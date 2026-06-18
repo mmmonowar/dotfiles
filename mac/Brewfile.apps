@@ -1,5 +1,6 @@
 brew "bat"
 brew "btop"
+brew "chafa"
 brew "chezmoi"
 brew "dbmate"
 brew "ddgr"
