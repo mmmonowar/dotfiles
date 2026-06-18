@@ -25,3 +25,4 @@ brew "tailscale"
 brew "watch"
 brew "yazi"
 brew "tako8ki/tap/gobang", trusted: true
+cask "keepassxc"
