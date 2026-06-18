@@ -27,3 +27,5 @@ chezmoi|Manage your dotfiles across multiple diverse machines, securely
 hledger|Easy plain text accounting with command-line, terminal and web UIs
 lazygit|Simple terminal UI for git commands
 tako8ki/tap/gobang|Cross-platform TUI database management tool written in Rust
+dbmate|Lightweight, framework-agnostic database migration tool
+micasa|TUI for tracking home projects, maintenance schedules, appliances and quotes
