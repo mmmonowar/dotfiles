@@ -1,6 +1,7 @@
 brew "bat"
 brew "btop"
 brew "chezmoi"
+brew "dbmate"
 brew "ddgr"
 brew "emacs"
 brew "gemini-cli"
