@@ -26,3 +26,4 @@ zsh-syntax-highlighting|Fish shell like syntax highlighting for zsh
 chezmoi|Manage your dotfiles across multiple diverse machines, securely
 hledger|Easy plain text accounting with command-line, terminal and web UIs
 lazygit|Simple terminal UI for git commands
+tako8ki/tap/gobang|Cross-platform TUI database management tool written in Rust
