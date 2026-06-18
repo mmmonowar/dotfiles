@@ -74,6 +74,11 @@ fi
 
 # 6. DOTFILES AUTOMATION
 # -----------------------------------------------------------------------------
+# Source security tools
+if [ -f "$DOTFILES_ROOT/common/security.sh" ]; then
+    source "$DOTFILES_ROOT/common/security.sh"
+fi
+
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)

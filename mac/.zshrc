@@ -54,6 +54,11 @@ source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 alias kbcheck='hidutil property --get "UserKeyMapping"'
 alias fixkb='~/kb_toggle.sh'
 
+# Source security tools
+if [ -f "$DOTFILES_ROOT/common/security.sh" ]; then
+    source "$DOTFILES_ROOT/common/security.sh"
+fi
+
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
@@ -202,3 +207,7 @@ fi
 
 # Created by `pipx` on 2026-06-18 16:49:18
 export PATH="$PATH:/Users/mustafa.fl/.local/bin"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/mustafa.fl/.local/bin:$PATH"

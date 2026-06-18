@@ -21,7 +21,15 @@ OS_ENV_UPPER=$(echo "$OS_ENV" | tr '[:lower:]' '[:upper:]')
 export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8a6,fg:#c8c8c8,header:#449fd0,info:#dab853,pointer:#14b8a6,marker:#89d287,fg+:#dfdfdf,prompt:#14b8a6,hl+:#14b8a6,query:#89d287"
 
 # 4. Dynamic Paths
-REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+# Prioritize user's active repository (via DOTFILES_ROOT or ~/dotfiles) if valid
+if [[ -n "$DOTFILES_ROOT" && -d "$DOTFILES_ROOT/common/palette" ]]; then
+    REPO_PATH="$DOTFILES_ROOT"
+elif [[ -d "$HOME/dotfiles/common/palette" ]]; then
+    REPO_PATH="$HOME/dotfiles"
+else
+    REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+fi
+
 BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile.apps"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
 SETTINGS_FILE="${REPO_PATH}/common/.polyterm_settings"

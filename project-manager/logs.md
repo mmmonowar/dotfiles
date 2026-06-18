@@ -1,3 +1,31 @@
+## [2026-06-19-01-38-00] - Resolved Relative Symlink & Homebrew Desynchronization (ISSUE-16 & ISSUE-18)
+- **Feature**: Standardized repository path prioritization and symlink resolution in polyterm and Command Palette.
+- **Details**:
+    - **PolyTerm CLI & Palette**: Modified `bin/polyterm` and `common/palette.sh` to check for a valid active git repository root at `$DOTFILES_ROOT` or fallback to `~/dotfiles/common/palette`. If present, it sets `REPO_PATH` to this active repo root, redirecting settings updates, app lists, and metadata caches to the git-tracked repo instead of the static Homebrew Cellar prefix.
+    - **Recursive Symlinks**: Replaced the single-level readlink in `bin/polyterm` with a robust recursive loop (`while [[ -h "$SOURCE" ]]`) to correctly trace nested and relative symlink sources.
+    - **Issues Tracker**: Marked `[ISSUE-16]` and `[ISSUE-18]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-19-01-35-00] - Audited local configurations desynchronization (ISSUE-18)
+- **Feature**: Documented Homebrew vs. repository config desynchronization.
+- **Details**:
+    - **Configuration Sync**: Confirmed that local shell edits (`~/.zshrc`, `~/.tmux.conf`, `~/.config/micro`, etc.) sync correctly with `dot-sync` because they are symbolic links pointing directly to the git-tracked repo folders.
+    - **Desynchronization Identified**: Discovered that when running `polyterm` from the CLI (installed via Homebrew), it uses its Homebrew prefix path for `.polyterm_settings` and `Brewfile.apps`. This splits settings and description caching between the local repo (`~/dotfiles`) and the Homebrew cellar, preventing CLI changes from syncing.
+    - **Issues Tracker**: Logged `[ISSUE-18]` in `project-manager/issues.md` with a proposed path prioritization fix.
+
+## [2026-06-19-01-30-00] - Resolved macOS Installer mapfile Crash (ISSUE-10)
+- **Feature**: Fixed macOS compatibility in bootstrap installer.
+- **Details**:
+    - **Bootstrap Installer**: Replaced the `mapfile` command in `application-package/install.sh` with a standard `while read -r` loop, preventing crashes due to the older default Bash version (3.2) on macOS.
+    - **Issues Tracker**: Marked `[ISSUE-10]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-19-01-28-00] - Sourcing Security Scanner & Indexed issues.md
+- **Feature**: Fixed security scan availability on macOS/Linux, logged scanned inconsistencies, and indexed all issues.
+- **Details**:
+    - **Security Scanner**: Sourced `common/security.sh` in `mac/.zshrc` and `linux/zshrc` to make the `dot-scan` command available on all supported platforms (previously only sourced in `wsl/zshrc`).
+    - **Auditing**: Conducted a codebase scan and documented 9 new active inconsistencies, errors, and optimization opportunities in `project-manager/issues.md`.
+    - **Indexing**: Assigned a unique numbered index format (`[ISSUE-01]` through `[ISSUE-17]`) to all issues (both resolved and active) in `project-manager/issues.md` for better traceability.
+
+
 ## [2026-06-05-13-30-00] - Peppermint Minimalist Tmux Status Bar
 - **Feature**: Re-aligned the minimalist tmux status bar with the master Peppermint Design System.
 - **Details**:

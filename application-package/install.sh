@@ -130,7 +130,10 @@ if [ -f "$APPS_FILE" ]; then
     if command -v fzf &> /dev/null; then
         # Parse Brewfile.apps to get clean names for selection
         # Supports: brew "name", cask "name", vscode "name"
-        mapfile -t all_apps < <(grep -E '^(brew|cask|vscode)' "$APPS_FILE" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\1: \2/')
+        all_apps=()
+        while IFS= read -r app; do
+            all_apps+=("$app")
+        done < <(grep -E '^(brew|cask|vscode)' "$APPS_FILE" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\1: \2/')
         
         if [ ${#all_apps[@]} -gt 0 ]; then
             echo -e "${YELLOW}Instructions: Use TAB to select multiple, ENTER to confirm, ESC to skip all.${NC}"
