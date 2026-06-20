@@ -1,3 +1,26 @@
+## [2026-06-21-02-35-00] - Common Source Refactoring & Decoupling
+- **Feature**: Refactored the `common` source structure to separate configurations from automation scripts.
+- **Details**:
+    - **Configuration Centralization**: Moved program configurations (Tmux, Zellij, Glow, Micro, etc.) under `/common/config/` organized by program name (e.g., `common/config/tmux/tmux.conf`).
+    - **Automation Script Consolidation**: Consolidated all shared shell scripts (`.sh`) and helper utilities (e.g., `security.sh`, `hledger-sync.sh`) into `/common/palette/`.
+    - **Integration Updates**: Adjusted the installer, paths, and internal scripts to query configuration resources and run commands from the new decoupled locations.
+
+## [2026-06-21-02-30-00] - OS-Specific Directory Hierarchy Refactoring
+- **Feature**: Reorganized system and hardware-specific configurations into a structured layout under a root-level `OS/` directory.
+- **Details**:
+    - **Directory Migration**: Moved OS-specific configuration directories (`mac/`, `linux/`, `wsl/`) into a unified `/OS` root folder.
+    - **Hierarchical Layout Rules**: Established rules where OS-generic files sit at the root of the respective OS directory (e.g., `OS/<mac/linux/wsl>/<config>`), and device-specific profiles reside in subdirectories matching the device identifier (e.g., `OS/<mac/linux/wsl>/<device-id>/<config>`).
+    - **Reference Adaptation**: Updated path variables, symlink scripts, and install/sync scripts to reference the new hierarchical OS folder structure.
+    - **Refactoring Documentation**: Added `project-manager/refactoring-architecture.md` outlining the code decoupling strategy.
+
+## [2026-06-21-02-25-00] - Dynamic Device Registry & Tracking
+- **Feature**: Automatic gathering of device environment data into a centralized YAML configuration database.
+- **Details**:
+    - **Device List Storage**: Added a tracking file `data/device-list.yml` to save key device specifications (hostname, username, model, OS, OS version, local IP, last sync).
+    - **Identification Engine**: Created `common/palette/update_device.py` to identify OS types (WSL, native Linux, macOS), query physical specs, and format entries using a clean, alphanumeric ID (`device_id`).
+    - **Sync Automation**: Sourced device update collection within `dot-sync` and install scripts to ensure records are continually refreshed and versioned via Git on remote pushes.
+    - **Registry Documentation**: Added a dedicated `project-manager/device-registry.md` tracker file outlining storage structure.
+
 ## [2026-06-19-01-41-00] - Resolved Tmux Shortcut, macOS Shell Latency & Cask Support (ISSUE-11, ISSUE-13 & ISSUE-14)
 - **Feature**: Hardened text safety in Tmux shortcuts, optimized macOS shell startup speed, and completed cask app integration in palette.
 - **Details**:

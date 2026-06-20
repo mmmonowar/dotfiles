@@ -50,7 +50,7 @@
 
 ## 🤖 Gemini CLI Integration
 - [x] **Model-Specific Aliases**: Context-aware aliases (`gemini`, `gemini-flash`, `gemini-pro`) and billing monitoring (`check-spend`) conditionally enabled based on git user email.
-- [x] **Configuration Sync**: Non-sensitive settings (model choice, safety thresholds, temperature) are synchronized across platforms via `common/gemini/settings.json`.
+- [x] **Configuration Sync**: Non-sensitive settings (model choice, safety thresholds, temperature) are synchronized across platforms via `common/config/gemini/settings.json`.
 - [x] **Process Management**: 'Kill Gemini' command palette item to instantly terminate all Gemini-related processes across all tmux sessions while preserving the active agent.
 
 ## 🚀 One-Command Installation
@@ -84,3 +84,23 @@
 ## 🛠️ System Diagnostics & Troubleshooting
 - **Issue Tracking**: Centralized `issues.md` for documenting and resolving configuration bugs.
 - **Terminal Compatibility**: Ensuring TrueColor/RGB support across Tmux and shell environments.
+
+## 🗃️ Device Tracking & Registry
+- **Dynamic Device List**: Stores registered devices and environment properties in a centralized YAML file (`data/device-list.yml`).
+- **Detailed Machine Profiles**: Captures hostname, username, device model, operating system, OS version, local IP address, and last synchronization time.
+- **Reference Identifier**: Generates a clean, hostname-based identifier (`device_id`) to simplify machine-specific referencing in scripts.
+- **Sync Integration**: Automates the collection and updates of device profiles during git-based synchronization (`dot-sync`).
+
+## 🗂️ OS-Specific Configuration Refactoring
+- **Centralized OS Directory**: Migrated all OS-specific directories (`mac/`, `linux/`, `wsl/`) under a unified `OS/` folder at the repository root.
+- **Hierarchical Config Locality**:
+  - **OS-Specific Configs**: Placed at the root of their respective OS directory: `OS/<mac/linux/wsl>/<config>`.
+  - **Device-Specific Configs**: Placed in subdirectories matching the device identifier: `OS/<mac/linux/wsl>/<device-identifier>/<config>`.
+- **System Mirroring**: Configured installer, dynamic updates, and symlink references to dynamically resolve paths using this hierarchical layout.
+
+## 📁 Common Directory Refactoring & Decoupling
+- **Modularized Shared Configurations**: Reorganized all cross-platform configs under `common/config/` nested by program folders (e.g., `common/config/tmux/tmux.conf`, `common/config/glow/glow.yml`).
+- **Unified Command Palette Library**: Grouped all cross-platform shell commands, automation tools, and helper scripts (e.g., `security.sh`, `hledger-sync.sh`, `fix-alt-keys.sh`) under `common/palette/`.
+
+
+

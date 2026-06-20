@@ -1,9 +1,11 @@
 # Project Tasks
 
 ## ✅ Cross-Platform Compatibility
-- [x] Create directory structure for `mac/` and `wsl/`
+- [x] Create directory structure for `OS/mac/` and `OS/wsl/`
 - [x] Implement dynamic OS detection in `palette.sh`
 - [x] Define OS-specific Brewfile and metadata paths
+- [x] Refactor and unify OS and device configurations under the `OS/` directory root
+
 
 ## ✅ Unified Command Palette
 - [x] Create `palette.sh` with `fzf` integration
@@ -26,12 +28,13 @@
 - [x] Configure Smart Dashboard (btop/docker) auto-start
 - [x] Set up cross-platform clipboard (pbcopy/xclip)
 - [x] Integrate minimalist Peppermint status bar with focal icons
-- [x] Implement centralized Peppermint Design System (`DESIGN.md` and `common/design/`)
+- [x] Implement centralized Peppermint Design System (`DESIGN.md` and `common/config/design/`)
 - [x] Apply Sublime Focus aesthetic to Tmux (pure black bg, teal active accents, bright black borders)
 
 ## ✅ Declarative Package Management
-- [x] Define `mac/Brewfile` with core CLI tools and VSCode extensions
-- [x] Define `wsl/Brewfile` with Ubuntu-specific packages
+- [x] Define `OS/mac/Brewfile.apps` and `OS/mac/Brewfile.core` with core CLI tools, VSCode extensions, and casks
+- [x] Define `OS/wsl/Brewfile.apps` and `OS/wsl/Brewfile.core` with Ubuntu-specific packages
+
 
 ## ✅ Shell Automation (Zsh)
 - [x] Implement automated Zsh and Tmux startup via `.bashrc`
@@ -51,19 +54,22 @@
 - [x] Implement Gemini CLI safety wrapper (`ask_gemini`) for large file filtering
 - [x] Implement cross-platform synchronization for Gemini CLI settings.
 - [x] Implement 'Kill Gemini' menu item in command palette to terminate processes across sessions.
+- [x] Implement dynamic device profile tracking in `data/device-list.yml` integrated with `dot-sync` updates.
+
 
 ## ✅ Micro Editor Customization
 - [x] Define `PolyMark.yaml` syntax rules
 - [x] Create `PolyMark.micro` colorscheme
-- [x] Link `common/micro/` configurations to `~/.config/micro/`
+- [x] Link `common/config/micro/` configurations to `~/.config/micro/`
 - [x] Implement GUI-style text selection (Shift+Arrows) and copy (Ctrl+C) for Micro and Tmux
 
 ## ✅ PolyMark Translation
 - [x] Parse `polymark.sublime-syntax` contexts and matches
 - [x] Map Sublime scopes to Micro `color-link` identifiers
 - [x] Extract colors from `polymark.sublime-color-scheme`
-- [x] Generate updated `common/micro/syntax/PolyMark.yaml`
-- [x] Generate updated `common/micro/colorschemes/PolyMark.micro`
+- [x] Generate updated `common/config/micro/syntax/PolyMark.yaml`
+- [x] Generate updated `common/config/micro/colorschemes/PolyMark.micro`
+
 
 ## ✅ Repository Portability
 - [x] Dynamically determine repository root in `palette.sh`
@@ -79,12 +85,12 @@
 - [x] Implement Alt/Option key compatibility for macOS and Ubuntu
 - [x] Unify all Tmux shortcuts on the Alt (Meta) key across all platforms
 - [x] Standardize `OS_ENV` across all platforms to fix Brewfile path resolution in `dot-pull` and `dot-sync`
-- [x] Fix `mac/.zshrc` and `linux/zshrc` corruption to resolve Tmux configuration execution errors
+- [x] Fix `OS/mac/.zshrc` and `OS/linux/zshrc` corruption to resolve Tmux configuration execution errors
 - [x] Resolve Homebrew `Permission denied` errors by automating ownership fixes for `/home/linuxbrew/.linuxbrew`
 - [x] Document fix for WSL Zsh regex module loading error
 
 ## ✅ Security & Vulnerability Management
-- [x] Create `common/security.sh` with `dot-scan` function
+- [x] Create `common/palette/security.sh` with `dot-scan` function
 - [x] Integrate `shellcheck` for shell script static analysis and resolve all identified warnings
 - [x] Implement automated package vulnerability checks via `brew outdated`
 - [x] Integrate Homebrew health auditing (`brew doctor`)
@@ -95,8 +101,9 @@
 
 ## 🚀 Deployment & Installation
 - [x] Implement unified application package installer (`install.sh`)
-- [x] Add generic Linux support with `linux/zshrc`
+- [x] Add generic Linux support with `OS/linux/zshrc`
 - [x] Enable remote one-command installation via curl
+
 - [x] Create `bin/polyterm` CLI tool
 - [x] Implement Homebrew Formula (`Formula/polyterm.rb`) for Tap support
 - [ ] Implement automated health checks for symbolic links
