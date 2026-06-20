@@ -205,7 +205,7 @@ function main_menu() {
                 reload) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
                 scan) trigger_zsh_func "dot-scan" ;;
                 kill_gemini) kill_gemini_processes ;;
-                fix_alt) clear; "$REPO_PATH/common/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
+                fix_alt) clear; "$REPO_PATH/common/palette/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
                 exit) exit 0 ;;
             esac
             ;;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================================
-# 🛠️  HELPER FUNCTIONS
+# 🛠️  HELPER FUNCTIONS (TMUX & ZELLIJ COMPATIBLE)
 # ==========================================
 
 function update_setting() {
@@ -22,14 +22,68 @@ function update_setting() {
 
 function trigger_zsh_func() {
     local func_name=$1
-    # Send the command to the original pane and execute it
-    tmux send-keys -t "$TARGET_PANE" "$func_name" C-m
+    if [[ -n "$ZELLIJ" ]]; then
+        # Dynamically find the target tiled pane in Zellij
+        local target_pane
+        target_pane=$(zellij action list-panes --json 2>/dev/null | python3 -c '
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    my_id = sys.argv[1] if len(sys.argv) > 1 else ""
+    my_pane = next((p for p in data if str(p.get("id")) == my_id), None) if my_id else None
+    if not my_pane:
+        my_pane = next((p for p in data if p.get("is_focused") and p.get("is_floating")), None)
+    if my_pane:
+        tab_id = my_pane.get("tab_id")
+        candidates = [p for p in data if p.get("tab_id") == tab_id and not p.get("is_floating") and not p.get("is_plugin")]
+        if candidates:
+            print(candidates[0]["id"])
+except Exception:
+    pass
+' "$ZELLIJ_PANE_ID")
+
+        if [[ -n "$target_pane" ]]; then
+            zellij action write-chars --pane-id "$target_pane" "$func_name"
+            zellij action send-keys --pane-id "$target_pane" "Enter"
+        fi
+        zellij action close-pane
+    else
+        # Tmux
+        tmux send-keys -t "$TARGET_PANE" "$func_name" C-m
+    fi
 }
 
 function trigger_and_sync() {
     local cmd=$1
-    # Execute command and then dot-sync
-    tmux send-keys -t "$TARGET_PANE" "$cmd && dot-sync" C-m
+    if [[ -n "$ZELLIJ" ]]; then
+        # Dynamically find the target tiled pane in Zellij
+        local target_pane
+        target_pane=$(zellij action list-panes --json 2>/dev/null | python3 -c '
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    my_id = sys.argv[1] if len(sys.argv) > 1 else ""
+    my_pane = next((p for p in data if str(p.get("id")) == my_id), None) if my_id else None
+    if not my_pane:
+        my_pane = next((p for p in data if p.get("is_focused") and p.get("is_floating")), None)
+    if my_pane:
+        tab_id = my_pane.get("tab_id")
+        candidates = [p for p in data if p.get("tab_id") == tab_id and not p.get("is_floating") and not p.get("is_plugin")]
+        if candidates:
+            print(candidates[0]["id"])
+except Exception:
+    pass
+' "$ZELLIJ_PANE_ID")
+
+        if [[ -n "$target_pane" ]]; then
+            zellij action write-chars --pane-id "$target_pane" "$cmd && dot-sync"
+            zellij action send-keys --pane-id "$target_pane" "Enter"
+        fi
+        zellij action close-pane
+    else
+        # Tmux
+        tmux send-keys -t "$TARGET_PANE" "$cmd && dot-sync" C-m
+    fi
 }
 
 function confirm_action() {
@@ -63,7 +117,6 @@ function kill_gemini_processes() {
         local parent_pid=$(ps -o ppid= -p "$current_pid" | xargs)
         
         # Identify all gemini-related processes
-        # We filter out the current PID and the parent PID to avoid killing the active agent
         local pids=$(pgrep -f "gemini" | grep -vE "($current_pid|$parent_pid)")
         
         if [[ -n "$pids" ]]; then

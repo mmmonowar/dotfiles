@@ -70,11 +70,11 @@ case "$1" in
     palette)
         # Check if inside Tmux
         if [[ -n "$TMUX" ]]; then
-            "$REPO_PATH/common/palette.sh"
+            "$REPO_PATH/common/palette/palette.sh"
         else
             echo -e "${YELLOW}Warning: Palette must be run inside a Tmux session.${NC}"
             echo -e "Starting a new Tmux session..."
-            tmux new-session "$REPO_PATH/common/palette.sh"
+            tmux new-session "$REPO_PATH/common/palette/palette.sh"
         fi
         ;;
     help|--help|-h)
@@ -83,7 +83,7 @@ case "$1" in
     "")
         # Default action: Palette
         if [[ -n "$TMUX" ]]; then
-            "$REPO_PATH/common/palette.sh"
+            "$REPO_PATH/common/palette/palette.sh"
         else
             show_help
         fi

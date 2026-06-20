@@ -97,31 +97,55 @@ function safe_link() {
     echo -e "✅  Linked ${BLUE}$dest${NC} -> ${GREEN}$src${NC}"
 }
 
-# Symlink .zshrc
-safe_link "$TARGET_DIR/$OS_ENV/$OS_ZSHRC" "$HOME/.zshrc"
+# Generate device identifier for optional device-specific overrides
+local device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
+
+# Symlink .zshrc (support device override if present)
+local zshrc_src="$TARGET_DIR/OS/$OS_ENV/$OS_ZSHRC"
+if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/$OS_ZSHRC" ]]; then
+    zshrc_src="$TARGET_DIR/OS/$OS_ENV/$device_id/$OS_ZSHRC"
+fi
+safe_link "$zshrc_src" "$HOME/.zshrc"
 
 # Symlink .tmux.conf
-safe_link "$TARGET_DIR/common/tmux.conf" "$HOME/.tmux.conf"
+safe_link "$TARGET_DIR/common/config/tmux/tmux.conf" "$HOME/.tmux.conf"
 
 # Symlink micro config directory
 mkdir -p "$HOME/.config"
-safe_link "$TARGET_DIR/common/micro" "$HOME/.config/micro"
+safe_link "$TARGET_DIR/common/config/micro" "$HOME/.config/micro"
 
 # Symlink gemini settings
 mkdir -p "$HOME/.gemini"
-safe_link "$TARGET_DIR/common/gemini/settings.json" "$HOME/.gemini/settings.json"
+safe_link "$TARGET_DIR/common/config/gemini/settings.json" "$HOME/.gemini/settings.json"
 
 # Symlink glow config
 mkdir -p "$HOME/.config/glow"
-safe_link "$TARGET_DIR/common/glow.yml" "$HOME/.config/glow/glow.yml"
+safe_link "$TARGET_DIR/common/config/glow/glow.yml" "$HOME/.config/glow/glow.yml"
+
+# Symlink antidote plugin list
+safe_link "$TARGET_DIR/common/config/zsh/plugins.txt" "$HOME/.zsh_plugins.txt"
+
+# Symlink zellij config
+mkdir -p "$HOME/.config/zellij"
+safe_link "$TARGET_DIR/common/config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
 # 6. Install Packages (Brewfile)
-echo -e "📦  ${BLUE}Installing CORE packages from $OS_ENV/Brewfile.core...${NC}"
-brew bundle --verbose --file="$TARGET_DIR/$OS_ENV/Brewfile.core"
+local brew_core_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.core"
+if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.core" ]]; then
+    brew_core_path="$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.core"
+fi
+
+echo -e "📦  ${BLUE}Installing CORE packages from $brew_core_path...${NC}"
+brew bundle --verbose --file="$brew_core_path"
 
 # Interactive App Selection
 echo -e "\n🧩  ${BLUE}Optional Applications Selection${NC}"
-APPS_FILE="$TARGET_DIR/$OS_ENV/Brewfile.apps"
+local brew_apps_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.apps"
+if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.apps" ]]; then
+    brew_apps_path="$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.apps"
+fi
+APPS_FILE="$brew_apps_path"
+
 
 if [ -f "$APPS_FILE" ]; then
     echo -e "You can now choose which optional apps to install."
@@ -177,6 +201,14 @@ else
     echo -e "✅  ${GREEN}TPM is already installed.${NC}"
 fi
 
+# 7.5 Install Antidote (Zsh Plugin Manager)
+if [ ! -d "$HOME/.antidote" ]; then
+    echo -e "🔌  ${BLUE}Installing Antidote Zsh Plugin Manager...${NC}"
+    git clone --depth=1 https://github.com/mattmc3/antidote.git "$HOME/.antidote"
+else
+    echo -e "✅  ${GREEN}Antidote is already installed.${NC}"
+fi
+
 # 8. Install Nerd Font (Linux/WSL only, Mac uses Brew Cask)
 if [[ "$OS_ENV" != "mac" ]]; then
     # Check if font exists (JetBrains Mono)
@@ -215,12 +247,18 @@ if [[ "$current_shell" != "zsh" ]]; then
     fi
 fi
 
+# 9.5 Register/Update Device Info
+echo -e "\n🔄  ${BLUE}Registering device details in device-list.yml...${NC}"
+if [ -f "$TARGET_DIR/common/palette/update_device.py" ]; then
+    python3 "$TARGET_DIR/common/palette/update_device.py" "$TARGET_DIR"
+fi
+
 # 10. Security Scan
 echo -e "\n🛡️  ${BLUE}Performing initial security scan...${NC}"
-if [ -f "$TARGET_DIR/common/security.sh" ]; then
+if [ -f "$TARGET_DIR/common/palette/security.sh" ]; then
     # Set DOTFILES_ROOT for the scan
     export DOTFILES_ROOT="$TARGET_DIR"
-    source "$TARGET_DIR/common/security.sh"
+    source "$TARGET_DIR/common/palette/security.sh"
     dot-scan
 fi
 
@@ -229,5 +267,6 @@ echo -e "✨  Installation Complete!"
 echo -e "==========================================${NC}"
 echo -e "To finalize the setup:"
 echo -e "1. Restart your terminal or run: ${BLUE}source ~/.zshrc${NC}"
-echo -e "2. In Tmux, press ${BLUE}Alt+I${NC} (capital I) to install plugins if needed."
-echo -e "3. Use ${BLUE}Alt+P${NC} to open the Command Palette."
+echo -e "2. In Tmux, press ${BLUE}Alt+I${NC} (capital I) to install plugins."
+echo -e "3. Use ${BLUE}Alt+P${NC} to open the Command Palette in Tmux or Zellij."
+

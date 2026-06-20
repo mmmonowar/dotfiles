@@ -1,0 +1,133 @@
+# shellcheck shell=bash
+# =============================================================================
+// 🖥️  WSL (UBUNTU) - zshrc
+# =============================================================================
+
+# 1. PATH & ENVIRONMENT
+# -----------------------------------------------------------------------------
+# Determine the root of the dotfiles repository dynamically
+export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
+export OS_ENV="wsl"
+
+# Helper function to detect agent or non-interactive environments
+is_agent_or_non_interactive() {
+    [[ $- != *i* ]] && return 0
+    [[ "$TERM" == "dumb" ]] && return 0
+    [[ ! -t 1 ]] && return 0
+    [[ -n "$CI" || -n "$GITHUB_ACTIONS" || -n "$AGENT_ENV" || -n "$ANTIGRAVITY" ]] && return 0
+    return 1
+}
+
+if is_agent_or_non_interactive; then
+    # Minimalist, clean setup for agents/non-interactive scripts
+    export PROMPT='$ '
+    export PATH="$HOME/.local/bin:$PATH"
+    [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    return
+fi
+
+# Load UX Settings
+if [[ -f "$DOTFILES_ROOT/common/config/polyterm/.polyterm_settings" ]]; then
+    source "$DOTFILES_ROOT/common/config/polyterm/.polyterm_settings"
+fi
+
+export PATH="$HOME/.local/bin:$PATH"
+[[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Optimization: Speed up Homebrew by disabling automatic cleanup after install
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+
+# Boot up x-cmd
+[ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X"
+
+# Auto-start multiplexer cockpit on interactive shell login
+if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
+    local multiplexer="tmux"
+    [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]] && multiplexer="zellij"
+    
+    if [[ "$multiplexer" == "zellij" ]] && command -v zellij &>/dev/null; then
+        exec zellij attach -c default
+    elif command -v tmux &>/dev/null; then
+        tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+        tmux attach-session -t default 2>/dev/null || tmux new-session -s default
+    fi
+fi
+
+# 2. AESTHETICS & PROMPT
+# -----------------------------------------------------------------------------
+PROMPT='%F{cyan}[%1d] > %f'
+export COLORTERM=truecolor
+export MICRO_TRUECOLOR=1
+
+# Enable colorized output for ls (Ubuntu/GNU format)
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+# Set up GNU dircolors if available
+if [ -x /usr/bin/dircolors ]; then
+    eval "$(dircolors -b)"
+fi
+
+# 3. ANTIDOTE PLUGINS COMPILATION & LOAD
+# -----------------------------------------------------------------------------
+local zsh_plugins="$HOME/.zsh_plugins.zsh"
+local plugins_txt="$DOTFILES_ROOT/common/config/zsh/plugins.txt"
+if [[ -f "$plugins_txt" && -d "$HOME/.antidote" ]]; then
+    if [[ ! -f "$zsh_plugins" || "$plugins_txt" -nt "$zsh_plugins" ]]; then
+        source "$HOME/.antidote/antidote.zsh"
+        antidote bundle < "$plugins_txt" >| "$zsh_plugins"
+    fi
+    source "$zsh_plugins"
+fi
+
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# 4. ALIASES & KEYBOARDS
+# -----------------------------------------------------------------------------
+alias search='ddgr --reg en-us --num 5'
+alias glow='glow -w 80'
+alias poly-sync="gh repo list INTxK --topic polyos --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | while read -r repo; do dir=\${repo##*/}; if [ -d \"\$dir\" ]; then echo \"󰇚 Updating \$dir...\"; git -C \"\$dir\" pull; else echo \"󰇚 Cloning \$dir...\"; gh repo clone \"\$repo\"; fi; done"
+alias reload-tmux='dot-reload'
+alias restart-tmux='tmux kill-server'
+alias kbcheck='hidutil property --get "UserKeyMapping"'
+alias fixkb='~/kb_toggle.sh'
+
+# 5. AUTOMATED AUTHENTICATION (SSH Agent)
+# -----------------------------------------------------------------------------
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   eval "$(ssh-agent -s)" > /dev/null
+   ssh-add ~/.ssh/id_ed25519 2>/dev/null
+fi
+
+# 6. DOTFILES AUTOMATION & COMMANDS
+# -----------------------------------------------------------------------------
+# Source modular commands
+[[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
+
+# Always update security tools on start in background
+(brew upgrade gemini-cli shellcheck lynis &>/dev/null &)
+
+# 7. AI & LLM ALIASES
+# -----------------------------------------------------------------------------
+if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]; then
+    alias gemini="timeout 1h gemini --model flash-lite"
+    alias gemini-flash="timeout 1h gemini --model flash-3.0"
+    alias gemini-pro="timeout 1h gemini --model pro-3.1"
+    alias check-spend="gcloud beta billing quotas list --format='table(limit,usage)'"
+
+    ask_gemini() {
+        if [[ -f "$1" ]]; then
+            local file_size=$(stat -f%z "$1")
+            if (( file_size > 50000 )); then
+                echo "󰒃  Safety: File is too large ($file_size bytes). Use grep or tail first."
+                return 1
+            fi
+        fi
+        gemini "$@"
+    }
+fi
+
+# 8. LOCAL OVERRIDES (Not synced via Git)
+# -----------------------------------------------------------------------------
+[[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"

@@ -1,0 +1,57 @@
+// ==========================================
+// Zellij Configuration - Peppermint Theme & Tmux Aesthetics
+// ==========================================
+
+theme "peppermint"
+
+themes {
+    peppermint {
+        fg "#b4b4b4"
+        bg "#000000"
+        black "#000000"
+        red "#ef4444"
+        green "#10b981"
+        yellow "#f59e0b"
+        blue "#3b82f6"
+        magenta "#d946ef"
+        cyan "#14b8a6"
+        white "#dfdfdf"
+        orange "#f97316"
+    }
+}
+
+// Aesthetics matching Tmux
+pane_frames false
+copy_on_select true
+default_layout "compact"
+mouse_mode true
+
+// Keybindings to consistently mirror Tmux Alt/Meta binds
+keybinds {
+    normal {
+        // Unbind default Alt bindings to prevent conflict
+        unbind "Alt n" "Alt i" "Alt o" "Alt h" "Alt j" "Alt k" "Alt l"
+        
+        // Navigation (Tabs match Tmux Windows)
+        bind "Alt Up" { GoToNextTab; }
+        bind "Alt Down" { GoToPreviousTab; }
+        bind "Alt m" { NewTab; }
+        bind "Alt e" { CloseTab; }
+        bind "Alt ," { NewTab; }
+        bind "Alt w" { Quit; }
+        
+        // Pane Management
+        bind "Alt Right" { MoveFocus "Right"; }
+        bind "Alt Left" { MoveFocus "Left"; }
+        bind "Alt 1" { NewPane; }
+        bind "Alt 2" { CloseFocus; }
+        
+        // Launch the PolyTerm command palette in a floating pane
+        bind "Alt p" {
+            Run "polyterm" {
+                floating true
+                close_on_exit true
+            }
+        }
+    }
+}

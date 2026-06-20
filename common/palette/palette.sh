@@ -1,11 +1,13 @@
 #!/bin/bash
 
 # ==========================================
-# 🎛️  TMUX COMMAND PALETTE (MAIN)
+# 🎛️  COMMAND PALETTE (TMUX & ZELLIJ COMPATIBLE)
 # ==========================================
 
-# 1. Capture the pane ID where the palette was triggered
-TARGET_PANE=$(tmux display-message -p '#{pane_id}')
+# 1. Capture the pane ID if inside Tmux
+if [[ -n "$TMUX" ]]; then
+    TARGET_PANE=$(tmux display-message -p '#{pane_id}')
+fi
 
 # 2. OS Detection for cross-platform dotfiles
 if uname -a | grep -iq "microsoft\|wsl"; then
@@ -13,9 +15,9 @@ if uname -a | grep -iq "microsoft\|wsl"; then
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     OS_ENV="mac"
 else
-    OS_ENV="linux" # Fallback for native Linux
+    OS_ENV="linux"
 fi
-OS_ENV_UPPER=$(echo "$OS_ENV" | tr '[:lower:]' '[:upper:]')
+OS_ENV_UPPER=$(echo "$OS_ENV" | tr '[:lower:]' '[:upper:]' )
 
 # 3. FZF Theming (Peppermint Greenish/Dark)
 export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8a6,fg:#c8c8c8,header:#449fd0,info:#dab853,pointer:#14b8a6,marker:#89d287,fg+:#dfdfdf,prompt:#14b8a6,hl+:#14b8a6,query:#89d287"
@@ -27,13 +29,24 @@ if [[ -n "$DOTFILES_ROOT" && -d "$DOTFILES_ROOT/common/palette" ]]; then
 elif [[ -d "$HOME/dotfiles/common/palette" ]]; then
     REPO_PATH="$HOME/dotfiles"
 else
-    REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+    REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 fi
 
-BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile.apps"
-META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
-SETTINGS_FILE="${REPO_PATH}/common/.polyterm_settings"
-PALETTE_LIB="${REPO_PATH}/common/palette"
+local device_id
+device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
+
+BREWFILE_PATH="${REPO_PATH}/OS/${OS_ENV}/Brewfile.apps"
+if [[ -f "${REPO_PATH}/OS/${OS_ENV}/${device_id}/Brewfile.apps" ]]; then
+    BREWFILE_PATH="${REPO_PATH}/OS/${OS_ENV}/${device_id}/Brewfile.apps"
+fi
+
+META_PATH="${REPO_PATH}/OS/${OS_ENV}/apps_meta.txt"
+if [[ -f "${REPO_PATH}/OS/${OS_ENV}/${device_id}/apps_meta.txt" ]]; then
+    META_PATH="${REPO_PATH}/OS/${OS_ENV}/${device_id}/apps_meta.txt"
+fi
+
+SETTINGS_FILE="${REPO_PATH}/common/config/polyterm/.polyterm_settings"
+PALETTE_LIB="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # 5. Load Settings
 if [[ -f "$SETTINGS_FILE" ]]; then
