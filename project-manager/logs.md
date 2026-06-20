@@ -1,3 +1,10 @@
+## [2026-06-21-03-42-00] - Documented Feature Status & Index Tracking
+- **Feature**: Organized and indexed all dotfile features in the features tracker.
+- **Details**:
+    - **Indexing**: Assigned unique sequential identifiers `[FEAT-01]` through `[FEAT-16]` to all features in `project-manager/features.md`.
+    - **Status Tracking**: Added metadata tracking blocks explicitly showing whether each feature is `Completed` or `Planned`.
+    - **Backlog Tracking**: Added the planned `Automated Symlink Health Checks` feature (`[FEAT-16]`) to match project roadmap tasks.
+
 ## [2026-06-21-02-35-00] - Common Source Refactoring & Decoupling
 - **Feature**: Refactored the `common` source structure to separate configurations from automation scripts.
 - **Details**:
