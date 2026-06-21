@@ -1,0 +1,46 @@
+layout {
+    // 1. Top bar showing tab names
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+
+    // 2. Main workspace layout
+    pane split_direction="vertical" {
+        pane size="70%" focus=true name="Editor"
+        pane size="30%" split_direction="horizontal" {
+            pane name="Server/Logs"
+            pane name="Git/Task"
+        }
+    }
+
+    // 3. Dynamic Status Bar with Guides, Alt Keys, and Date/Time
+        pane size=1 borderless=true {
+            plugin location="file:~/GitHub/mmmonowar/dotfiles/common/config/zellij/plugins/zjstatus.wasm" {
+                // Remove the 'config { ... }' wrapper line entirely
+                format_left   "{mode}"
+                format_center "#[fg=#6c7086]alt+ n/i (focus)  alt+ +/- (resize)"
+                format_right  "{command_unlock}  #[fg=#a6e3a1,bg=#1e1e2e] {datetime} "
+                format_space  ""
+    
+                datetime        "{format}"
+                datetime_format "%Y-%m-%d %H:%M:%S"
+    
+                command_unlock  "#[fg=#f9e2af]Ctrl + g: toggle lock"
+    
+                mode_normal        "#[fg=#cdd6f4] normal"
+                mode_locked        "#[fg=#f38ba8] locked (Ctrl+g to unlock)"
+                mode_resize        "#[fg=#89b4fa] resize"
+                mode_pane          "#[fg=#89dceb] pane"
+                mode_tab           "#[fg=#74c7ec] tab"
+                mode_scroll        "#[fg=#f9e2af] scroll"
+                mode_enter_search  "#[fg=#a6e3a1] enter search"
+                mode_search        "#[fg=#a6e3a1] search"
+                mode_rename_tab    "#[fg=#b4befe] rename tab"
+                mode_rename_pane   "#[fg=#b4befe] rename pane"
+                mode_session       "#[fg=#cba6f7] session"
+                mode_move          "#[fg=#a6e3a1] move"
+                mode_prompt        "#[fg=#89b4fa] prompt"
+                mode_tmux          "#[fg=#fab387] tmux"
+            }
+        }
+    }
