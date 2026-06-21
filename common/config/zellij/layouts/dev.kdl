@@ -4,7 +4,7 @@ layout {
         plugin location="zellij:tab-bar"
     }
 
-    // 2. Main workspace layout
+    // 2. Main workflow area
     pane split_direction="vertical" {
         pane size="70%" focus=true name="Editor"
         pane size="30%" split_direction="horizontal" {
@@ -13,34 +13,39 @@ layout {
         }
     }
 
-    // 3. Dynamic Status Bar with Guides, Alt Keys, and Date/Time
-        pane size=1 borderless=true {
-            plugin location="file:~/GitHub/mmmonowar/dotfiles/common/config/zellij/plugins/zjstatus.wasm" {
-                // Remove the 'config { ... }' wrapper line entirely
-                format_left   "{mode}"
-                format_center "#[fg=#6c7086]alt+ n/i (focus)  alt+ +/- (resize)"
-                format_right  "{command_unlock}  #[fg=#a6e3a1,bg=#1e1e2e] {datetime} "
-                format_space  ""
-    
-                datetime        "{format}"
-                datetime_format "%Y-%m-%d %H:%M:%S"
-    
-                command_unlock  "#[fg=#f9e2af]Ctrl + g: toggle lock"
-    
-                mode_normal        "#[fg=#cdd6f4] normal"
-                mode_locked        "#[fg=#f38ba8] locked (Ctrl+g to unlock)"
-                mode_resize        "#[fg=#89b4fa] resize"
-                mode_pane          "#[fg=#89dceb] pane"
-                mode_tab           "#[fg=#74c7ec] tab"
-                mode_scroll        "#[fg=#f9e2af] scroll"
-                mode_enter_search  "#[fg=#a6e3a1] enter search"
-                mode_search        "#[fg=#a6e3a1] search"
-                mode_rename_tab    "#[fg=#b4befe] rename tab"
-                mode_rename_pane   "#[fg=#b4befe] rename pane"
-                mode_session       "#[fg=#cba6f7] session"
-                mode_move          "#[fg=#a6e3a1] move"
-                mode_prompt        "#[fg=#89b4fa] prompt"
-                mode_tmux          "#[fg=#fab387] tmux"
-            }
+    // 3. Immersive Peppermint Status Bar
+    pane size=1 borderless=true {
+        plugin location="file:~/GitHub/mmmonowar/dotfiles/common/config/zellij/plugins/zjstatus.wasm" {
+            // Layout Placement mapping
+            format_left   "{mode}"
+            format_center "#[fg=#2a2a2a,bg=#000000] {command_alt}"
+            format_right  "#[fg=#dab853,bg=#000000]Ctrl+g: toggle lock  #[fg=#89d287,bg=#000000] {command_date} #[fg=#449fd0,bg=#000000] {command_time} "
+            format_space  "#[bg=#000000]"
+
+            // Visually separated Date and Time blocks running custom formatting commands
+            command_date_command "date +%Y-%m-%d"
+            command_date_format  "{output}"
+            command_date_interval "1"
+
+            command_time_command "date +%H:%M:%S"
+            command_time_format  "{output}"
+            command_time_interval "1"
+
+            // Static middle reference matching your Alt+ bindings
+            command_alt_command  "echo 'alt+ n/i (focus)  alt+ +/- (resize)'"
+            command_alt_format   "{output}"
+            command_alt_interval "0"
+
+            // --- Dynamic Interactive Shortcuts (Strictly Non-Bold / Peppermint Colorway) ---
+            // These will change dynamically on the left when you switch modes
+            mode_normal        "#[fg=#14b8a6,bg=#000000] NORMAL #[fg=#b4b4b4]→ #[fg=#14b8a6]Ctrl+g#[fg=#c8c8c8] locked  #[fg=#14b8a6]Ctrl+p#[fg=#c8c8c8] pane  #[fg=#14b8a6]Ctrl+t#[fg=#c8c8c8] tab  #[fg=#14b8a6]Ctrl+r#[fg=#c8c8c8] resize"
+            mode_locked        "#[fg=#e74669,bg=#000000] LOCKED #[fg=#b4b4b4]→ Press #[fg=#e74669]Ctrl+g#[fg=#c8c8c8] to unlock"
+            mode_pane          "#[fg=#449fd0,bg=#000000] PANE #[fg=#b4b4b4]→ #[fg=#449fd0]n#[fg=#c8c8c8] new  #[fg=#449fd0]d#[fg=#c8c8c8] down  #[fg=#449fd0]r#[fg=#c8c8c8] right  #[fg=#449fd0]s#[fg=#c8c8c8] stacked  #[fg=#449fd0]x#[fg=#c8c8c8] close"
+            mode_tab           "#[fg=#da62dc,bg=#000000] TAB #[fg=#b4b4b4]→ #[fg=#da62dc]n#[fg=#c8c8c8] new  #[fg=#da62dc]x#[fg=#c8c8c8] close  #[fg=#da62dc]h/l#[fg=#c8c8c8] move  #[fg=#da62dc]r#[fg=#c8c8c8] rename"
+            mode_resize        "#[fg=#dab853,bg=#000000] RESIZE #[fg=#b4b4b4]→ #[fg=#dab853]h/j/k/l#[fg=#c8c8c8] scale  #[fg=#dab853]+/-#[fg=#c8c8c8] size"
+            mode_scroll        "#[fg=#89d287,bg=#000000] SCROLL #[fg=#b4b4b4]→ #[fg=#89d287]j/k#[fg=#c8c8c8] up/down  #[fg=#89d287]PageUp/Dn#[fg=#c8c8c8] flip  #[fg=#89d287]Ctrl+c#[fg=#c8c8c8] exit"
+            mode_move          "#[fg=#14b8a6,bg=#000000] MOVE #[fg=#b4b4b4]→ #[fg=#14b8a6]h/j/k/l#[fg=#c8c8c8] shift layout position"
+            mode_session       "#[fg=#b4b4b4,bg=#000000] SESSION #[fg=#b4b4b4]→ #[fg=#ffffff]d#[fg=#c8c8c8] detach  #[fg=#ffffff]w#[fg=#c8c8c8] session manager"
         }
     }
+}

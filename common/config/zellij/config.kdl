@@ -297,14 +297,14 @@ default_shell "zsh"
 // default_cwd "/tmp"
  
 // The name of the default layout to load on startup
-// Default: "default"
+// Default: "default" or compact
 // 
-default_layout "compact"
+default_layout "default"
  
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 // 
-layout_dir "/home/muhammad/GitHub/mmmonowar/dotfiles/common/config/zellij/layouts/"
+// layout_dir "/home/muhammad/GitHub/mmmonowar/dotfiles/common/config/zellij/layouts/"
  
 // The folder in which Zellij will look for themes
 // (Requires restart)
