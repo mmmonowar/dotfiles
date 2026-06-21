@@ -8,9 +8,7 @@ themes {
         yellow "#f1fa8c"
         blue "#bd93f9"
         magenta "#ff79c6"
-        // Peppermint Teal - used for active elements
         cyan "#14b8a6" 
-        // Peppermint White - used for inactive elements
         white "#b4b4b4" 
         orange "#ffb86c"
     }
