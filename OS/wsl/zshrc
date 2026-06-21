@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 # =============================================================================
-// 🖥️  WSL (UBUNTU) - zshrc
+# 🖥️  WSL (UBUNTU) - zshrc
 # =============================================================================
 
 # 1. PATH & ENVIRONMENT
@@ -42,14 +42,13 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 
 # Auto-start multiplexer cockpit on interactive shell login
 if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
-    local multiplexer="tmux"
-    [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]] && multiplexer="zellij"
+    # Default to zellij, but maintain your POLYTERM_MULTIPLEXER override logic
+    local multiplexer="${POLYTERM_MULTIPLEXER:-zellij}"
     
-    if [[ "$multiplexer" == "zellij" ]] && command -v zellij &>/dev/null; then
-        exec zellij attach -c default
-    elif command -v tmux &>/dev/null; then
-        tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
-        tmux attach-session -t default 2>/dev/null || tmux new-session -s default
+    # Run the multiplexer without 'exec'. 
+    # When you detach or exit, you will land safely back in your standard Zsh prompt.
+    if command -v "$multiplexer" >/dev/null 2>&1; then
+        "$multiplexer"
     fi
 fi
 
@@ -127,6 +126,12 @@ if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]
         gemini "$@"
     }
 fi
+
+# Copy from WSL to Windows Clipboard
+alias clip="clip.exe"
+
+# Paste from Windows Clipboard into WSL
+alias paste="powershell.exe -GetClipboard"
 
 # 8. LOCAL OVERRIDES (Not synced via Git)
 # -----------------------------------------------------------------------------

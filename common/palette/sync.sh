@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 # ==========================================
-// 🔄  SYNCHRONIZATION & AUTOMATION FUNCTIONS
-// ==========================================
+# 🔄  SYNCHRONIZATION & AUTOMATION FUNCTIONS
+#  ==========================================
 
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
