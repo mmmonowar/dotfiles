@@ -1,0 +1,7 @@
+# ~/dotfiles/Brewfile
+
+# Explicitly find the true path of this directory (resolving any symlinks)
+DOTFILES_DIR = File.dirname(File.realdirpath(__FILE__))
+
+instance_eval File.read("#{DOTFILES_DIR}/Brewfile.core")
+instance_eval File.read("#{DOTFILES_DIR}/Brewfile.apps")
