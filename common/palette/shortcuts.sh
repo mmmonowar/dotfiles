@@ -32,15 +32,15 @@ function shortcuts_menu() {
 "
     menu_items+="11 | 󰅖  Close Pane ($mod+2) | ${dim}Close the active pane${reset} | kill-pane; select-layout tiled"
 
-    local selection=$(echo -e "$menu_items" | fzf 
-        --ansi 
-        --height 100% 
-        --reverse 
-        --border rounded 
-        --prompt "  " 
-        --query "$query" 
-        --header "Select Shortcut (Type index or name)" 
-        --delimiter ' \| ' 
+    local selection=$(echo -e "$menu_items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "  " \
+        --query "$query" \
+        --header "Select Shortcut (Type index or name)" \
+        --delimiter ' \| ' \
         --with-nth 1,2,3)
 
     if [[ -n "$selection" ]]; then

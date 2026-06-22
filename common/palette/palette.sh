@@ -32,7 +32,6 @@ else
     REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 fi
 
-local device_id
 device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
 BREWFILE_PATH="${REPO_PATH}/OS/${OS_ENV}/Brewfile.apps"

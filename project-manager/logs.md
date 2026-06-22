@@ -1,3 +1,15 @@
+## [2026-06-21-03-50-51] - Resolved Command Palette Menu Failure (ISSUE-19)
+- **Feature**: Fixed execution syntax errors inside Command Palette scripts.
+- **Details**:
+    - **Global Scope Fix**: Removed invalid `local device_id` declaration from the top-level script scope of `common/palette/palette.sh`.
+    - **fzf Multi-line Invocation Fix**: Added missing continuation backslashes (`\`) to the multi-line `fzf` commands inside `common/palette/docs.sh` and `common/palette/shortcuts.sh`.
+    - **Issues Tracker**: Marked `[ISSUE-19]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-21-03-48-48] - Documented Command Palette Issue (ISSUE-19)
+- **Feature**: Documented issue regarding the Command Palette menu not working.
+- **Details**:
+    - **Issues Tracker**: Added `[ISSUE-19]` to `project-manager/issues.md` to track user reports that the palette menu is not working, proposing an investigation of the palette scripts.
+
 ## [2026-06-21-03-42-00] - Documented Feature Status & Index Tracking
 - **Feature**: Organized and indexed all dotfile features in the features tracker.
 - **Details**:

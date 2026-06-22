@@ -95,3 +95,10 @@
   2. It reads `Brewfile.apps` and caches app descriptions in `apps_meta.txt` inside the Homebrew cellar prefix instead of `~/dotfiles`.
   This causes a desynchronization where the CLI-launched Command Palette and the Tmux-launched Command Palette (`Alt+p` which uses `$DOTFILES_ROOT`) have completely separate state, and CLI settings changes are not tracked by Git or pushed during `dot-sync`.
 - **Resolution**: Updated `bin/polyterm` and `common/palette.sh` to check if a user-controlled active repository directory exists (at `$DOTFILES_ROOT` or fallback `~/dotfiles`) with a valid `/common/palette` library folder, prioritizing it as `REPO_PATH` over the Homebrew cellar prefix folder.
+
+## [ISSUE-19] ✅ Palette Menu Is Not Working
+- **Status**: Resolved
+- **Description**: The Command Palette menu is not working.
+- **Resolution**: Removed a non-functional global scope `local` declaration of `device_id` in `common/palette/palette.sh`. Appended missing continuation backslashes (`\`) on the multi-line `fzf` invocations in `common/palette/docs.sh` and `common/palette/shortcuts.sh`.
+
+
