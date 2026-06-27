@@ -5,9 +5,12 @@
 ### 1. Environment Setup
 - **Goal**: Ensure seamless transition between macOS and WSL.
 - **Steps**:
-    - [x] Map shared configurations to `common/`.
-    - [x] Create entry points in `mac/.zshrc` and `wsl/zshrc`.
+    - [x] Map shared configurations to `common/config/` and `common/palette/`.
+    - [x] Create entry points in `OS/mac/.zshrc` and `OS/wsl/zshrc`.
     - [x] Configure automated Zsh + Tmux cockpit entry upon terminal launch.
+    - [x] Organize and refactor OS and device configurations hierarchically under the `OS/` directory root.
+
+
 
 ### 2. Interface Layer
 - **Goal**: Provide a GUI-like experience in the terminal.
@@ -19,6 +22,7 @@
     - [x] Refine UI ergonomics (Nerd Fonts, alignment, and safety prompts).
     - [x] Implement dedicated Scratchpad Settings menu for cross-platform path management.
     - [x] Implement centralized Peppermint Design System and theme synchronization.
+    - [x] Implement GUI-style text selection (Shift+Arrows) and copy (Ctrl+C) for Micro and Tmux.
 
 ### 3. Workflow Automation
 - **Goal**: Minimize manual git and package maintenance.
@@ -28,7 +32,10 @@
     - [x] Integrate `brew bundle dump` into `dot-sync`.
     - [x] Integrate `brew bundle` into `dot-pull`.
     - [x] Automate `dot-sync` within the Command Palette for package operations.
+    - [x] Implement `poly-sync` to automate cloning and updating PolyOS development repositories from GitHub.
     - [x] Enhance Tmux session management workflows.
+    - [x] Integrate dynamic device collection and registry updates (`data/device-list.yml`) during `dot-sync` activities.
+
 
 ### 4. PolyMark Syntax & Theme Translation
 - **Goal**: Synchronize Micro editor styles with the master Sublime PolyMark definition.
@@ -38,17 +45,18 @@
     - [x] Extract hex codes from `polymark.sublime-color-scheme` variables and rules.
     - [x] Construct the `PolyMark.micro` file using the extracted colors, mapping them to standard Micro color links.
     - [x] Update `PolyMark.yaml` with the comprehensive regex patterns from the Sublime syntax file.
-    - [x] Create symbolic links from `~/dotfiles/common/micro/` to `~/.config/micro/` for deployment.
+    - [x] Create symbolic links from `~/dotfiles/common/config/micro/` to `~/.config/micro/` for deployment.
 
 ### 5. Troubleshooting & Compatibility
 - **Goal**: Fix the monochrome issue and keybinding conflicts.
 - **Steps**:
-    - [x] Update `tmux.conf` for explicit TrueColor support.
+    - [x] Update `common/config/tmux/tmux.conf` for explicit TrueColor support.
     - [x] Configure shell profiles (`.zshrc`) to export TrueColor variables.
     - [x] Enable TrueColor in Micro's internal settings.
-    - [x] Implement `fix-alt-keys.sh` for macOS and Ubuntu shortcut compatibility.
+    - [x] Implement `common/palette/fix-alt-keys.sh` for macOS and Ubuntu shortcut compatibility.
     - [x] Unify all shortcuts on the Alt (Meta) key across all platforms.
     - [x] Integrate Alt key fix into the Command Palette.
+
 
 ### 6. Deployment & Onboarding
 - **Goal**: Enable rapid setup on new machines.
@@ -71,5 +79,10 @@
 - **Goal**: Ensure long-term stability and performance.
 - **Steps**:
     - [x] Convert hardcoded repository paths to relative/dynamic paths for portability.
+    - [x] Implement conditional AI model aliases with 1h session timeout and billing tracking to optimize LLM usage costs.
+    - [x] Implement support for local-only Zsh overrides (`~/.zshrc_local`).
+    - [x] Implement a large-file safety filter (`ask_gemini`) for Gemini CLI interactions.
+    - [x] Enable cross-platform synchronization of non-sensitive Gemini CLI settings.
+    - [x] Implement 'Kill Gemini' menu item for rapid process termination.
     - [ ] Research methods to speed up `brew bundle dump`.
     - [ ] Audit configurations for cross-platform redundancies.

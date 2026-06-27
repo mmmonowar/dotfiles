@@ -50,7 +50,7 @@ function dot-scan() {
                     sc_errors=$((sc_errors + 1))
                 fi
             fi
-        done < <(find "$DOT_PATH" -maxdepth 3 -name "*.sh" -o -name "*zshrc" -not -path "*/.git/*")
+        done < <(find "$DOT_PATH" -maxdepth 3 \( -name "*.sh" -o -name "*zshrc" \) -not -path "*/.git/*")
         
         if [ "$sc_errors" -eq 0 ]; then
             echo -e "󰄬  No critical shell script vulnerabilities found."
@@ -69,7 +69,7 @@ function dot-scan() {
         --exclude-dir=".git" \
         --exclude="*.md" \
         --exclude="Brewfile*" \
-        --exclude="security.sh" | \
+        --exclude="*security.sh" | \
         grep -vE "GITHUB_TOKEN|SSH_AUTH_SOCK|COLORTERM|MICRO_TRUECOLOR|#|//" | \
         head -n 5)
     if [ -n "$secrets_found" ]; then

@@ -1,20 +1,195 @@
-## [2026-05-02-14-30-00] - Path Unification & Installer Intelligence
-- **Improvement**: Eliminated "duplicate dotfiles path" confusion by making the installer location-aware.
-- **Refactoring**: Unified naming conventions for cross-platform configuration files.
+## [2026-06-21-03-50-51] - Resolved Command Palette Menu Failure (ISSUE-19)
+- **Feature**: Fixed execution syntax errors inside Command Palette scripts.
 - **Details**:
-    - **Visible Sources**: Renamed `mac/.zshrc` to `mac/zshrc` and `common/.polyterm_settings` to `common/polyterm_settings`. This distinguishes repository source files from their hidden symlinks in the home directory.
-    - **Smart Setup**: Updated `application-package/install.sh` to detect existing Git repositories. It now uses the current path as `TARGET_DIR` if run from within a clone, preventing redundant installations in `~/dotfiles`.
-    - **Unified Bootstrap**: Standardized `OS_ZSHRC="zshrc"` across all platforms in the installer.
-    - **Reference Updates**: Synchronized `mac/zshrc`, `wsl/zshrc`, `linux/zshrc`, and `common/palette.sh` with the new visible filenames.
-    - **Caveats**: Updated the Homebrew Formula to reflect the smarter setup process.
-- **Bug Fix**: Resolved critical `Permission denied` errors in Homebrew caused by security script hijacking.
-- **Feature**: Implemented full multi-user portability across the entire dotfile ecosystem.
+    - **Global Scope Fix**: Removed invalid `local device_id` declaration from the top-level script scope of `common/palette/palette.sh`.
+    - **fzf Multi-line Invocation Fix**: Added missing continuation backslashes (`\`) to the multi-line `fzf` commands inside `common/palette/docs.sh` and `common/palette/shortcuts.sh`.
+    - **Issues Tracker**: Marked `[ISSUE-19]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-21-03-48-48] - Documented Command Palette Issue (ISSUE-19)
+- **Feature**: Documented issue regarding the Command Palette menu not working.
 - **Details**:
-    - **Adaptive Permissions**: Refactored `common/security.sh` to use "Current User Self-Healing." It now ensures the active user owns the Homebrew directory instead of forcing it to root, satisfying both Lynis and Homebrew requirements.
-    - **Dynamic Pathing**: Migrated all scratchpad configurations in `common/.polyterm_settings` from hardcoded paths to use the `$HOME` environment variable.
-    - **Smart Persistence**: Enhanced the `update_setting` helper in `common/palette/helpers.sh` to automatically sanitize literal home paths into `$HOME` variables. This ensures that UI-driven configuration changes remain portable for other developers.
-    - **Visual Consistency**: Updated the Command Palette UI to display dynamic `$HOME` suggestions in path update prompts.
-    - **Verification**: Restored `/home/linuxbrew/.linuxbrew` ownership to `muhammad` and verified Homebrew functionality.
+    - **Issues Tracker**: Added `[ISSUE-19]` to `project-manager/issues.md` to track user reports that the palette menu is not working, proposing an investigation of the palette scripts.
+
+## [2026-06-21-03-42-00] - Documented Feature Status & Index Tracking
+- **Feature**: Organized and indexed all dotfile features in the features tracker.
+- **Details**:
+    - **Indexing**: Assigned unique sequential identifiers `[FEAT-01]` through `[FEAT-16]` to all features in `project-manager/features.md`.
+    - **Status Tracking**: Added metadata tracking blocks explicitly showing whether each feature is `Completed` or `Planned`.
+    - **Backlog Tracking**: Added the planned `Automated Symlink Health Checks` feature (`[FEAT-16]`) to match project roadmap tasks.
+
+## [2026-06-21-02-35-00] - Common Source Refactoring & Decoupling
+- **Feature**: Refactored the `common` source structure to separate configurations from automation scripts.
+- **Details**:
+    - **Configuration Centralization**: Moved program configurations (Tmux, Zellij, Glow, Micro, etc.) under `/common/config/` organized by program name (e.g., `common/config/tmux/tmux.conf`).
+    - **Automation Script Consolidation**: Consolidated all shared shell scripts (`.sh`) and helper utilities (e.g., `security.sh`, `hledger-sync.sh`) into `/common/palette/`.
+    - **Integration Updates**: Adjusted the installer, paths, and internal scripts to query configuration resources and run commands from the new decoupled locations.
+
+## [2026-06-21-02-30-00] - OS-Specific Directory Hierarchy Refactoring
+- **Feature**: Reorganized system and hardware-specific configurations into a structured layout under a root-level `OS/` directory.
+- **Details**:
+    - **Directory Migration**: Moved OS-specific configuration directories (`mac/`, `linux/`, `wsl/`) into a unified `/OS` root folder.
+    - **Hierarchical Layout Rules**: Established rules where OS-generic files sit at the root of the respective OS directory (e.g., `OS/<mac/linux/wsl>/<config>`), and device-specific profiles reside in subdirectories matching the device identifier (e.g., `OS/<mac/linux/wsl>/<device-id>/<config>`).
+    - **Reference Adaptation**: Updated path variables, symlink scripts, and install/sync scripts to reference the new hierarchical OS folder structure.
+    - **Refactoring Documentation**: Added `project-manager/refactoring-architecture.md` outlining the code decoupling strategy.
+
+## [2026-06-21-02-25-00] - Dynamic Device Registry & Tracking
+- **Feature**: Automatic gathering of device environment data into a centralized YAML configuration database.
+- **Details**:
+    - **Device List Storage**: Added a tracking file `data/device-list.yml` to save key device specifications (hostname, username, model, OS, OS version, local IP, last sync).
+    - **Identification Engine**: Created `common/palette/update_device.py` to identify OS types (WSL, native Linux, macOS), query physical specs, and format entries using a clean, alphanumeric ID (`device_id`).
+    - **Sync Automation**: Sourced device update collection within `dot-sync` and install scripts to ensure records are continually refreshed and versioned via Git on remote pushes.
+    - **Registry Documentation**: Added a dedicated `project-manager/device-registry.md` tracker file outlining storage structure.
+
+## [2026-06-19-01-41-00] - Resolved Tmux Shortcut, macOS Shell Latency & Cask Support (ISSUE-11, ISSUE-13 & ISSUE-14)
+- **Feature**: Hardened text safety in Tmux shortcuts, optimized macOS shell startup speed, and completed cask app integration in palette.
+- **Details**:
+    - **Tmux Shortcut Safety**: Updated `common/tmux.conf` to check the `is_editor` helper block before executing shell reload via `Alt+r` (prevents inserting reload command string into active files in micro/vim).
+    - **Shell Startup Performance**: Replaced the synchronous `$(brew --prefix)` execution in `mac/.zshrc` with static searches for `/opt/homebrew` and `/usr/local` syntax highlighting binaries, removing 100-200ms of lag on new terminal creation.
+    - **Cask/Tap Palette Integration**: Rewrote `common/palette/apps.sh` to extract both `brew` and `cask` packages from `Brewfile.apps`. Added background execution for macOS casks (`open -a`) and specific cask uninstallation logic (`brew uninstall --cask`).
+    - **Issues Tracker**: Marked `[ISSUE-11]`, `[ISSUE-13]`, and `[ISSUE-14]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-19-01-38-00] - Resolved Relative Symlink & Homebrew Desynchronization (ISSUE-16 & ISSUE-18)
+- **Feature**: Standardized repository path prioritization and symlink resolution in polyterm and Command Palette.
+- **Details**:
+    - **PolyTerm CLI & Palette**: Modified `bin/polyterm` and `common/palette.sh` to check for a valid active git repository root at `$DOTFILES_ROOT` or fallback to `~/dotfiles/common/palette`. If present, it sets `REPO_PATH` to this active repo root, redirecting settings updates, app lists, and metadata caches to the git-tracked repo instead of the static Homebrew Cellar prefix.
+    - **Recursive Symlinks**: Replaced the single-level readlink in `bin/polyterm` with a robust recursive loop (`while [[ -h "$SOURCE" ]]`) to correctly trace nested and relative symlink sources.
+    - **Issues Tracker**: Marked `[ISSUE-16]` and `[ISSUE-18]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-19-01-35-00] - Audited local configurations desynchronization (ISSUE-18)
+- **Feature**: Documented Homebrew vs. repository config desynchronization.
+- **Details**:
+    - **Configuration Sync**: Confirmed that local shell edits (`~/.zshrc`, `~/.tmux.conf`, `~/.config/micro`, etc.) sync correctly with `dot-sync` because they are symbolic links pointing directly to the git-tracked repo folders.
+    - **Desynchronization Identified**: Discovered that when running `polyterm` from the CLI (installed via Homebrew), it uses its Homebrew prefix path for `.polyterm_settings` and `Brewfile.apps`. This splits settings and description caching between the local repo (`~/dotfiles`) and the Homebrew cellar, preventing CLI changes from syncing.
+    - **Issues Tracker**: Logged `[ISSUE-18]` in `project-manager/issues.md` with a proposed path prioritization fix.
+
+## [2026-06-19-01-30-00] - Resolved macOS Installer mapfile Crash (ISSUE-10)
+- **Feature**: Fixed macOS compatibility in bootstrap installer.
+- **Details**:
+    - **Bootstrap Installer**: Replaced the `mapfile` command in `application-package/install.sh` with a standard `while read -r` loop, preventing crashes due to the older default Bash version (3.2) on macOS.
+    - **Issues Tracker**: Marked `[ISSUE-10]` as resolved in `project-manager/issues.md`.
+
+## [2026-06-19-01-28-00] - Sourcing Security Scanner & Indexed issues.md
+- **Feature**: Fixed security scan availability on macOS/Linux, logged scanned inconsistencies, and indexed all issues.
+- **Details**:
+    - **Security Scanner**: Sourced `common/security.sh` in `mac/.zshrc` and `linux/zshrc` to make the `dot-scan` command available on all supported platforms (previously only sourced in `wsl/zshrc`).
+    - **Auditing**: Conducted a codebase scan and documented 9 new active inconsistencies, errors, and optimization opportunities in `project-manager/issues.md`.
+    - **Indexing**: Assigned a unique numbered index format (`[ISSUE-01]` through `[ISSUE-17]`) to all issues (both resolved and active) in `project-manager/issues.md` for better traceability.
+
+
+## [2026-06-05-13-30-00] - Peppermint Minimalist Tmux Status Bar
+- **Feature**: Re-aligned the minimalist tmux status bar with the master Peppermint Design System.
+- **Details**:
+    - **Palette Alignment**: Swapped temporary Catppuccin colors for the official Peppermint palette (Teal `#14b8a6`, Pure Black `#000000`, Bright Black `#2a2a2a`, White `#b4b4b4`).
+    - **Immersive Canvas**: Re-established the pure black (`#000000`) background for the status bar and panes to ensure a seamless "Sublime Focus" experience.
+    - **Refined Accents**:
+        - Active window highlights and focal icons (`⸎`) now use Peppermint Teal.
+        - Inactive elements and session name use Peppermint White for subtle contrast.
+    - **UI Synchronization**: Updated the message line, command prompt, and selection highlights to use Peppermint Teal.
+    - **Pane Borders**: Restored Peppermint Bright Black for inactive borders and Peppermint Teal for active borders.
+
+## [2026-06-05-13-15-00] - Minimalist Tmux Status Bar & Aesthetic Refinement (Superseded)
+
+## [2026-06-05-12-00-00] - WSL Zsh Regex Module Fix
+- **Feature**: Documented fix for WSL Zsh regex module loading error.
+- **Details**:
+    - Identified that `zsh/regex` failing to load with `regex.bundle` or `.so` missing on WSL is due to a stale completion cache (`.zcompdump`) after Zsh upgrades.
+    - Added troubleshooting steps to `project-manager/issues.md` instructing the user to remove `~/.zcompdump*` and restart the shell, or reinstall Zsh via Homebrew.
+
+## [2026-05-14-11-00-00] - Tmux Robustness & Selection Fix
+- **Feature**: Fixed Tmux configuration errors and improved selection/copy reliability.
+- **Details**:
+    - **Tmux**: 
+        - Fixed a syntax error in the `M-1` (Smart Pane Creation) binding where `$(...)` was expanding too early during sourcing.
+        - Refined `is_editor` detection to be more robust across platforms (macOS/Linux) and added `hledger` to the list.
+        - Disabled **`extended-keys`** which was causing character leakage (`[1;2A`) in iTerm2 and Ghostty.
+        - Optimized the **`is_editor`** check for macOS, making it faster and more reliable by using direct TTY filtering.
+        - Added **`Ctrl+Shift+Arrows`** as a fallback for macOS users where `Shift+Arrows` might be intercepted by the terminal or OS for window management.
+        - Enhanced `Shift+Arrow` selection and `Ctrl+c` copy-to-clipboard functionality to ensure it takes effect correctly.
+        - Added explicit `copy-mode-vi` bindings for `S-Up`, `S-Down`, `S-Left`, and `S-Right` to allow seamless selection extension.
+    - **Documentation**: Updated `issues.md` and `logs.md` to reflect the fixes.
+
+## [2026-05-14-10-00-00] - GUI-style Selection & Copy for Micro and Tmux
+- **Feature**: Implemented `Shift+Arrow` selection and `Ctrl+c` copy functionality.
+- **Details**:
+    - **Micro**: Updated `common/micro/bindings.json` to explicitly support `ShiftUp`, `ShiftDown`, `ShiftLeft`, `ShiftRight` for selection and `Ctrl-c` for copying.
+    - **Tmux**: 
+        - Implemented `is_editor` detection logic to prevent keybinding conflicts with text editors like `micro` or `vim`.
+        - Added root-level bindings for `Shift+Arrows` to automatically enter `copy-mode` and begin selection when not in an editor.
+        - Enhanced `copy-mode-vi` to support `Shift+Arrow` selection (GUI-like) and `Ctrl-c` to copy selection to the system clipboard (using `pbcopy` on macOS and `xclip` on Linux) and cancel copy mode.
+    - Updated project documentation (`features.md`, `tasks.md`, `logs.md`) to reflect the new capabilities.
+
+## [2026-05-05-11-30-00] - Fix poly-sync JSON field error
+- **Bug Fix**: Resolved `Unknown JSON field: "fullName"` error in `poly-sync` alias.
+- **Details**:
+    - Changed the GitHub CLI field from `fullName` (invalid) to `nameWithOwner` (correct) in the `poly-sync` alias across `wsl/zshrc`, `linux/zshrc`, and `mac/.zshrc`.
+    - This fix ensures that the command correctly fetches the repository list and continues to intelligently clone or pull repositories.
+
+## [2026-05-05-11-00-00] - PolyOS-dev & poly-sync Integration
+- **Feature**: Implemented a robust `poly-sync` command and integrated it into the Command Palette.
+- **Details**:
+    - Added a robust `poly-sync` alias to `wsl/zshrc`, `linux/zshrc`, and `mac/.zshrc`. This version uses `gh` JSON output and a `while` loop to intelligently **clone new repositories or pull updates for existing ones**, ensuring the local workspace is always in sync with GitHub.
+    - Implemented a new `PolyOS-dev` category in the Command Palette (`common/palette/menu.sh`) with a sub-menu for `poly-sync`.
+    - Integrated `poly-sync` into the flattened global discovery search of the Command Palette.
+    - Fixed a code duplication issue in `common/palette/menu.sh` and standardized the menu structure.
+    - Updated project documentation (`plan.md`, `features.md`, `tasks.md`, `logs.md`) to reflect the new capabilities.
+
+## [2026-05-04-13-30-00] - Local-Only Zsh Overrides
+- **Feature**: Implemented support for machine-specific Zsh configurations.
+- **Details**:
+    - Added logic to `linux/zshrc`, `mac/.zshrc`, and `wsl/zshrc` to source `~/.zshrc_local` if it exists.
+    - This allows for local environment tailoring (e.g., custom environment variables, machine-specific aliases) without syncing them to Git.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new capability.
+
+## [2026-05-04-13-00-00] - Gemini CLI Alias Timeout
+- **Feature**: Added a 1-hour session timeout to all Gemini CLI aliases.
+- **Details**:
+    - Updated `linux/zshrc`, `mac/.zshrc`, and `wsl/zshrc` to wrap `gemini`, `gemini-flash`, and `gemini-pro` with the `timeout 1h` command.
+    - This prevents accidental long-running sessions and optimizes resource usage.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the change.
+
+## [2026-05-04-14-45-00] - Cargo Dependency Repair
+- **Feature**: Fixed `libllhttp.so.9.3` shared library error for `cargo`.
+- **Details**:
+    - Identified broken dependency link between `rust`, `libgit2`, and `llhttp` following a Homebrew update.
+    - Executed `brew upgrade libgit2 rust` and `brew reinstall libgit2 rust` to re-link binaries.
+    - Verified fix with `cargo --version`.
+    - Performed `brew cleanup` to reclaim 430MB+ of space and remove obsolete library versions.
+
+## [2026-05-04-14-35-00] - 'Kill Gemini' Palette Item
+- **Feature**: Added a 'Kill Gemini' menu item to the command palette.
+- **Details**:
+    - Implemented `kill_gemini_processes` in `common/palette/helpers.sh` which uses `pgrep` and `kill -9`.
+    - Integrated logic to exclude the current active agent's PID and its parent from termination.
+    - Added menu item "Kill Gemini" to `common/palette/menu.sh`.
+    - Updated project documentation to reflect the new capability.
+
+## [2026-05-04-12-30-00] - Gemini CLI Safety Wrapper
+- **Feature**: Implemented `ask_gemini` to filter large files.
+- **Details**:
+    - Added `ask_gemini` function to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
+    - The function prevents Gemini from processing files larger than 50,000 bytes, providing a safety warning to manage cost and context window.
+    - Handles platform-specific `stat` syntax for macOS and Linux.
+    - Updated project documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
+
+## [2026-05-04-12-15-00] - Gemini CLI Settings Synchronization
+- **Feature**: Enabled cross-platform sync for non-sensitive Gemini CLI settings.
+- **Details**:
+    - Created `common/gemini/settings.json` to store shared model, chat, and safety configurations.
+    - Updated `application-package/install.sh` to automatically symlink `~/.gemini/settings.json` to the repository version.
+    - This ensures consistent behavior (e.g., temperature, safety thresholds) across WSL, Linux, and macOS environments.
+    - Documented the new integration in `features.md`, `tasks.md`, and `plan.md`.
+
+## [2026-05-04-12-00-00] - Conditional AI & LLM Aliases
+- **Feature**: Implemented model-specific Gemini CLI aliases conditional on git user email.
+- **Details**:
+    - Added a new section `8. AI & LLM ALIASES` to `linux/zshrc`, `wsl/zshrc`, and `mac/.zshrc`.
+    - Aliases `gemini` (flash-lite), `gemini-flash` (flash-3.0), and `gemini-pro` (pro-3.1) are only enabled if `git config user.email` matches `developer11.intxk@gmail.com`.
+    - Integrated `check-spend` alias to monitor Google Cloud billing quotas and maintain the $4.50 budget cap.
+    - This optimizes for cost-effective LLM usage while providing easy access to more powerful models when needed.
+    - Updated project management documentation (`features.md`, `tasks.md`, `plan.md`) to reflect the new feature.
+
+## [2026-05-01-13-00-00] - Scratchpad Management Enhancements
+>>>>>>> refs/remotes/origin/main
 - **Feature**: Added a dedicated "Scratchpad Settings" menu in the command palette.
 - **Improvement**: Users can now update scratchpad paths for Mac, WSL, and Linux directly from the UI.
 - **Refinement**: Consolidated scratchpad path settings into a single menu entry in the Settings menu.

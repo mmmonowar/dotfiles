@@ -27,15 +27,15 @@ function documents_menu() {
         ((idx++))
     done < <(find "$docs_path" -type f -name "*.md" | sort)
 
-    local selection=$(echo -e "$list_items" | fzf 
-        --ansi 
-        --height 100% 
-        --reverse 
-        --border rounded 
-        --prompt "󱓡  " 
-        --query "$query" 
-        --header "Select Document (Type index or name)" 
-        --delimiter ' \| ' 
+    local selection=$(echo -e "$list_items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󱓡  " \
+        --query "$query" \
+        --header "Select Document (Type index or name)" \
+        --delimiter ' \| ' \
         --with-nth 1,2,3)
 
     if [[ -n "$selection" ]]; then

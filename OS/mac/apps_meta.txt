@@ -26,3 +26,13 @@ zsh-syntax-highlighting|Fish shell like syntax highlighting for zsh
 chezmoi|Manage your dotfiles across multiple diverse machines, securely
 hledger|Easy plain text accounting with command-line, terminal and web UIs
 lazygit|Simple terminal UI for git commands
+tako8ki/tap/gobang|Cross-platform TUI database management tool written in Rust
+dbmate|Lightweight, framework-agnostic database migration tool
+micasa|TUI for tracking home projects, maintenance schedules, appliances and quotes
+papis|Powerful command-line document and bibliography manager
+yazi|Blazing fast terminal file manager written in Rust, based on async I/O
+chafa|Versatile and fast Unicode/ASCII/ANSI graphics renderer
+imagemagick|Tools and libraries to manipulate images in select formats
+poppler|PDF rendering library (based on the xpdf-3.0 code base)
+gopass|Slightly more awesome Standard Unix Password Manager for Teams
+pipx|Execute binaries from Python packages in isolated environments

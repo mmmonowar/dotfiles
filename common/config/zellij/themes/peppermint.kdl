@@ -1,0 +1,22 @@
+themes {
+    peppermint {
+        // --- Liquid Black-Metal Canvas ---
+        black   "#000000"  // Pure Void Black (Immersive uniform backdrop)
+        bg      "#111614"  // Dark Chromium-Green Glaze (Selection / Inactive background)
+        fg      "#2a2a2a"  // Stark Glass-White (High-gloss primary text)
+        
+        // --- The 30% Frosted Translucent Glass Effect ---
+        white  "#90a099"  // Frosted Jade Glass / Cool Muted Sage Grey (Secondary details)
+
+        // --- Polished Silver & Metallic Monochrome ---
+        yellow  "#e1e9e5"  // Platinum-Silver Mint (Headers & Structural tags)
+        orange  "#cbd5e0"  // Brushed Aluminum (Secondary alerts)
+        red     "#ef4444"  // Muted Crimson (Kept minimal for critical errors only)
+
+        // --- Cold Green Luminescent Glow (The Edge Highlights) ---
+        cyan    "#00ffcc"  // Chromium Mint Flare (High-intensity glow for active borders)
+        blue    "#0f9675"  // Deep Metallic Emerald (Focused pane background hue / primary glow)
+        green   "#4ade80"  // Glacial Glass Green (Success states / active tabs)
+        magenta "#2dd4bf"  // Electric Teal Oxide (Metadata & alternate highlights)
+    }
+}

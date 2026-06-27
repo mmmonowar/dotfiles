@@ -1,0 +1,9 @@
+devices:
+  - id: desktop-kgea1ii
+    username: muhammad
+    device-name: DESKTOP-KGEA1II
+    device-model: Generic Linux
+    operating-system: wsl
+    operating-system-version: 24.04
+    ip-address: 172.26.18.34
+    last-sync: 2026-06-21-02-25-24

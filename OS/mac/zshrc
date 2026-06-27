@@ -1,0 +1,129 @@
+# ====================================================
+# PolyTerm zshrc - macOS Optimized Edition
+# Inspired by the Peppermint Design System
+# ====================================================
+
+# --- 1. Environment & Path Setup ---
+
+# Detect Apple Silicon vs Intel Homebrew paths
+if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# Define Dotfiles Root
+export DOTFILES_ROOT="${HOME}/GitHub/mmmonowar/dotfiles"
+
+# Ensure standard path priority
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH}"
+[[ -d "${HOME}/.local/bin" ]] && export PATH="${HOME}/.local/bin:${PATH}"
+
+# Preferred applications
+export EDITOR="micro"
+export VISUAL="micro"
+export PAGER="less"
+
+# --- 2. Peppermint Design Tokens ---
+# Pure Black: #000000 | Foreground: #c8c8c8
+# Cyan/Teal: #14b8a6  | Green: #89d287 | Yellow: #dab853
+# Blue: #449fd0       | Purple: #da62dc | White: #b4b4b4
+# Bright Black: #2a2a2a
+
+export PEPPERMINT_BG="#000000"
+export PEPPERMINT_FG="#c8c8c8"
+export PEPPERMINT_TEAL="#14b8a6"
+export PEPPERMINT_GREEN="#89d287"
+export PEPPERMINT_YELLOW="#dab853"
+export PEPPERMINT_BLUE="#449fd0"
+export PEPPERMINT_PURPLE="#da62dc"
+export PEPPERMINT_WHITE="#b4b4b4"
+export PEPPERMINT_BR_BLACK="#2a2a2a"
+
+# Apply Peppermint Theme colors to fzf (Fuzzy Finder)
+export FZF_DEFAULT_OPTS="
+  --color=fg:#c8c8c8,bg:#000000,hl:#449fd0 
+  --color=fg+:#14b8a6,bg+:#2a2a2a,hl+:#14b8a6 
+  --color=info:#da62dc,prompt:#14b8a6,pointer:#14b8a6 
+  --color=marker:#89d287,spinner:#da62dc,header:#dab853
+  --prompt='⸎ ' --pointer='▶' --marker='✓'
+"
+
+# Glow (Markdown Reader) matching terminal colors
+export GLOW_STYLE="dark"
+
+# --- 3. History Configuration ---
+HISTFILE="${HOME}/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+
+# Share history across sessions immediately
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_SPACE
+
+# --- 4. Completions & Keybindings ---
+# Load zsh completions
+autoload -Uz compinit && compinit
+
+# Navigation keybindings matching OS/Terminal capabilities
+bindkey '^[[1;5C' forward-word       # Ctrl + Right Arrow
+bindkey '^[[1;5D' backward-word      # Ctrl + Left Arrow
+bindkey '^[[3~' delete-char          # Delete Key
+
+# Use vi-like movements in tab completion menus
+zstyle ':completion:*' menu select
+
+# --- 5. Custom Peppermint Prompt ---
+# Minimal, high contrast, clean. Teal indicator with path relative to home.
+autoload -Uz colors && colors
+PROMPT="%F{#14b8a6}⸎ %F{#b4b4b4}%~ %F{#89d287}›%f "
+
+# --- 6. Aliases & Functions ---
+
+# Shell Reload - referenced dynamically inside tmux.conf
+alias dot-reload="source ${HOME}/.zshrc && echo '⚡ PolyTerm Environment Reloaded!'"
+
+# Directory Navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# Colorized outputs
+alias ls="ls -G" # macOS BSD ls colors
+alias ll="ls -lhG"
+alias la="ls -lahG"
+alias grep="grep --color=auto"
+
+# macOS Specific Helpers
+alias pb-copy="pbcopy"
+alias pb-paste="pbpaste"
+
+# Quick Shortcuts for Configurations
+alias v-zsh="micro ${HOME}/.zshrc"
+alias v-tmux="micro ${HOME}/.tmux.conf"
+alias v-zellij="micro ${HOME}/.config/zellij/config.kdl"
+
+# --- 7. Auto-start Multiplexer (Cockpit) ---
+# Prevents spawning inside already active TMUX or Zellij nested environments
+if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
+    # Default is tmux unless POLYTERM_MULTIPLEXER environment variable overrides it
+    local multiplexer="tmux"
+    if [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]]; then
+        multiplexer="zellij"
+    fi
+    
+    # Check if selected command exists before executing
+    if command -v "$multiplexer" >/dev/null 2>&1; then
+        # Launch or attach
+        if [[ "$multiplexer" == "tmux" ]]; then
+            # Automatically try to attach to the last session, or start 'Dashboard'
+            exec tmux attach-session -t Dashboard 2>/dev/null || exec tmux new-session -A -s Dashboard
+        elif [[ "$multiplexer" == "zellij" ]]; then
+            exec zellij
+        fi
+    fi
+fi

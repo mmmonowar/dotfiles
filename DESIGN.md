@@ -35,9 +35,9 @@ The Peppermint theme is the core color palette for PolyTerm, providing a balance
 - **Inactive Pane**: Background `#000000`, Border `#2a2a2a` (Peppermint Bright Black)
 - **Status Bar**: 
     - **Position**: Bottom, strictly aligned to the "Sublime Focus" aesthetic.
-    - **Colors**: Peppermint Teal (`#14b8a6`) foreground on Pure Black (`#000000`) background.
-    - **Session Indicator**: High-fidelity Nerd Font glyph (`󱓞`) with high-contrast Teal background.
-    - **Window Status**: Modern "Powerline" styling using arrows (``, ``) and focal icons (`󱐋`).
+    - **Colors**: Peppermint White (`#b4b4b4`) for subtle elements and Peppermint Teal (`#14b8a6`) for highlights on a Pure Black (`#000000`) background.
+    - **Session Indicator**: Subtle session name on the far left.
+    - **Window Status**: Minimalist dot-based styling (` • #W `) with the active window highlighted in bold Peppermint Teal with modern focus icons (`⸎`).
 - **Command Palette (Popup)**: Background `#000000`, Rounded Border `#14b8a6`.
 - **UI Elements**: Message line and selection highlights use Peppermint Teal for high visibility.
 

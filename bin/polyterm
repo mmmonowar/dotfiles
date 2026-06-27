@@ -6,15 +6,22 @@
 # Central management tool for the PolyTerm dotfiles environment.
 
 # Determine the repository root dynamically
-# This works whether run from the repo or installed via Homebrew
-if [[ -L "$0" ]]; then
-    # Resolve symlinks
-    SOURCE="$(readlink "$0")"
+# Prioritize user's active repository (via DOTFILES_ROOT or ~/dotfiles) if valid
+if [[ -n "$DOTFILES_ROOT" && -d "$DOTFILES_ROOT/common/palette" ]]; then
+    REPO_PATH="$DOTFILES_ROOT"
+elif [[ -d "$HOME/dotfiles/common/palette" ]]; then
+    REPO_PATH="$HOME/dotfiles"
 else
+    # Fallback to resolving relative to the executable (handling symlinks recursively)
     SOURCE="$0"
+    while [[ -h "$SOURCE" ]]; do
+        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+        SOURCE="$(readlink "$SOURCE")"
+        [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+    done
+    BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    REPO_PATH="$( cd -P "$BIN_DIR/.." && pwd )"
 fi
-BIN_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-REPO_PATH="$( cd -P "$BIN_DIR/.." && pwd )"
 
 # Colors for output
 BLUE='\033[0;34m'
@@ -63,11 +70,11 @@ case "$1" in
     palette)
         # Check if inside Tmux
         if [[ -n "$TMUX" ]]; then
-            "$REPO_PATH/common/palette.sh"
+            "$REPO_PATH/common/palette/palette.sh"
         else
             echo -e "${YELLOW}Warning: Palette must be run inside a Tmux session.${NC}"
             echo -e "Starting a new Tmux session..."
-            tmux new-session "$REPO_PATH/common/palette.sh"
+            tmux new-session "$REPO_PATH/common/palette/palette.sh"
         fi
         ;;
     help|--help|-h)
@@ -76,7 +83,7 @@ case "$1" in
     "")
         # Default action: Palette
         if [[ -n "$TMUX" ]]; then
-            "$REPO_PATH/common/palette.sh"
+            "$REPO_PATH/common/palette/palette.sh"
         else
             show_help
         fi
