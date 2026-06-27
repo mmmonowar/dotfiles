@@ -11,8 +11,8 @@ export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h}"
 export OS_ENV="wsl"
 
 # Load UX Settings
-if [[ -f "$DOTFILES_ROOT/common/.polyterm_settings" ]]; then
-    source "$DOTFILES_ROOT/common/.polyterm_settings"
+if [[ -f "$DOTFILES_ROOT/common/polyterm_settings" ]]; then
+    source "$DOTFILES_ROOT/common/polyterm_settings"
 fi
 
 export PATH="$HOME/.local/bin:$PATH"

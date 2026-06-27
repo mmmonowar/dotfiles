@@ -23,8 +23,8 @@ class Polyterm < Formula
       To complete the setup of your environment, run:
         polyterm setup
         
-      This will clone the repository to ~/dotfiles (if not already present)
-      and symlink your configuration files.
+      This will setup your symbolic links and configurations.
+      It will use your existing repository location or clone to ~/dotfiles if not found.
     EOS
   end
 

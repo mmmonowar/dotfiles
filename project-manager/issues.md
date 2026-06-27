@@ -1,14 +1,25 @@
-# Project Issues
+## ✅ Path Confusion & Naming Inconsistency
+- **Status**: Resolved
+- **Description**: Inconsistent naming (hidden `.zshrc` in repo vs visible `zshrc`) and hardcoded installer paths caused duplicate repository clones and user confusion.
+- **Resolution**:
+    - Unified all repository configuration sources to be visible files (e.g., `mac/zshrc`, `common/polyterm_settings`).
+    - Enhanced `application-package/install.sh` to automatically detect if it is running from within an existing repository.
+    - Standardized the bootstrap process to respect the current repository location, preventing duplicate clones to `~/dotfiles`.
+    - Updated all internal references in Zsh profiles and the Command Palette to the new visible filenames.
 
 ## ✅ Micro PolyMark Theme Missing (Linux)
 - **Status**: Resolved
 - **Description**: The PolyMark colorscheme was present in the repository but not activated by default in the Micro editor, leading to it appearing "missing" on Linux.
 - **Resolution**: Updated `common/micro/settings.json` to explicitly set `colorscheme: PolyMark` and enable `truecolor: "auto"` for consistent cross-platform activation.
 
-## ✅ Homebrew Permission Denied (Linux)
+## ✅ Homebrew Permission Denied & Multi-User Portability (Linux)
 - **Status**: Resolved
-- **Description**: `brew install` fails with `Permission denied` when trying to rename files in `/home/linuxbrew/.linuxbrew/Cellar` or temp directories.
-- **Resolution**: Changed ownership of `/home/linuxbrew/.linuxbrew` and all its subdirectories to the current user (`mustafa`) using `sudo chown -R $(whoami) /home/linuxbrew/.linuxbrew`.
+- **Description**: `brew install` failed with `Permission denied` because a security scan script incorrectly chowned the Homebrew root to `root:root`. Additionally, hardcoded user paths in settings broke portability for different developers.
+- **Resolution**: 
+    - Restored Homebrew ownership to the current user.
+    - Updated `common/security.sh` with adaptive "self-healing" that ensures the *active* user owns Homebrew, instead of forcing it to root.
+    - Converted all hardcoded paths in `common/.polyterm_settings` to use the `$HOME` environment variable.
+    - Enhanced the Command Palette's `update_setting` function to automatically preserve `$HOME` when saving paths, ensuring the configuration remains portable across all devices and users.
 
 ## ✅ Tmux Initialization Errors
 - **Status**: Resolved

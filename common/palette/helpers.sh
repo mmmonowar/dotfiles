@@ -7,14 +7,19 @@
 function update_setting() {
     local key=$1
     local value=$2
+    
+    # Portability Fix: Replace literal HOME path with $HOME variable
+    # We use a placeholder to avoid expansion during the sed operation
+    local sanitized_value=$(echo "$value" | sed "s|$HOME|\$HOME|g")
+    
     if grep -q "export $key=" "$SETTINGS_FILE"; then
         if [[ "$OS_ENV" == "mac" ]]; then
-            sed -i '' "s|^export $key=.*|export $key=\"$value\"|" "$SETTINGS_FILE"
+            sed -i '' "s|^export $key=.*|export $key=\"$sanitized_value\"|" "$SETTINGS_FILE"
         else
-            sed -i "s|^export $key=.*|export $key=\"$value\"|" "$SETTINGS_FILE"
+            sed -i "s|^export $key=.*|export $key=\"$sanitized_value\"|" "$SETTINGS_FILE"
         fi
     else
-        echo "export $key=\"$value\"" >> "$SETTINGS_FILE"
+        echo "export $key=\"$sanitized_value\"" >> "$SETTINGS_FILE"
     fi
     # Re-source to update current environment
     source "$SETTINGS_FILE"

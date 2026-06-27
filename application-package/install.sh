@@ -22,13 +22,19 @@ echo -e "📦  Starting Dotfiles Installation"
 echo -e "==========================================${NC}"
 
 # 1. Variables
-TARGET_DIR="$HOME/dotfiles"
+# Detect if we are already inside the dotfiles repository
+if [ -d ".git" ] && git remote -v | grep -q "mmmonowar/dotfiles"; then
+    TARGET_DIR=$(pwd)
+    echo -e "📍  ${BLUE}Detected existing repository at $TARGET_DIR${NC}"
+else
+    TARGET_DIR="$HOME/dotfiles"
+fi
 REPO_URL="https://github.com/mmmonowar/dotfiles.git"
 
 # 2. OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
     OS_ENV="mac"
-    OS_ZSHRC=".zshrc"
+    OS_ZSHRC="zshrc"
 elif uname -a | grep -iq "microsoft\|wsl"; then
     OS_ENV="wsl"
     OS_ZSHRC="zshrc"

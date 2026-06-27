@@ -24,7 +24,7 @@ export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8
 REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 BREWFILE_PATH="${REPO_PATH}/${OS_ENV}/Brewfile.apps"
 META_PATH="${REPO_PATH}/${OS_ENV}/apps_meta.txt"
-SETTINGS_FILE="${REPO_PATH}/common/.polyterm_settings"
+SETTINGS_FILE="${REPO_PATH}/common/polyterm_settings"
 PALETTE_LIB="${REPO_PATH}/common/palette"
 
 # 5. Load Settings

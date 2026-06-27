@@ -47,7 +47,7 @@ function update_scratchpad_path() {
     echo " - Press Enter to keep the current value."
     echo ""
     
-    local default_suggestion="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
+    local default_suggestion="\$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
     
     echo "Default Suggestion:"
     echo "$default_suggestion"
@@ -60,6 +60,7 @@ function update_scratchpad_path() {
         echo "󰄬  Scratchpad disabled for $os."
         sleep 1
     elif [[ -n "$new_path" ]]; then
+        # If user pasted a path with their literal home, update_setting will sanitize it
         update_setting "$key" "$new_path"
         echo "󰄬  Path updated."
         sleep 1

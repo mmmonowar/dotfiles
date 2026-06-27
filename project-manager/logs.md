@@ -1,4 +1,20 @@
-## [2026-05-01-13-00-00] - Scratchpad Management Enhancements
+## [2026-05-02-14-30-00] - Path Unification & Installer Intelligence
+- **Improvement**: Eliminated "duplicate dotfiles path" confusion by making the installer location-aware.
+- **Refactoring**: Unified naming conventions for cross-platform configuration files.
+- **Details**:
+    - **Visible Sources**: Renamed `mac/.zshrc` to `mac/zshrc` and `common/.polyterm_settings` to `common/polyterm_settings`. This distinguishes repository source files from their hidden symlinks in the home directory.
+    - **Smart Setup**: Updated `application-package/install.sh` to detect existing Git repositories. It now uses the current path as `TARGET_DIR` if run from within a clone, preventing redundant installations in `~/dotfiles`.
+    - **Unified Bootstrap**: Standardized `OS_ZSHRC="zshrc"` across all platforms in the installer.
+    - **Reference Updates**: Synchronized `mac/zshrc`, `wsl/zshrc`, `linux/zshrc`, and `common/palette.sh` with the new visible filenames.
+    - **Caveats**: Updated the Homebrew Formula to reflect the smarter setup process.
+- **Bug Fix**: Resolved critical `Permission denied` errors in Homebrew caused by security script hijacking.
+- **Feature**: Implemented full multi-user portability across the entire dotfile ecosystem.
+- **Details**:
+    - **Adaptive Permissions**: Refactored `common/security.sh` to use "Current User Self-Healing." It now ensures the active user owns the Homebrew directory instead of forcing it to root, satisfying both Lynis and Homebrew requirements.
+    - **Dynamic Pathing**: Migrated all scratchpad configurations in `common/.polyterm_settings` from hardcoded paths to use the `$HOME` environment variable.
+    - **Smart Persistence**: Enhanced the `update_setting` helper in `common/palette/helpers.sh` to automatically sanitize literal home paths into `$HOME` variables. This ensures that UI-driven configuration changes remain portable for other developers.
+    - **Visual Consistency**: Updated the Command Palette UI to display dynamic `$HOME` suggestions in path update prompts.
+    - **Verification**: Restored `/home/linuxbrew/.linuxbrew` ownership to `muhammad` and verified Homebrew functionality.
 - **Feature**: Added a dedicated "Scratchpad Settings" menu in the command palette.
 - **Improvement**: Users can now update scratchpad paths for Mac, WSL, and Linux directly from the UI.
 - **Refinement**: Consolidated scratchpad path settings into a single menu entry in the Settings menu.
