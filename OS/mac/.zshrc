@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 # =============================================================================
-// 🖥️  MACOS - .zshrc
+# 🖥️  MACOS - .zshrc
 # =============================================================================
 
 # 1. PATH & ENVIRONMENT
@@ -34,6 +34,9 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
 export HOMEBREW_NO_INSTALL_CLEANUP=1
+
+# Skip multiplexer autostart when invoked for a CLI command (e.g. polyterm sync)
+[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return
 
 # Auto-start multiplexer cockpit on interactive shell login
 if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then

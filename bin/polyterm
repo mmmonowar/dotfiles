@@ -52,20 +52,20 @@ case "$1" in
         ;;
     scan)
         echo -e "🛡️  ${BLUE}Starting Security Scan...${NC}"
-        zsh -ic "dot-scan"
+        POLYTERM_CLI=1 zsh -ic "dot-scan"
         ;;
     sync)
         echo -e "🔄  ${BLUE}Syncing Dotfiles...${NC}"
         # We use zsh -ic to ensure aliases/functions are loaded
-        zsh -ic "dot-sync"
+        POLYTERM_CLI=1 zsh -ic "dot-sync"
         ;;
     pull)
         echo -e "📥  ${BLUE}Pulling Updates...${NC}"
-        zsh -ic "dot-pull"
+        POLYTERM_CLI=1 zsh -ic "dot-pull"
         ;;
     reload)
         echo -e "  ${BLUE}Reloading Environment...${NC}"
-        zsh -ic "dot-reload"
+        POLYTERM_CLI=1 zsh -ic "dot-reload"
         ;;
     palette)
         # Check if inside Tmux

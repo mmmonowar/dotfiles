@@ -71,7 +71,7 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 
 ### 3. Command Palette UI
 -   **Location**: `common/palette.sh` (Entry) → `common/palette/*.sh` (Implementation).
--   **Logic**: Uses `fzf` with `--ansi`. Settings are persisted in `common/.polyterm_settings`.
+-   **Logic**: Uses `fzf` with `--ansi`. Settings are persisted in `common/config/polyterm/.polyterm_settings`.
 -   **Failure Impact**: Corruption leads to UI rendering issues or script execution errors when selecting menu items.
 
 ---

@@ -40,6 +40,9 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 # Boot up x-cmd
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X"
 
+# Skip multiplexer autostart when invoked for a CLI command (e.g. polyterm sync)
+[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return
+
 # Auto-start multiplexer cockpit on interactive shell login
 if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
     # Default to zellij, but maintain your POLYTERM_MULTIPLEXER override logic

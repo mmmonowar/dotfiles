@@ -1,3 +1,28 @@
+## [2026-07-09-10-09-30] - Resolved Hardcoded DOTFILES_ROOT Path in macOS Zsh Profile (ISSUE-22)
+- **Feature**: Enable dynamic lookup of dotfiles directory on macOS.
+- **Details**:
+    - **Path Portability Fix**: Replaced hardcoded `DOTFILES_ROOT` with the dynamic expansion syntax `"${${${(%):-%x}:A}:h:h:h}"` in `OS/mac/zshrc`.
+    - **Issues Tracker**: Marked `[ISSUE-22]` as resolved in `project-manager/issues.md`.
+
+## [2026-07-09-10-04-30] - Resolved Top-Level local Declarations Crash in Bootstrap Installer (ISSUE-21)
+- **Feature**: Fix syntax crash in bootstrap installer `application-package/install.sh`.
+- **Details**:
+    - **Syntax Fix**: Removed `local` keywords from top-level script variable definitions (`device_id`, `zshrc_src`, `brew_core_path`, `brew_apps_path`) in `application-package/install.sh`.
+    - **Issues Tracker**: Marked `[ISSUE-21]` as resolved in `project-manager/issues.md`.
+
+## [2026-07-09-09-56-30] - Resolved Zsh profile C-style comment syntax errors (ISSUE-20)
+- **Feature**: Fixed syntax and runtime errors during Zsh startup on macOS and Linux.
+- **Details**:
+    - **Syntax Fix**: Replaced C-style comments (`//`) with standard shell comments (`#`) on line 3 in `OS/linux/zshrc` and `OS/mac/.zshrc`.
+    - **Issues Tracker**: Marked `[ISSUE-20]` as resolved in `project-manager/issues.md`.
+
+## [2026-07-09-09-45-30] - Audited Active Inconsistencies and Documented New Issues (ISSUE-20 to ISSUE-24)
+- **Feature**: Audited the repository for undiagnosed bugs, path conflicts, and environment portability issues.
+- **Details**:
+    - **Issues Tracker**: Updated `project-manager/issues.md` to:
+        - Mark `[ISSUE-12]` (Operator precedence in `security.sh`), `[ISSUE-15]` (Catppuccin tmux plugin), and `[ISSUE-17]` (Tmux menu redundancy) as **Resolved**.
+        - Add `[ISSUE-20]` (Zsh profile C-style comment syntax errors), `[ISSUE-21]` (top-level `local` scope syntax error in `install.sh`), `[ISSUE-22]` (hardcoded `DOTFILES_ROOT` in macOS), `[ISSUE-23]` (interactive shell auto-start blocking CLI commands), and `[ISSUE-24]` (hardcoded paths in `.polyterm_settings` settings file) as **Active** issues.
+
 ## [2026-06-21-03-50-51] - Resolved Command Palette Menu Failure (ISSUE-19)
 - **Feature**: Fixed execution syntax errors inside Command Palette scripts.
 - **Details**:

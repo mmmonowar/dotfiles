@@ -70,10 +70,10 @@
 - **Description**: Sourcing `tmux.conf` sets up a global shortcut `bind-key -n M-r send-keys "source ~/.zshrc && dot-reload" C-m` that executes `dot-reload` by sending keys directly to the active pane. If `Alt+r` is pressed while editing a file in `micro` or `vim`, or running an interactive command, the reload text will be written directly into the file buffer, causing potential code corruption.
 - **Resolution**: Guarded the shortcut in `common/tmux.conf` using the `is_editor` helper. If an editor is active, `Alt+r` keys are forwarded to the editor; otherwise, the shell reload command is executed safely.
 
-## [ISSUE-12] 🛠️ Broken Operator Precedence in Security Scanner find Command
-- **Status**: Active
-- **Description**: In `common/security.sh`, the shell script scanner evaluates file paths using: `find "$DOT_PATH" -maxdepth 3 -name "*.sh" -o -name "*zshrc" -not -path "*/.git/*"`. Because the `-o` operator has lower precedence than implicit `-and`, this is evaluated as `( -name "*.sh" ) OR ( -name "*zshrc" -not -path "*/.git/*" )`, which causes `.sh` files inside `.git` directories to be processed incorrectly.
-- **Proposed Resolution**: Add parentheses to group the search patterns: `\( -name "*.sh" -o -name "*zshrc" \)`.
+## [ISSUE-12] ✅ Broken Operator Precedence in Security Scanner find Command
+- **Status**: Resolved
+- **Description**: In `common/security.sh`, the shell script scanner evaluates file paths using: `find "$DOT_PATH" -maxdepth 3 -name "*.sh" -o -name "*zshrc" -not -path "*/.git/*"`. Because the `-o` operator has lower precedence than implicit `-and`, this was evaluated as `( -name "*.sh" ) OR ( -name "*zshrc" -not -path "*/.git/*" )`, which caused `.sh` files inside `.git` directories to be processed incorrectly.
+- **Resolution**: Parentheses were added to group the search patterns `\( -name "*.sh" -o -name "*zshrc" \)` inside `common/palette/security.sh` to enforce correct operator precedence.
 
 ## [ISSUE-13] ✅ Slow macOS Shell Startup (brew --prefix evaluation)
 - **Status**: Resolved
@@ -85,20 +85,20 @@
 - **Description**: The Command Palette uninstall function (`uninstall_app` in `common/palette/apps.sh`) queries `Brewfile.apps` using `grep '^brew "'`, which matches standard Homebrew formulae but entirely omits `cask` packages (e.g., `cask "keepassxc"`) and tap packages with additional options, making them unmanageable through the palette.
 - **Resolution**: Rewrote `common/palette/apps.sh` to extract both `brew` and `cask` entries from `Brewfile.apps`, splitting them by type. Modified dynamic description fetching, launch scripts (using `open -a` for macOS casks to launch them in the background), and uninstallation commands (`brew uninstall --cask`) to fully support casks.
 
-## [ISSUE-15] 🛠️ Redundant Catppuccin Plugin in Tmux Configuration
-- **Status**: Active
-- **Description**: Although the environment has migrated to the custom Peppermint Design System, `common/tmux.conf` still references `set -g @plugin 'catppuccin/tmux'` on line 189, adding unnecessary startup latency and potential visual styling conflicts.
-- **Proposed Resolution**: Remove the unused `catppuccin/tmux` plugin reference.
+## [ISSUE-15] ✅ Redundant Catppuccin Plugin in Tmux Configuration
+- **Status**: Resolved
+- **Description**: Although the environment has migrated to the custom Peppermint Design System, `common/tmux.conf` still referenced `set -g @plugin 'catppuccin/tmux'` on line 189, adding unnecessary startup latency and potential visual styling conflicts.
+- **Resolution**: Removed the unused and redundant `catppuccin/tmux` plugin reference from `common/config/tmux/tmux.conf`.
 
 ## [ISSUE-16] ✅ Fragile Relative Symlink Resolution in PolyTerm CLI
 - **Status**: Resolved
 - **Description**: In `bin/polyterm`, symlink path resolution only handles single-level symlinks and will fail to resolve the absolute `REPO_PATH` if the script is symlinked using relative paths.
 - **Resolution**: Implemented a recursive symlink resolution loop `while [[ -h "$SOURCE" ]]` in `bin/polyterm` to trace and resolve nested and relative symlinks robustly.
 
-## [ISSUE-17] 🛠️ Redundant Wrapping in Tmux Shortcuts Menu
-- **Status**: Active
-- **Description**: `execute_shortcut` inside `common/palette/shortcuts.sh` executes commands using `tmux run-shell "tmux $cmd"`. Spawning `tmux run-shell` to run `tmux` internally is highly redundant and slow (spawns 3 processes instead of 1).
-- **Proposed Resolution**: Run `tmux $cmd` directly in the shell.
+## [ISSUE-17] ✅ Redundant Wrapping in Tmux Shortcuts Menu
+- **Status**: Resolved
+- **Description**: `execute_shortcut` inside `common/palette/shortcuts.sh` executed commands using `tmux run-shell "tmux $cmd"`. Spawning `tmux run-shell` to run `tmux` internally is highly redundant and slow (spawns 3 processes instead of 1).
+- **Resolution**: Rewrote `execute_shortcut` in `common/palette/shortcuts.sh` to execute the tmux commands directly via shell evaluation (`eval "tmux $cmd"`).
 
 ## [ISSUE-18] ✅ Configuration Desynchronization between Homebrew PolyTerm and dotfiles Repo
 - **Status**: Resolved
@@ -112,5 +112,36 @@
 - **Status**: Resolved
 - **Description**: The Command Palette menu is not working.
 - **Resolution**: Removed a non-functional global scope `local` declaration of `device_id` in `common/palette/palette.sh`. Appended missing continuation backslashes (`\`) on the multi-line `fzf` invocations in `common/palette/docs.sh` and `common/palette/shortcuts.sh`.
+
+## [ISSUE-20] ✅ Syntax/Runtime Errors in Zsh Profiles due to C-style Comments
+- **Status**: Resolved
+- **Description**: Sourcing `OS/linux/zshrc` and `OS/mac/.zshrc` produces startup errors because of C-style comment syntax `// 🖥️ ...` on line 3. This leads to `unknown file attribute: C` on Linux and `permission denied: //` on macOS.
+- **Resolution**: Replaced the C-style `//` comments with shell-style `#` comment markers in both profiles.
+
+## [ISSUE-21] ✅ Top-Level local Declarations Crash in Bootstrap Installer
+- **Status**: Resolved
+- **Description**: The bootstrap script `application-package/install.sh` contains several `local` keyword variables at the top-level script scope (outside any function). Executing the installer triggers a fatal error `local: can only be used in a function` and terminates immediately.
+- **Resolution**: Removed the `local` keyword from all top-level script variable definitions in `install.sh`.
+
+## [ISSUE-22] ✅ Hardcoded DOTFILES_ROOT Path in macOS Zsh Profiles
+- **Status**: Resolved
+- **Description**: `OS/mac/zshrc` hardcodes `DOTFILES_ROOT` to `~/GitHub/mmmonowar/dotfiles`, whereas the installer clones the repository to `~/dotfiles` by default. This causes absolute path lookup failures for command palette assets and scripts on macOS if cloned to standard paths.
+- **Resolution**: Resolved `DOTFILES_ROOT` dynamically in the macOS shell profile `OS/mac/zshrc` using Zsh dynamic path lookup syntax, matching the Linux and WSL profiles.
+
+## [ISSUE-23] ✅ Interactive Multiplexer Autostart Blocks Non-Interactive Command Execution
+- **Status**: Resolved
+- **Description**: Commands invoked by `polyterm` CLI (like `polyterm sync`) spawned Zsh interactively with `zsh -ic`. When run from a normal terminal outside Tmux, this triggered the zshrc auto-start multiplexer script, opening Tmux or Zellij and blocking the command execution until the user manually exits the multiplexer.
+- **Resolution**:
+    - Set `POLYTERM_CLI=1` environment variable before each `zsh -ic` invocation in `bin/polyterm` (for scan, sync, pull, reload commands).
+    - Added a guard `[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return` before the auto-start multiplexer block in all three Zsh profiles: `OS/linux/zshrc`, `OS/mac/.zshrc`, and `OS/wsl/zshrc`.
+    - The sentinel approach is explicit, portable across Zsh versions, and directly tied to the `polyterm` binary's invocation context.
+
+## [ISSUE-24] ✅ Hardcoded Paths and Redundancy in Active User Settings
+- **Status**: Resolved
+- **Description**: The active settings file `common/config/polyterm/.polyterm_settings` contained hardcoded paths (`/home/mustafa` and `/Users/mustafa.fl`) instead of portable `$HOME` references, violating the portability standard set in Issue 3. Additionally, a redundant, duplicate copy `common/polyterm_settings` existed at the root of `common/` causing confusion.
+- **Resolution**:
+    - Replaced hardcoded `/home/mustafa` and `/Users/mustafa.fl` paths with `$HOME` in `common/config/polyterm/.polyterm_settings`.
+    - Removed the redundant duplicate file `common/polyterm_settings`.
+    - Updated `project-manager/system-manual.md` to reference the correct settings file path `common/config/polyterm/.polyterm_settings`.
 
 

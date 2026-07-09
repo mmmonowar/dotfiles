@@ -104,10 +104,10 @@ function safe_link() {
 }
 
 # Generate device identifier for optional device-specific overrides
-local device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
+device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
 # Symlink .zshrc (support device override if present)
-local zshrc_src="$TARGET_DIR/OS/$OS_ENV/$OS_ZSHRC"
+zshrc_src="$TARGET_DIR/OS/$OS_ENV/$OS_ZSHRC"
 if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/$OS_ZSHRC" ]]; then
     zshrc_src="$TARGET_DIR/OS/$OS_ENV/$device_id/$OS_ZSHRC"
 fi
@@ -136,7 +136,7 @@ mkdir -p "$HOME/.config/zellij"
 safe_link "$TARGET_DIR/common/config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
 # 6. Install Packages (Brewfile)
-local brew_core_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.core"
+brew_core_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.core"
 if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.core" ]]; then
     brew_core_path="$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.core"
 fi
@@ -146,7 +146,7 @@ brew bundle --verbose --file="$brew_core_path"
 
 # Interactive App Selection
 echo -e "\n🧩  ${BLUE}Optional Applications Selection${NC}"
-local brew_apps_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.apps"
+brew_apps_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.apps"
 if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.apps" ]]; then
     brew_apps_path="$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.apps"
 fi

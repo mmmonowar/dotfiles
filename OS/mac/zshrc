@@ -13,7 +13,7 @@ elif [[ -f /usr/local/bin/brew ]]; then
 fi
 
 # Define Dotfiles Root
-export DOTFILES_ROOT="${HOME}/GitHub/mmmonowar/dotfiles"
+export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
 
 # Ensure standard path priority
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH}"
