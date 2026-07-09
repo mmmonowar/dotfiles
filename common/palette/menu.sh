@@ -14,26 +14,27 @@ function list_all_items() {
     if [[ -z "$query" ]]; then
         # Hierarchical Main Menu
         echo -e "1 | 󱓞  Launch App... | ${dim}Browse and launch installed CLI tools${reset} | CAT | apps"
-        echo -e "2 | 󰈙  Project Documents... | ${dim}Read all documentation in project-manager/${reset} | CAT | docs"
+        echo -e "2 | 󰈙  Project Documents... | ${dim}Read docs in project-manager/${reset} | CAT | docs"
         echo -e "3 | 󰒓  Settings... | ${dim}Tweak security and UX preferences${reset} | CAT | settings"
         echo -e "4 |   Execute Shortcut... | ${dim}Run Tmux window and pane commands${reset} | CAT | shortcuts"
-        echo -e "5 | 󰒓  PolyOS-dev... | ${dim}Manage PolyOS development repositories and tools${reset} | CAT | polyos_dev"
+        echo -e "5 | 󰒓  PolyOS-dev... | ${dim}Manage PolyOS dev repos & tools${reset} | CAT | polyos_dev"
         echo -e "6 | 󰈙  Scratchpad | ${dim}Open worklog scratch-pad in micro${reset} | ACTION | scratchpad"
         echo -e "7 | 󰏔  Install App | ${dim}Install new packages via Homebrew${reset} | ACTION | install"
         echo -e "8 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
         echo -e "9 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
-        echo -e "10 | 󰇶  Push Changes | ${dim}Sync local configs to GitHub (Self-Healing)${reset} | ACTION | push"
+        echo -e "10 | 󰇶  Push Changes | ${dim}Sync configs to GitHub${reset} | ACTION | push"
         echo -e "11 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
-        echo -e "12 | 󰒃  Security Scan | ${dim}Run audit and package vulnerability checks${reset} | ACTION | scan"
+        echo -e "12 | 󰒃  Security Scan | ${dim}Run audit & vulnerability checks${reset} | ACTION | scan"
         echo -e "13 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
-        echo -e "14 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
+        echo -e "14 | 󰖟  Device Manager... | ${dim}Scan, manage, SSH into devices${reset} | CAT | devices"
+        echo -e "15 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
     else
         # Flattened Global Discovery
         # 1. Apps
         if [[ -f "$META_PATH" ]]; then
             while IFS='|' read -r app desc; do
                 ((idx++))
-                echo -e "$idx | 󱓞  $app | ${dim}$desc${reset} | APP | $app"
+                echo -e "$idx | 󱓞  $app | ${dim}$(truncate_desc "$desc")${reset} | APP | $app"
             done < "$META_PATH"
         fi
         # 2. Documents
@@ -43,7 +44,7 @@ function list_all_items() {
                 ((idx++))
                 local rel_path="${file#$docs_path/}"
                 local display_name=$(echo "$rel_path" | sed -E 's/\.md$//; s/[\/-]/ /g; s/\b(.)/\u\1/g')
-                echo -e "$idx | 󰈙  $display_name | ${dim}Read $rel_path${reset} | DOC | $file"
+                echo -e "$idx | 󰈙  $display_name | ${dim}$(truncate_desc "Read $rel_path")${reset} | DOC | $file"
             done < <(find "$docs_path" -type f -name "*.md" | sort)
         fi
         # 3. Settings
@@ -60,14 +61,18 @@ function list_all_items() {
         ((idx++)); echo -e "$idx | 󰆴  Kill Session ($mod+w) | ${dim}Terminate session${reset} | SHORTCUT | kill-session"
         ((idx++)); echo -e "$idx | 󰈔  New Window ($mod+m) | ${dim}Create new window${reset} | SHORTCUT | new-window"
         ((idx++)); echo -e "$idx | 󰅙  Kill Window ($mod+e) | ${dim}Close window${reset} | SHORTCUT | kill-window"
-        # 6. Actions
+        # 7. Actions
         ((idx++)); echo -e "$idx | 󰏔  Install App | ${dim}Install via Homebrew${reset} | ACTION | install"
         ((idx++)); echo -e "$idx | 󰆴  Uninstall App | ${dim}Remove and sync${reset} | ACTION | uninstall"
         ((idx++)); echo -e "$idx | 󰇚  Pull Changes | ${dim}Fetch from GitHub${reset} | ACTION | pull"
         ((idx++)); echo -e "$idx | 󰇶  Push Changes | ${dim}Sync to GitHub${reset} | ACTION | push"
-        ((idx++)); echo -e "$idx | 󰇚  poly-sync | ${dim}Clone or update all PolyOS repositories from GitHub${reset} | ACTION | poly-sync"
+        ((idx++)); echo -e "$idx | 󰇚  poly-sync | ${dim}Clone or update PolyOS repos from GitHub${reset} | ACTION | poly-sync"
         ((idx++)); echo -e "$idx |   Reload All Configs | ${dim}Refresh env${reset} | ACTION | reload"
         ((idx++)); echo -e "$idx | 󰒃  Security Scan | ${dim}Run audit${reset} | ACTION | scan"
+        # 6. Device Manager
+        ((idx++)); echo -e "$idx | 󰖟  Scan Current Device | ${dim}Detect system and update device registry${reset} | ACTION | scan_device"
+        ((idx++)); echo -e "$idx | 󰒔  SSH into Device | ${dim}Connect to a registered device${reset} | ACTION | ssh_device"
+        ((idx++)); echo -e "$idx | 󰌋  Manual Device Entry | ${dim}Add or update device data${reset} | ACTION | manual_device"
     fi
 }
 
@@ -99,8 +104,7 @@ $docs_path"
         --border rounded \
         --prompt "󰈙  " \
         --header "Project Documentation" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
+        --delimiter ' \| ')
 
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
@@ -130,8 +134,7 @@ function polyos_dev_menu() {
         --border rounded \
         --prompt "󰒓  " \
         --header "PolyOS Development Tools" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
+        --delimiter ' \| ')
 
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
@@ -158,7 +161,6 @@ function main_menu() {
         --prompt "  " \
         --header "Search Palette (Type index or keywords)" \
         --delimiter ' \| ' \
-        --with-nth 1,2,3 \
         --info=inline \
         --bind "change:reload($0 --list {q})")
 
@@ -181,6 +183,7 @@ function main_menu() {
                 settings) settings_menu ;;
                 shortcuts) shortcuts_menu ;;
                 polyos_dev) polyos_dev_menu ;;
+                devices) devices_menu ;;
             esac
             ;;
         APP) trigger_zsh_func "$arg" ;;
@@ -206,6 +209,9 @@ function main_menu() {
                 scan) trigger_zsh_func "dot-scan" ;;
                 kill_gemini) kill_gemini_processes ;;
                 fix_alt) clear; "$REPO_PATH/common/palette/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
+                scan_device) scan_current_device ;;
+                ssh_device) ssh_into_device ;;
+                manual_device) manual_device_entry ;;
                 exit) exit 0 ;;
             esac
             ;;

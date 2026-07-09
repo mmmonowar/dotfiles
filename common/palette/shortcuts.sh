@@ -40,8 +40,7 @@ function shortcuts_menu() {
         --prompt "  " \
         --query "$query" \
         --header "Select Shortcut (Type index or name)" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
+        --delimiter ' \| ')
 
     if [[ -n "$selection" ]]; then
         local cmd=$(echo "$selection" | cut -d '|' -f 4 | xargs)

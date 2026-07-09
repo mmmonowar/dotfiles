@@ -80,9 +80,9 @@ function scratchpad_menu() {
     local wsl_mark=""; [[ "$OS_ENV" == "wsl" ]] && wsl_mark=" (Current)"
     local mac_mark=""; [[ "$OS_ENV" == "mac" ]] && mac_mark=" (Current)"
     
-    local options="1 | 󰒓  Set Path (Linux)$linux_mark | ${dim}$POLYTERM_SCRATCHPAD_LINUX${reset} | SET_LINUX\n"
-    options+="2 | 󰒓  Set Path (WSL)$wsl_mark | ${dim}$POLYTERM_SCRATCHPAD_WSL${reset} | SET_WSL\n"
-    options+="3 | 󰒓  Set Path (Mac)$mac_mark | ${dim}$POLYTERM_SCRATCHPAD_MAC${reset} | SET_MAC"
+    local options="1 | 󰒓  Set Path (Linux)$linux_mark | ${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_LINUX")${reset} | SET_LINUX\n"
+    options+="2 | 󰒓  Set Path (WSL)$wsl_mark | ${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_WSL")${reset} | SET_WSL\n"
+    options+="3 | 󰒓  Set Path (Mac)$mac_mark | ${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_MAC")${reset} | SET_MAC"
 
     local selection=$(echo -e "$options" | fzf \
         --ansi \
@@ -92,8 +92,7 @@ function scratchpad_menu() {
         --prompt "󰈙  " \
         --query "$query" \
         --header "Scratchpad Configuration" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
+        --delimiter ' \| ')
 
     if [[ -n "$selection" ]]; then
         local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
@@ -133,8 +132,7 @@ function settings_menu() {
         --prompt "󰒓  " \
         --query "$query" \
         --header "Select Setting (Type index or name)" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
+        --delimiter ' \| ')
 
     if [[ -n "$selection" ]]; then
         local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)

@@ -102,6 +102,32 @@ function confirm_action() {
     esac
 }
 
+function truncate_desc() {
+    local desc="$1"
+    local max_len="${2:-auto}"
+
+    if [[ "$max_len" == "auto" ]]; then
+        local term_width
+        term_width=$(tput cols 2>/dev/null || echo 80)
+        local overhead=37
+        max_len=$((term_width - overhead))
+        [[ $max_len -lt 20 ]] && max_len=20
+    fi
+
+    local plain
+    plain=$(echo -e "$desc" | sed 's/\x1b\[[0-9;]*m//g')
+    if [[ ${#plain} -gt $max_len ]]; then
+        local truncated="${plain:0:$((max_len-1))}…"
+        if [[ "$desc" == *$'\x1b['* ]]; then
+            echo -e "\033[2m${truncated}\033[0m"
+        else
+            echo "$truncated"
+        fi
+    else
+        echo "$desc"
+    fi
+}
+
 function read_document() {
     local file=$1
     clear

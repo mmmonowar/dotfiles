@@ -161,8 +161,7 @@ function apps_menu() {
         --prompt "󱐋  " \
         --query "$query" \
         --header "Select App (Type index or name)" \
-        --delimiter ' \| ' \
-        --with-nth 1,2,3)
+        --delimiter ' \| ')
 
     if [[ -n "$selection" ]]; then
         local selected_app=$(echo "$selection" | cut -d '|' -f 2 | xargs)

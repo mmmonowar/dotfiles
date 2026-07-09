@@ -158,6 +158,17 @@
   - **Modularized Shared Configurations**: Reorganized all cross-platform configs under `common/config/` nested by program folders (e.g., `common/config/tmux/tmux.conf`, `common/config/glow/glow.yml`).
   - **Unified Command Palette Library**: Grouped all cross-platform shell commands, automation tools, and helper scripts (e.g., `security.sh`, `hledger-sync.sh`, `fix-alt-keys.sh`) under `common/palette/`.
 
+## [FEAT-17] 🛠️ Interactive Device Manager (Command Palette)
+- **Status**: Completed
+- **Description**: Dedicated sub-menu in the command palette for device registry management, providing scan, SSH, and manual entry capabilities without leaving the terminal UI.
+- **Details**:
+  - **Centralized Sub-Menu**: A "Device Manager..." entry in the main menu (item 14) opens a dedicated `devices_menu()` with three management actions.
+  - **Auto-Scan**: "Scan Current Device" triggers `update_device.py` to detect the current machine's hostname, OS, IP, model, and version, and updates `data/device-list.yml` in real time.
+  - **SSH Launcher**: "SSH into Device" reads `data/device-list.yml` via `device_manager.py --list`, presents an `fzf` picker with device details, and executes `ssh user@ip` on selection — skipping devices with only loopback addresses.
+  - **Manual Entry**: "Manual Device Entry" prompts the user through all registry fields (ID, username, device-name, model, OS, version, IP) with auto-detected defaults, shows a summary, and writes to `data/device-list.yml` via `device_manager.py --update`.
+  - **Global Search Access**: All three device actions appear in the flattened global search results, allowing direct invocation from the main palette search without navigating the sub-menu.
+  - **Scripts**: New `common/palette/devices.sh` (bash module) and `common/palette/device_manager.py` (Python YAML utility); sourced from `palette.sh` and dispatched from `menu.sh`.
+
 ## [FEAT-16] 🛠️ Automated Symlink Health Checks
 - **Status**: Planned
 - **Description**: Automated verification engine to audit, validate, and repair configuration symlinks across operating systems.

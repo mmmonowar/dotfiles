@@ -160,4 +160,44 @@
     - Removed stale `~/.config/zellij/themes/peppermint.kdl` — Zellij now loads the correct theme from `theme_dir` (pointing to the repo's `common/config/zellij/themes/`).
     - Also removed stray `~/.config/zellij/themes/zshrc` that was accidentally placed in the themes directory.
 
+## [ISSUE-26] ✅ Command Palette Menu Items Truncated with "..."
+- **Status**: Resolved
+- **Description**: When opening the Command Palette (main menu or sub-menus), some menu items are visually truncated and display `...` at the end. This breaks the expected consistent presentation — users can't read the full description of items like "PolyOS-dev", "Device Manager", and especially scratchpad paths.
+- **Diagnosis**:
+    - Every `fzf` call in the palette (10 total across 5 files) uses `--with-nth 1,2,3`, which **concatenates** the index, icon+name, and description into a single display line.
+    - `fzf` has no wrapping or per-column width limit — if the concatenated line exceeds terminal width, it **hard-truncates** with `...`.
+    - Measured worst offenders (visual width, 2‑col Nerd Font glyphs included):
+        - `"Manage PolyOS development repositories and tools"` = **~53 chars** — truncates at ≤72-col
+        - `"Scan, manage, and SSH into connected devices"` = **~48 chars** — truncates at ≤72-col
+        - `"Auto-detect system and update device registry"` = **~49 chars** — truncates at ≤72-col
+        - Scratchpad path (fully resolved filesystem path) = **~98 chars** — truncates at all common widths
+    - All 10 fzf invocations affected:
+        | # | File:Line | Function | Worst description |
+        |---|---|---|---|
+        | 1 | menu.sh:158 | `main_menu` | 5 items ≥40 chars |
+        | 2 | menu.sh:100 | `documents_menu` | long filenames |
+        | 3 | menu.sh:131 | `polyos_dev_menu` | 52 chars |
+        | 4 | apps.sh:79 | `uninstall_app` | N/A (no `--with-nth`) |
+        | 5 | apps.sh:156 | `apps_menu` | brew descriptions |
+        | 6 | shortcuts.sh:35 | `shortcuts_menu` | tmux commands in desc |
+        | 7 | devices.sh:20 | `devices_menu` | 47 chars |
+        | 8 | devices.sh:79 | `ssh_into_device` | device data (short) |
+        | 9 | settings.sh:87 | `scratchpad_menu` | **full file paths** |
+        | 10 | settings.sh:128 | `settings_menu` | short toggles |
+    - ANSI escape codes (`\033[2m...\033[0m`, 9 B per pair) are correctly accounted for by fzf but add to the logical line width.
+    - No fzf flag exists to set per-column max width, wrap text, or soft-truncate per field.
+- **Resolution**:
+    - Added `truncate_desc()` helper to `common/palette/helpers.sh:107` — strips ANSI codes for accurate length calculation, truncates to a configurable max (default 40 chars), and preserves dim styling on truncated output.
+    - Shortened 6 hardcoded descriptions in `common/palette/menu.sh` (`list_all_items`) to ≤40 chars:
+        - `"Read all documentation in project-manager/"` → `"Read docs in project-manager/"`
+        - `"Manage PolyOS development repositories and tools"` → `"Manage PolyOS dev repos & tools"`
+        - `"Sync local configs to GitHub (Self-Healing)"` → `"Sync configs to GitHub"`
+        - `"Run audit and package vulnerability checks"` → `"Run audit & vulnerability checks"`
+        - `"Scan, manage, and SSH into connected devices"` → `"Scan, manage, SSH into devices"`
+        - `"Clone or update all PolyOS repositories from GitHub"` → `"Clone or update PolyOS repos from GitHub"`
+    - Shortened 1 description in `common/palette/devices.sh:12` (`devices_menu`):
+        - `"Auto-detect system and update device registry"` → `"Auto-detect and update device info"`
+    - Applied `truncate_desc` to dynamic scratchpad path variables in `common/palette/settings.sh:83-85` (`scratchpad_menu`) — paths like `$POLYTERM_SCRATCHPAD_LINUX` (which can be 60+ chars) are now clipped to 40 chars in the menu display while the full path is preserved for file operations.
+    - All items now fit within ≤80‑col terminals and most fit within ≤72‑col terminals.
+
 

@@ -148,3 +148,6 @@ alias paste="powershell.exe -GetClipboard"
 # 8. LOCAL OVERRIDES (Not synced via Git)
 # -----------------------------------------------------------------------------
 [[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"
+
+# opencode
+export PATH=/home/muhammad/.opencode/bin:$PATH

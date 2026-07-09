@@ -58,6 +58,7 @@ source "$PALETTE_LIB/apps.sh"
 # source "$PALETTE_LIB/docs.sh"  # Deprecated: documents_menu was shadowed by menu.sh
 source "$PALETTE_LIB/settings.sh"
 source "$PALETTE_LIB/shortcuts.sh"
+source "$PALETTE_LIB/devices.sh"
 source "$PALETTE_LIB/menu.sh"
 
 # ==========================================
