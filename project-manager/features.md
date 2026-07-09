@@ -39,6 +39,17 @@
   - **Peppermint Design System**: Centralized design language in `DESIGN.md` for consistent high-contrast ergonomics.
   - **Plugin Power**: Managed via `tpm` with support for `resurrect` and `continuum` for session persistence.
 
+## [FEAT-03b] ✅ Multiplexer Switching (Tmux ↔ Zellij)
+- **Status**: Completed
+- **Description**: Dynamic switching between Tmux and Zellij terminal multiplexers with environment variable control and unified command support.
+- **Details**:
+  - **Dual-Config Support**: Dedicated configurations for both `tmux` (`common/config/tmux/tmux.conf`) and `zellij` (`common/config/zellij/config.kdl`) with shared Peppermint design language.
+  - **Environment Variable Control**: `POLYTERM_MULTIPLEXER` environment variable (`tmux` or `zellij`) selects the active multiplexer across all OS profiles (Linux, macOS, WSL).
+  - **OS-Specific Defaults**: Default multiplexer is `tmux` on Linux/macOS and `zellij` on WSL for optimal native experience.
+  - **Palette Compatibility**: All palette shortcuts (`execute_shortcut()`) and helper functions (`trigger_zsh_func()`) transparently detect the active multiplexer via `$TMUX`/`$ZELLIJ` environment variables and execute the equivalent command.
+  - **Shared Keybindings**: Common `Alt/Meta` keybinding patterns (pane navigation, tab management, session cycling) mirrored across both multiplexers for muscle-memory consistency.
+  - **Unified Installation**: `install.sh` symlinks both tmux and zellij configurations; TPM is installed for tmux plugin support.
+
 ## [FEAT-04] ✅ Declarative Package Management
 - **Status**: Completed
 - **Description**: Automated installation, updating, and synchronization of environment packages and CLI utilities.
