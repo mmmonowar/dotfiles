@@ -45,7 +45,7 @@ if [[ -f "${REPO_PATH}/OS/${OS_ENV}/${device_id}/apps_meta.txt" ]]; then
 fi
 
 SETTINGS_FILE="${REPO_PATH}/common/config/polyterm/.polyterm_settings"
-PALETTE_LIB="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PALETTE_LIB="${REPO_PATH}/common/palette"
 
 # 5. Load Settings
 if [[ -f "$SETTINGS_FILE" ]]; then
@@ -55,7 +55,7 @@ fi
 # 6. Source Modular Scripts
 source "$PALETTE_LIB/helpers.sh"
 source "$PALETTE_LIB/apps.sh"
-source "$PALETTE_LIB/docs.sh"
+# source "$PALETTE_LIB/docs.sh"  # Deprecated: documents_menu was shadowed by menu.sh
 source "$PALETTE_LIB/settings.sh"
 source "$PALETTE_LIB/shortcuts.sh"
 source "$PALETTE_LIB/menu.sh"

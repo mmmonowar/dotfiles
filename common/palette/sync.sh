@@ -4,6 +4,10 @@
 # 🔄  SYNCHRONIZATION & AUTOMATION FUNCTIONS
 #  ==========================================
 
+function palette() {
+    source "$DOTFILES_ROOT/common/palette/palette.sh"
+}
+
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)

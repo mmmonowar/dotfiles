@@ -84,6 +84,15 @@ fi
 
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
+# 3b. FZF Peppermint Theme
+export FZF_DEFAULT_OPTS="
+  --color=fg:#c8c8c8,bg:#000000,hl:#449fd0
+  --color=fg+:#14b8a6,bg+:#2a2a2a,hl+:#14b8a6
+  --color=info:#da62dc,prompt:#14b8a6,pointer:#14b8a6
+  --color=marker:#89d287,spinner:#da62dc,header:#dab853
+  --prompt='⸎ ' --pointer='▶' --marker='✓'
+"
+
 # 4. ALIASES & KEYBOARDS
 # -----------------------------------------------------------------------------
 alias search='ddgr --reg en-us --num 5'

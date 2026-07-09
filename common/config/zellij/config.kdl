@@ -177,7 +177,7 @@ keybinds clear-defaults=true {
         bind "Alt e" { CloseTab; }
         bind "Alt f" { ToggleFloatingPanes; }
         bind "Alt m" { NewTab; }
-        bind "Alt p" { ToggleFloatingPanes; }
+        bind "Alt p" { NewPane; TogglePaneEmbedOrFloating; WriteChars "palette\r"; SwitchToMode "locked"; }
         bind "Alt w" { Quit; }
     }
     shared_except "locked" "renametab" "renamepane" {

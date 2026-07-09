@@ -144,4 +144,20 @@
     - Removed the redundant duplicate file `common/polyterm_settings`.
     - Updated `project-manager/system-manual.md` to reference the correct settings file path `common/config/polyterm/.polyterm_settings`.
 
+## [ISSUE-25] ✅ Alt+p / `palette` Command Fails — BASH_SOURCE Empty When Sourced
+- **Status**: Resolved
+- **Description**: Pressing `Alt+p` or running the `palette` function (defined in `common/palette/sync.sh`) sources `palette.sh`. In a sourced context, `BASH_SOURCE[0]` is empty, so `dirname ""` resolved to `.` and `PALETTE_LIB` was set to `pwd` (the repo root) instead of `common/palette/`. All 5 `source` commands then looked for sub-scripts in the wrong directory.
+- **Diagnosis**: Debug probe at `palette.sh:49` confirmed `BASH_SOURCE=` (empty), `PALETTE_LIB='/home/muhammad/GitHub/mmmonowar/dotfiles'` (wrong), and all 5 sub-scripts `MISSING` — because `"$( cd "$( dirname "" )" && pwd )"` returns the current working directory, not the script's directory.
+- **Resolution**:
+    - Replaced `PALETTE_LIB` computation from `BASH_SOURCE`-based: `"$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"`
+    - To a direct path using the already-resolved `REPO_PATH`: `"${REPO_PATH}/common/palette"`
+    - This works in both executed and sourced contexts since `REPO_PATH` is derived from `DOTFILES_ROOT` (which is always set by the shell profile).
+
+## [TASK-01] ✅ Zellij Peppermint Theme — Stale Copy Overwriting Repo Version
+- **Status**: Resolved
+- **Description**: Zellij loading wrong peppermint theme colors. `~/.config/zellij/themes/peppermint.kdl` contained a stale Dracula-ish color scheme that differed from the canonical theme in `common/config/zellij/themes/peppermint.kdl`. Since Zellij loads themes from both `~/.config/zellij/themes/` (default) and `theme_dir` (repo), the stale copy took precedence.
+- **Resolution**:
+    - Removed stale `~/.config/zellij/themes/peppermint.kdl` — Zellij now loads the correct theme from `theme_dir` (pointing to the repo's `common/config/zellij/themes/`).
+    - Also removed stray `~/.config/zellij/themes/zshrc` that was accidentally placed in the themes directory.
+
 
