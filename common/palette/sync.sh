@@ -125,13 +125,10 @@ function dot-pull() {
 
 function dot-reload() {
     echo "  Reloading configurations..."
-    if [ -f "$HOME/.zshrc" ]; then
-        source "$HOME/.zshrc"
-    else
-        # Fallback
-        source "$DOTFILES_ROOT/OS/$OS_ENV/zshrc" 2>/dev/null || source "$DOTFILES_ROOT/OS/$OS_ENV/.zshrc" 2>/dev/null
-    fi
-    
+    [[ -f "$HOME/.zshrc" ]] && source "$HOME/.zshrc" 2>/dev/null
+    # Re-source sync.sh so function definitions stay current after .zshrc sourcing
+    [[ -f "${DOTFILES_ROOT}/common/palette/sync.sh" ]] && source "${DOTFILES_ROOT}/common/palette/sync.sh" 2>/dev/null
+
     # Reload tmux config if the server is running
     if tmux info &>/dev/null; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
@@ -139,4 +136,178 @@ function dot-reload() {
         echo "󰄬  Tmux configuration reloaded."
     fi
     echo "󰄬  Cockpit reloaded."
+}
+
+function dot-reload-all() {
+    clear
+    echo -e "\033[1m󰔄  Full Configuration Reload\033[0m"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "This will:"
+    echo "  1. Source shell configurations (zshrc, bashrc)"
+    echo "  2. Reload PolyTerm environment settings"
+    echo "  3. Reload multiplexer configuration"
+    echo "  4. Restart the multiplexer (fresh session)"
+    echo ""
+    if ! confirm_action "Proceed with full reload?"; then
+        echo "󰅙  Reload cancelled."
+        return 1
+    fi
+
+    echo ""
+    echo "󰔄  [1/4] Sourcing shell configurations..."
+    [[ -f "$HOME/.zshrc" ]] && source "$HOME/.zshrc" 2>/dev/null && echo "  󰄬  .zshrc sourced"
+
+    local saved_ps1="$PS1"
+    [[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc" 2>/dev/null && echo "  󰄬  .bashrc sourced"
+    PS1="$saved_ps1"
+
+    local sync_sh="${DOTFILES_ROOT}/common/palette/sync.sh"
+    [[ -f "$sync_sh" ]] && source "$sync_sh" 2>/dev/null
+
+    echo "󰔄  [2/4] Reloading PolyTerm environment..."
+    local settings_file="${DOTFILES_ROOT}/common/config/polyterm/.polyterm_settings"
+    [[ -f "$settings_file" ]] && source "$settings_file" 2>/dev/null && echo "  󰄬  PolyTerm settings reloaded"
+
+    echo "󰔄  [3/4] Reloading multiplexer configuration..."
+    local active_mux=""
+    [[ -n "$TMUX" ]] && active_mux="tmux"
+    [[ -n "$ZELLIJ" ]] && active_mux="zellij"
+
+    if [[ "$active_mux" == "tmux" ]]; then
+        if tmux info &>/dev/null 2>&1; then
+            tmux set-environment -g DOTFILES_ROOT "${DOTFILES_ROOT}" 2>/dev/null
+            tmux source-file "$HOME/.tmux.conf" 2>/dev/null && echo "  󰄬  Tmux configuration reloaded"
+        else
+            echo "  󰉽  Tmux server not running, skipping"
+        fi
+    elif [[ "$active_mux" == "zellij" ]]; then
+        echo "  󰄬  Zellij configuration will apply on next session start"
+    else
+        echo "  󰉽  No active multiplexer detected"
+    fi
+
+    echo "󰔄  [4/4] Restarting multiplexer..."
+    if [[ "$active_mux" == "tmux" ]]; then
+        local old_session
+        old_session=$(tmux display-message -p '#S' 2>/dev/null) || old_session="Main"
+        tmux run-shell -b '~/.tmux/plugins/tmux-resurrect/scripts/save.sh' 2>/dev/null
+        local temp_session="reload-$$"
+        tmux new-session -d -s "$temp_session" 2>/dev/null
+        tmux switch-client -t "$temp_session" 2>/dev/null
+        tmux kill-session -t "$old_session" 2>/dev/null
+        tmux rename-session -t "$temp_session" "$old_session" 2>/dev/null
+        echo "  󰄬  Tmux restarted with fresh \"$old_session\" session"
+    elif [[ "$active_mux" == "zellij" ]]; then
+        local session_name="${ZELLIJ_SESSION_NAME:-main}"
+        echo "  󰄬  Zellij session terminated. Run 'zellij' to restart."
+        zellij kill-session "$session_name" 2>/dev/null
+    else
+        echo "  󰉽  No active multiplexer to restart"
+    fi
+
+    echo ""
+    echo "󰄬  Full reload complete."
+}
+
+function dot-reload-apply() {
+    local shell_flag=false
+    local settings_flag=false
+    local mux_config_flag=false
+    local restart_mux_flag=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --shell) shell_flag=true ;;
+            --settings) settings_flag=true ;;
+            --mux-config) mux_config_flag=true ;;
+            --restart-mux) restart_mux_flag=true ;;
+        esac
+        shift
+    done
+
+    local step=0
+    local total=0
+    [[ "$shell_flag" == "true" ]] && ((total++))
+    [[ "$settings_flag" == "true" ]] && ((total++))
+    [[ "$mux_config_flag" == "true" ]] && ((total++))
+    [[ "$restart_mux_flag" == "true" ]] && ((total++))
+
+    echo ""
+    [[ "$shell_flag" == "true" ]] && { ((step++)); echo "󰔄  [$step/$total] Reloading shell configs..."; dot-reload-shell; }
+    [[ "$settings_flag" == "true" ]] && { ((step++)); echo "󰔄  [$step/$total] Reloading PolyTerm settings..."; dot-reload-settings; }
+    [[ "$mux_config_flag" == "true" ]] && { ((step++)); echo "󰔄  [$step/$total] Reloading multiplexer config..."; dot-reload-mux-config; }
+    [[ "$restart_mux_flag" == "true" ]] && { ((step++)); echo "󰔄  [$step/$total] Restarting multiplexer..."; dot-restart-mux; }
+    echo ""
+}
+
+function dot-reload-interactive() {
+    echo "󰔄  Starting interactive reload..."
+    dot-reload-apply --shell --settings --mux-config --restart-mux
+}
+
+function dot-reload-shell() {
+    echo "󰍬  Sourcing shell configurations..."
+    [[ -f "$HOME/.zshrc" ]] && source "$HOME/.zshrc" 2>/dev/null && echo "  󰄬  .zshrc sourced"
+
+    local saved_ps1="$PS1"
+    [[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc" 2>/dev/null && echo "  󰄬  .bashrc sourced"
+    PS1="$saved_ps1"
+
+    local sync_sh="${DOTFILES_ROOT}/common/palette/sync.sh"
+    [[ -f "$sync_sh" ]] && source "$sync_sh" 2>/dev/null
+    echo "󰄬  Shell configs reloaded."
+}
+
+function dot-reload-settings() {
+    echo "󰒓  Reloading PolyTerm environment..."
+    local settings_file="${DOTFILES_ROOT}/common/config/polyterm/.polyterm_settings"
+    [[ -f "$settings_file" ]] && source "$settings_file" 2>/dev/null && echo "  󰄬  PolyTerm settings reloaded"
+    echo "󰄬  Settings reloaded."
+}
+
+function dot-reload-mux-config() {
+    echo "󰒹  Reloading multiplexer configuration..."
+    local active_mux=""
+    [[ -n "$TMUX" ]] && active_mux="tmux"
+    [[ -n "$ZELLIJ" ]] && active_mux="zellij"
+
+    if [[ "$active_mux" == "tmux" ]]; then
+        if tmux info &>/dev/null 2>&1; then
+            tmux set-environment -g DOTFILES_ROOT "${DOTFILES_ROOT}" 2>/dev/null
+            tmux source-file "$HOME/.tmux.conf" 2>/dev/null && echo "  󰄬  Tmux configuration reloaded"
+        else
+            echo "  󰉽  Tmux server not running, skipping"
+        fi
+    elif [[ "$active_mux" == "zellij" ]]; then
+        echo "  󰄬  Zellij configuration will apply on next session start"
+    else
+        echo "  󰉽  No active multiplexer detected"
+    fi
+    echo "󰄬  Multiplexer config reloaded."
+}
+
+function dot-restart-mux() {
+    echo "󰒠  Restarting multiplexer..."
+    local active_mux=""
+    [[ -n "$TMUX" ]] && active_mux="tmux"
+    [[ -n "$ZELLIJ" ]] && active_mux="zellij"
+
+    if [[ "$active_mux" == "tmux" ]]; then
+        local old_session
+        old_session=$(tmux display-message -p '#S' 2>/dev/null) || old_session="Main"
+        tmux run-shell -b '~/.tmux/plugins/tmux-resurrect/scripts/save.sh' 2>/dev/null
+        local temp_session="reload-$$"
+        tmux new-session -d -s "$temp_session" 2>/dev/null
+        tmux switch-client -t "$temp_session" 2>/dev/null
+        tmux kill-session -t "$old_session" 2>/dev/null
+        tmux rename-session -t "$temp_session" "$old_session" 2>/dev/null
+        echo "  󰄬  Tmux restarted with fresh \"$old_session\" session"
+    elif [[ "$active_mux" == "zellij" ]]; then
+        local session_name="${ZELLIJ_SESSION_NAME:-main}"
+        echo "  󰄬  Zellij session terminated. Run 'zellij' to restart."
+        zellij kill-session "$session_name" 2>/dev/null
+    else
+        echo "  󰉽  No active multiplexer to restart"
+    fi
+    echo "󰄬  Multiplexer restarted."
 }

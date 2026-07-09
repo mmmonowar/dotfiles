@@ -200,4 +200,25 @@
     - Applied `truncate_desc` to dynamic scratchpad path variables in `common/palette/settings.sh:83-85` (`scratchpad_menu`) — paths like `$POLYTERM_SCRATCHPAD_LINUX` (which can be 60+ chars) are now clipped to 40 chars in the menu display while the full path is preserved for file operations.
     - All items now fit within ≤80‑col terminals and most fit within ≤72‑col terminals.
 
+## [ISSUE-27] ✅ `dot-reload` Command Fails — `confirm_action` Not Found
+- **Status**: Resolved
+- **Description**: Running `dot-reload` from the shell prompt or via `polyterm reload` triggers `dot-reload-all`, which calls `confirm_action` on its 10th line. This fails with `dot-reload-all:10: command not found: confirm_action`. The `dot-reload` command is defined in `common/palette/sync.sh` (sourced from the OS-specific zshrc), but `confirm_action` is defined in `common/palette/helpers.sh` — which is only sourced from `common/palette/palette.sh` (the Command Palette entry point). When `dot-reload-all` is invoked outside the palette context (e.g., directly from the shell or via `bin/polyterm reload` which spawns a new `zsh -ic`), `helpers.sh` is never sourced, so `confirm_action` is undefined.
+- **Resolution**: Sourced `common/palette/helpers.sh` in each OS-specific zshrc (`OS/linux/zshrc`, `OS/mac/.zshrc`, `OS/wsl/zshrc`) before sourcing `sync.sh`, ensuring `confirm_action` is available in all interactive shell contexts where `sync.sh` functions are called.
+
+## [ISSUE-28] ✅ Interactive Reload Menu Item Broken — Popup Pane Targeting
+- **Status**: Resolved
+- **Description**: The "Reload Configs" menu item (and all other `trigger_zsh_func` actions — pull, push, poly-sync, scan) did not work when invoked from the Command Palette via `tmux display-popup`. The palette captures the target pane using `#{pane_id}`, which returns the popup's own pane ID instead of the underlying shell pane. When `trigger_zsh_func` sends keystrokes to `$TARGET_PANE`, they arrive in the closing popup rather than the user's shell, so the target function never executes.
+- **Diagnosis**:
+    - `common/palette/palette.sh:9`: `TARGET_PANE=$(tmux display-message -p '#{pane_id}')` captures popup's own pane.
+    - `common/palette/helpers.sh:57`: `tmux send-keys -t "$TARGET_PANE"` sends to wrong pane.
+    - All 5 `trigger_zsh_func` call sites affected: pull, push, poly-sync, reload, scan.
+    - `OS/mac/zshrc:88`: `alias dot-reload` shadowed the `dot-reload()` function from `sync.sh`, and `mac/zshrc` was missing sourcing of `helpers.sh`/`sync.sh`.
+    - `common/palette/sync.sh:129`: `dot-reload()` sourced `~/.zshrc`, causing recursive redefinition of functions via `sync.sh`.
+    - `common/config/tmux/tmux.conf:83`: `Alt+r` binding ran `source ~/.zshrc && dot-reload`, double-sourcing shell configs.
+- **Resolution**:
+    - Changed `#{pane_id}` to `#{client_pane_id}` in `palette.sh:9` — `client_pane_id` returns the pane the client is focused on (the one behind the popup), fixing all `trigger_zsh_func` actions at once.
+    - Added `helpers.sh` and `sync.sh` sourcing to `OS/mac/zshrc` to match the sourcing pattern in all other zshrc files, and removed the conflicting `alias dot-reload`.
+    - Restructured `dot-reload()` in `sync.sh` to explicitly re-source `sync.sh` after sourcing `~/.zshrc`, preventing stale function definitions.
+    - Simplified `Alt+r` binding in `tmux.conf:83` to send only `dot-reload`, removing the redundant `source ~/.zshrc &&` prefix.
+
 

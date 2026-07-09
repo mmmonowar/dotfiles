@@ -655,3 +655,14 @@
   - Maintained consistent spacing and alignment for a high-end CLI aesthetic.
   - Updated documentation (`features.md`, `tasks.md`, `plan.md`).
 - **Impact**: More professional and consistent visual experience across various terminal fonts that support Nerd Fonts.
+
+## [2026-07-10] 🔄 Interactive Configuration Reload
+- **Feature**: Made "Reload All Configs" option interactive with component selection.
+- **Changes**:
+  - Added `dot-reload-interactive` function with fzf multi-select menu for choosing which components to reload.
+  - Added helper functions: `dot-reload-shell`, `dot-reload-settings`, `dot-reload-mux-config`, `dot-restart-mux`.
+  - Updated Command Palette menu item from "Reload All Configs" to "Reload Configs..." with interactive selection.
+  - Enhanced `polyterm` CLI with reload flags: `--all`, `--shell`, `--settings`, `--mux-config`, `--mux-restart`.
+  - Default `polyterm reload` now opens interactive menu (non-interactive via `--all` flag).
+  - Updated documentation (`user-manual.md`, `features.md`).
+- **Impact**: Users can now selectively reload only the components they need, reducing unnecessary restarts and improving workflow efficiency.

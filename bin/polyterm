@@ -33,15 +33,22 @@ NC='\033[0m'
 function show_help() {
     echo -e "${BLUE}PolyTerm CLI${NC} - Dotfiles Management"
     echo ""
-    echo -e "Usage: ${GREEN}polyterm${NC} [command]"
+    echo -e "Usage: ${GREEN}polyterm${NC} [command] [options]"
     echo ""
     echo "Commands:"
     echo -e "  ${GREEN}palette${NC}  (Default) Launch the Tmux Command Palette"
     echo -e "  ${GREEN}setup${NC}    Run the bootstrap installer"
     echo -e "  ${GREEN}sync${NC}     Sync configurations to GitHub (dot-sync)"
     echo -e "  ${GREEN}pull${NC}     Pull latest updates from GitHub (dot-pull)"
-    echo -e "  ${GREEN}reload${NC}   Refresh Zsh and Tmux environments"
+    echo -e "  ${GREEN}reload${NC}   Reload configurations (interactive by default)"
     echo -e "  ${GREEN}help${NC}     Show this help message"
+    echo ""
+    echo "Reload Options:"
+    echo -e "  ${GREEN}--all${NC}        Reload all configs non-interactively"
+    echo -e "  ${GREEN}--shell${NC}      Reload only shell configs (zshrc, bashrc)"
+    echo -e "  ${GREEN}--settings${NC}   Reload only PolyTerm settings"
+    echo -e "  ${GREEN}--mux-config${NC} Reload only multiplexer configuration"
+    echo -e "  ${GREEN}--mux-restart${NC} Restart multiplexer only"
     echo ""
 }
 
@@ -64,8 +71,32 @@ case "$1" in
         POLYTERM_CLI=1 zsh -ic "dot-pull"
         ;;
     reload)
-        echo -e "  ${BLUE}Reloading Environment...${NC}"
-        POLYTERM_CLI=1 zsh -ic "dot-reload"
+        case "$2" in
+            --all)
+                echo -e "  ${BLUE}Reloading All Configs...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-all"
+                ;;
+            --shell)
+                echo -e "  ${BLUE}Reloading Shell Configs...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-shell"
+                ;;
+            --settings)
+                echo -e "  ${BLUE}Reloading PolyTerm Settings...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-settings"
+                ;;
+            --mux-config)
+                echo -e "  ${BLUE}Reloading Multiplexer Config...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-mux-config"
+                ;;
+            --mux-restart)
+                echo -e "  ${BLUE}Restarting Multiplexer...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-restart-mux"
+                ;;
+            *)
+                echo -e "  ${BLUE}Interactive Reload...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-interactive"
+                ;;
+        esac
         ;;
     palette)
         # Check if inside Tmux

@@ -23,7 +23,7 @@ function list_all_items() {
         echo -e "8 | 󰆴  Uninstall App | ${dim}Remove packages and sync to GitHub${reset} | ACTION | uninstall"
         echo -e "9 | 󰇚  Pull Changes | ${dim}Fetch latest updates from GitHub${reset} | ACTION | pull"
         echo -e "10 | 󰇶  Push Changes | ${dim}Sync configs to GitHub${reset} | ACTION | push"
-        echo -e "11 |   Reload All Configs | ${dim}Refresh Zsh and Tmux environments${reset} | ACTION | reload"
+        echo -e "11 |   Reload Configs... | ${dim}Selectively refresh shell, settings, or mux${reset} | SUBCAT | reload"
         echo -e "12 | 󰒃  Security Scan | ${dim}Run audit & vulnerability checks${reset} | ACTION | scan"
         echo -e "13 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
         echo -e "14 | 󰖟  Device Manager... | ${dim}Scan, manage, SSH into devices${reset} | CAT | devices"
@@ -67,7 +67,7 @@ function list_all_items() {
         ((idx++)); echo -e "$idx | 󰇚  Pull Changes | ${dim}Fetch from GitHub${reset} | ACTION | pull"
         ((idx++)); echo -e "$idx | 󰇶  Push Changes | ${dim}Sync to GitHub${reset} | ACTION | push"
         ((idx++)); echo -e "$idx | 󰇚  poly-sync | ${dim}Clone or update PolyOS repos from GitHub${reset} | ACTION | poly-sync"
-        ((idx++)); echo -e "$idx |   Reload All Configs | ${dim}Refresh env${reset} | ACTION | reload"
+        ((idx++)); echo -e "$idx |   Reload Configs... | ${dim}Selectively refresh configs${reset} | SUBCAT | reload"
         ((idx++)); echo -e "$idx | 󰒃  Security Scan | ${dim}Run audit${reset} | ACTION | scan"
         # 6. Device Manager
         ((idx++)); echo -e "$idx | 󰖟  Scan Current Device | ${dim}Detect system and update device registry${reset} | ACTION | scan_device"
@@ -116,6 +116,74 @@ $docs_path"
         DOC) read_document "$arg"; documents_menu ;;
         ACTION) main_menu ;;
     esac
+}
+
+function reload_menu() {
+    local dim="\033[2m"
+    local reset="\033[0m"
+
+    local list_items=""
+    list_items+="1 | 󰍬  Shell configs | ${dim}Source zshrc, bashrc${reset} | PHASE | shell
+"
+    list_items+="2 | 󰒓  PolyTerm settings | ${dim}Reload environment preferences${reset} | PHASE | settings
+"
+    list_items+="3 | 󰒹  Multiplexer config | ${dim}Reload tmux/zellij configuration${reset} | PHASE | mux_config
+"
+    list_items+="4 | 󰒠  Restart multiplexer | ${dim}Create fresh session (saves state)${reset} | PHASE | restart_mux
+"
+    list_items+="5 | 󰔄  Reload All | ${dim}Run all four reload phases${reset} | ACTION | reload_all
+"
+    list_items+="6 | 󰅙  Back | ${dim}Return to main menu${reset} | ACTION | main_menu"
+
+    local selected=$(echo -e "$list_items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󰔄  " \
+        --header "Select configs to reload (TAB to toggle, ENTER to confirm)" \
+        --delimiter ' \| ' \
+        --multi \
+        --bind "tab:toggle+down" \
+        --bind "shift-tab:toggle+up" \
+        --bind "ctrl-a:select-all" \
+        --bind "ctrl-d:deselect-all")
+
+    if [[ -z "$selected" ]]; then
+        main_menu
+        return
+    fi
+
+    local shell_flag=""
+    local settings_flag=""
+    local mux_config_flag=""
+    local restart_mux_flag=""
+
+    while IFS= read -r line; do
+        local type=$(echo "$line" | cut -d '|' -f 4 | xargs)
+        local arg=$(echo "$line" | cut -d '|' -f 5 | xargs)
+        case "$arg" in
+            shell) shell_flag="--shell" ;;
+            settings) settings_flag="--settings" ;;
+            mux_config) mux_config_flag="--mux-config" ;;
+            restart_mux) restart_mux_flag="--restart-mux" ;;
+            reload_all)
+                shell_flag="--shell"
+                settings_flag="--settings"
+                mux_config_flag="--mux-config"
+                restart_mux_flag="--restart-mux"
+                ;;
+            main_menu) main_menu; return ;;
+        esac
+    done <<< "$selected"
+
+    if [[ -z "$shell_flag" && -z "$settings_flag" && -z "$mux_config_flag" && -z "$restart_mux_flag" ]]; then
+        main_menu
+        return
+    fi
+
+    local cmd="dot-reload-apply $shell_flag $settings_flag $mux_config_flag $restart_mux_flag"
+    trigger_zsh_func "$cmd"
 }
 
 function polyos_dev_menu() {
@@ -183,6 +251,7 @@ function main_menu() {
                 settings) settings_menu ;;
                 shortcuts) shortcuts_menu ;;
                 polyos_dev) polyos_dev_menu ;;
+                reload) reload_menu ;;
                 devices) devices_menu ;;
             esac
             ;;
@@ -195,6 +264,12 @@ function main_menu() {
             esac
             settings_menu
             ;;
+        SUBCAT)
+            case "$arg" in
+                reload) reload_menu ;;
+                *) main_menu ;;
+            esac
+            ;;
         SHORTCUT) execute_shortcut "$arg" ;;
         ACTION)
             case "$arg" in
@@ -205,7 +280,6 @@ function main_menu() {
                 pull) trigger_zsh_func "dot-pull" ;;
                 push) trigger_zsh_func "dot-sync" ;;
                 poly-sync) trigger_zsh_func "poly-sync" ;;
-                reload) trigger_zsh_func "source ~/.zshrc && dot-reload" ;;
                 scan) trigger_zsh_func "dot-scan" ;;
                 kill_gemini) kill_gemini_processes ;;
                 fix_alt) clear; "$REPO_PATH/common/palette/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;

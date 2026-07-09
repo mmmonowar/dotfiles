@@ -34,7 +34,12 @@ The `polyterm` command is your central hub for environment management.
 | `polyterm setup` | Initializes the dotfiles, backups, and symlinks |
 | `polyterm sync` | Dumps local `Brewfile`, commits, and pushes to GitHub |
 | `polyterm pull` | Fetches updates from GitHub and installs new dependencies |
-| `polyterm reload` | Instantly refreshes Zsh and Tmux configurations |
+| `polyterm reload` | Opens interactive reload menu to select which configs to refresh |
+| `polyterm reload --all` | Reload all configs non-interactively |
+| `polyterm reload --shell` | Reload only shell configs (zshrc, bashrc) |
+| `polyterm reload --settings` | Reload only PolyTerm settings |
+| `polyterm reload --mux-config` | Reload only multiplexer configuration |
+| `polyterm reload --mux-restart` | Restart multiplexer only |
 | `polyterm help` | Displays available commands |
 
 ---
@@ -48,7 +53,7 @@ The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive men
 - **Install/Uninstall**: Add or remove Homebrew packages with automatic GitHub synchronization.
 - **Scratchpad**: Instant access to your daily worklog (`micro`). Configurable paths for Mac, WSL, and Linux via the **Settings** menu.
 - **Execute Shortcut**: Trigger complex Tmux window/pane operations via a menu.
-- **Maintenance**: Access `dot-sync`, `dot-pull`, and environment reloading in one click.
+- **Maintenance**: Access `dot-sync`, `dot-pull`, and interactive environment reloading with component selection.
 - **Alt-Key Fix**: A built-in utility to diagnose and fix keyboard shortcut issues.
 
 ---

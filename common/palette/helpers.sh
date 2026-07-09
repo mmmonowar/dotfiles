@@ -26,7 +26,7 @@ function update_setting() {
 }
 
 function trigger_zsh_func() {
-    local func_name=$1
+    local func_name="$*"
     if [[ -n "$ZELLIJ" ]]; then
         # Dynamically find the target tiled pane in Zellij
         local target_pane

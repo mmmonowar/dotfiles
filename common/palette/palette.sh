@@ -6,7 +6,7 @@
 
 # 1. Capture the pane ID if inside Tmux
 if [[ -n "$TMUX" ]]; then
-    TARGET_PANE=$(tmux display-message -p '#{pane_id}')
+    TARGET_PANE=$(tmux display-message -p '#{client_pane_id}')
 fi
 
 # 2. OS Detection for cross-platform dotfiles

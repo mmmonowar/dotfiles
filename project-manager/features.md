@@ -67,7 +67,7 @@
   - **Automated Startup**: Configured to auto-switch from Bash to Zsh and immediately initialize the Tmux cockpit upon terminal entry.
   - **Dotfile Syncing**: `dot-sync` and `dot-pull` functions to automate Git operations and configuration reloading with built-in self-healing logic.
   - **Accounting Integration**: Automated symbolic linking of the `hledger` journal file (`~/.hledger.journal`) to the `Accounting-Management-System` repository. This ensures that all accounting data "stays" in the dedicated repository and is visible as `hledger.journal` for easy tracking, while remaining fully accessible to the `hledger` CLI on any device.
-  - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms.
+  - **Integrated Reloading**: `dot-reload` function to instantly refresh both Zsh and Tmux environments across platforms; `dot-reload-interactive` for interactive reload with fzf multi-select menu; `dot-reload-all` for non-interactive comprehensive reload.
   - **Local Overrides**: Support for machine-specific, non-synced configurations via `~/.zshrc_local` for local environment tailoring.
   - **AI & LLM Aliases**: Context-aware aliases for Gemini CLI (`gemini`, `gemini-flash`, `gemini-pro`) with a 1-hour session timeout, billing monitoring (`check-spend`), and a large-file safety wrapper (`ask_gemini`) that are conditionally enabled based on the git user email, optimizing for cost and performance.
   - **Interactive Search**: `search` alias powered by `ddgr` for DuckDuckGo results directly in the terminal.
@@ -175,3 +175,18 @@
 - **Details**:
   - **Health Auditing**: Programmatic checks for broken, misaligned, or missing symlinks mapping repository configurations to user home folders.
   - **Self-Healing Resolution**: Auto-reconstruction of broken links to ensure clean state deployment.
+
+## [FEAT-18] 🛠️ Interactive Configuration Reload
+- **Status**: Completed
+- **Description**: Interactive reload system that lets users choose which components to refresh via fzf multi-select menu, with fallback non-interactive mode.
+- **Details**:
+  - **Interactive Menu**: fzf-based multi-select interface for choosing which components to reload (TAB to select, CTRL-A for all, CTRL-D for none).
+  - **Selectable Components**: Shell configs, PolyTerm settings, multiplexer config, and multiplexer restart.
+  - **Progress Tracking**: Step counter showing progress (e.g., [2/3]) during reload.
+  - **CLI Flags**: `polyterm reload` (interactive), `polyterm reload --all` (non-interactive), `--shell`, `--settings`, `--mux-config`, `--mux-restart`.
+  - **Phase 1 — Shell Configs**: Sources `~/.zshrc`, `~/.bashrc`, and re-loads `sync.sh` automation functions.
+  - **Phase 2 — PolyTerm Environment**: Reloads `.polyterm_settings` for immediate environment variable updates.
+  - **Phase 3 — Multiplexer Config**: Hot-reloads tmux config (`tmux source-file`) or notes zellij config will apply on next session.
+  - **Phase 4 — Session Restart (Tmux)**: Saves state via tmux-resurrect, creates fresh session with a temporary name, switches client, kills the old session, and renames back — preserving the server and original session name.
+  - **Phase 4 — Session Restart (Zellij)**: Terminates the session with guidance to re-run `zellij` manually.
+  - **Integrated Dispatch**: Available from the Command Palette (item 11 — Reload Configs...) and CLI (`polyterm reload`).

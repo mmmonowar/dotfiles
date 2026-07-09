@@ -88,6 +88,7 @@ alias fixkb='~/kb_toggle.sh'
 # 5. DOTFILES AUTOMATION & COMMANDS
 # -----------------------------------------------------------------------------
 # Source modular commands
+[[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
 [[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
 [[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
 

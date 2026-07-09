@@ -84,8 +84,11 @@ PROMPT="%F{#14b8a6}⸎ %F{#b4b4b4}%~ %F{#89d287}›%f "
 
 # --- 6. Aliases & Functions ---
 
-# Shell Reload - referenced dynamically inside tmux.conf
-alias dot-reload="source ${HOME}/.zshrc && echo '⚡ PolyTerm Environment Reloaded!'"
+# Palette Helpers & Sync (shared functions)
+[[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
+
+# Shell reload is handled by dot-reload() from sync.sh (sourced above)
 
 # Directory Navigation
 alias ..="cd .."
