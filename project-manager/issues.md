@@ -236,5 +236,16 @@
     - Updated `common/palette/apps.sh:178-189` to call `resolve_command("$selected_app")` before launching, using the resolved name for both CLI tool and cask-on-Linux launch paths.
     - Verified: `superfile` → `spf`, `lazygit` → `lazygit` (pass-through), `btop` → `btop` (pass-through).
 
+## [ISSUE-30] ✅ Zellij Alt+Left/Right Not Cycling Through Panes
+- **Status**: Resolved
+- **Description**: `Alt+Left` and `Alt+Right` in Zellij navigated by compass direction (`MoveFocus "left"` / `MoveFocus "right"`), so they did nothing when no pane existed physically to the left/right. Expected behavior is cycling through all panes in index order (like tmux `select-pane -t :.+`/`:.-`).
+- **Diagnosis**:
+    - `common/config/zellij/config.kdl` in `shared_among "normal" "locked"` bound `Alt left` to `MoveFocus "left"` and `Alt right` to `MoveFocus "right"` — directional, not cyclic.
+    - Zellij provides `FocusNextPane` and `FocusPreviousPane` actions that cycle through panes in order (documented in Zellij CLI actions as `focus-next-pane`/`focus-previous-pane`).
+    - Same directional bindings existed in `scroll` mode (using `MoveFocusOrTab`, which wraps to tabs but doesn't cycle panes).
+- **Resolution**:
+    - Replaced `MoveFocus "left"` with `FocusPreviousPane` for `Alt left` in both `shared_among "normal" "locked"` and `scroll` mode.
+    - Replaced `MoveFocus "right"` with `FocusNextPane` for `Alt right` in both `shared_among "normal" "locked"` and `scroll` mode.
+    - `Alt+Left` now cycles to the previous pane (backwards), `Alt+Right` cycles to the next pane (forward), matching tmux behavior.
 
 
