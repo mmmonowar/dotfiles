@@ -59,6 +59,7 @@ source "$PALETTE_LIB/apps.sh"
 source "$PALETTE_LIB/settings.sh"
 source "$PALETTE_LIB/shortcuts.sh"
 source "$PALETTE_LIB/devices.sh"
+source "$PALETTE_LIB/config_manager.sh"
 source "$PALETTE_LIB/menu.sh"
 
 # ==========================================

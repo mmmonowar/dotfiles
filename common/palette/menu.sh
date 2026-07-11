@@ -27,7 +27,8 @@ function list_all_items() {
         echo -e "12 | 󰒃  Security Scan | ${dim}Run audit & vulnerability checks${reset} | ACTION | scan"
         echo -e "13 | 󰌌  Fix Alt Keys | ${dim}Diagnose and resolve keyboard issues${reset} | ACTION | fix_alt"
         echo -e "14 | 󰖟  Device Manager... | ${dim}Scan, manage, SSH into devices${reset} | CAT | devices"
-        echo -e "15 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
+        echo -e "15 | 󰒓  Configuration Manager... | ${dim}Manage app configs (Zellij)${reset} | CAT | config"
+        echo -e "16 | 󰅙  Exit | ${dim}Close the command palette${reset} | ACTION | exit"
     else
         # Flattened Global Discovery
         # 1. Apps
@@ -73,6 +74,9 @@ function list_all_items() {
         ((idx++)); echo -e "$idx | 󰖟  Scan Current Device | ${dim}Detect system and update device registry${reset} | ACTION | scan_device"
         ((idx++)); echo -e "$idx | 󰒔  SSH into Device | ${dim}Connect to a registered device${reset} | ACTION | ssh_device"
         ((idx++)); echo -e "$idx | 󰌋  Manual Device Entry | ${dim}Add or update device data${reset} | ACTION | manual_device"
+        # 7. Configuration Manager
+        ((idx++)); echo -e "$idx | 󰒓  Configuration Manager... | ${dim}Manage app configs (Zellij)${reset} | CAT | config"
+        ((idx++)); echo -e "$idx | 󰅳  Zellij Config... | ${dim}Edit Zellij configuration settings${reset} | CAT | config"
     fi
 }
 
@@ -253,6 +257,7 @@ function main_menu() {
                 polyos_dev) polyos_dev_menu ;;
                 reload) reload_menu ;;
                 devices) devices_menu ;;
+                config) config_manager_menu ;;
             esac
             ;;
         APP) trigger_zsh_func "$arg" ;;

@@ -236,6 +236,19 @@
     - Updated `common/palette/apps.sh:178-189` to call `resolve_command("$selected_app")` before launching, using the resolved name for both CLI tool and cask-on-Linux launch paths.
     - Verified: `superfile` → `spf`, `lazygit` → `lazygit` (pass-through), `btop` → `btop` (pass-through).
 
+## [ISSUE-31] ✅ Zellij Config Manager: Selecting Setting Returns "Unknown setting type" Error
+- **Status**: Resolved
+- **Description**: When selecting any setting from the Zellij Configuration Manager menu, the palette displayed `Unknown setting type '' for '<key>'` and returned to the config manager menu without saving.
+- **Diagnosis**:
+  - The `zellij_config_menu` in `common/palette/config_manager.sh` parsed the user's fzf selection using `cut -d '|' -f 4` and `cut -d '|' -f 5` to extract the type and argument.
+  - The fzf output line for a setting looks like: `1 | 󰇒  mouse_mode true | ... | SETTING | mouse_mode|bool|Disable if...|true,false`
+  - The metadata in column 5 (`mouse_mode|bool|hint|true,false`) contains its own `|` separators.
+  - `cut -d '|' -f 5` split on **every** `|`, so it returned only `mouse_mode` instead of the full metadata string.
+  - When the code then parsed this truncated string for `setting_type` via `cut -d '|' -f 2`, it got an empty string, which didn't match `bool`, `choice`, or `string`, and fell into the `*)` error case.
+- **Resolution**:
+  - Replaced `cut -d '|'` with `awk -F' \\| '` (using the same space-pipe-space delimiter as fzf's `--delimiter`) in `config_manager.sh:121-122` so that column 5 is extracted as a single field including its internal `|` characters.
+  - No other call sites affected because their arguments don't contain internal `|`.
+
 ## [ISSUE-30] ✅ Zellij Alt+Left/Right Not Cycling Through Panes
 - **Status**: Resolved
 - **Description**: `Alt+Left` and `Alt+Right` in Zellij navigated by compass direction (`MoveFocus "left"` / `MoveFocus "right"`), so they did nothing when no pane existed physically to the left/right. Expected behavior is cycling through all panes in index order (like tmux `select-pane -t :.+`/`:.-`).

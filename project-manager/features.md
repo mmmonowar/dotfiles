@@ -176,6 +176,22 @@
   - **Health Auditing**: Programmatic checks for broken, misaligned, or missing symlinks mapping repository configurations to user home folders.
   - **Self-Healing Resolution**: Auto-reconstruction of broken links to ensure clean state deployment.
 
+## [FEAT-19] 🛠️ Interactive Zellij Configuration Manager (Command Palette)
+- **Status**: In Progress
+- **Description**: Dedicated sub-menu in the command palette for reading, editing, and saving Zellij terminal multiplexer configuration options without leaving the terminal UI.
+- **Details**:
+  - **Configuration Manager Menu**: New main menu item (16) "Configuration Manager..." that opens a sub-menu with "Zellij..." as the first config type, designed for future extensibility to Tmux, Micro, Gemini, and other configs.
+  - **Live Config Mirroring**: The settings list dynamically reads `common/config/zellij/config.kdl` to display all active (non-commented) top-level settings with their current values — the menu always reflects the actual file contents.
+  - **Three Editing Modes**:
+    - **Boolean Toggle**: Settings like `simplified_ui`, `mouse_mode`, `pane_frames` are edited via an fzf `true`/`false` picker.
+    - **Choice Selector**: Settings with enumerated values (`theme`, `default_mode`, `copy_clipboard`) present an fzf picker with valid options (themes discovered from `themes/` directory, modes, clipboard targets).
+    - **Free-Text Input**: Settings like `default_shell`, `copy_command`, `default_layout` use a `read -r` prompt with the current value pre-filled for quick editing.
+  - **Rich Metadata**: Each setting displays a descriptive name, current value, and one-line description in the fzf list, with an extended hint shown in the preview pane.
+  - **Save & Cancel**: Changes are written back to `config.kdl` via a line-preserving Python backend that maintains all comments and formatting. Pressing Esc at any point cancels without changes.
+  - **Python Backend**: `kdl_config.py` handles KDL parsing, type detection, metadata lookup, and idempotent write-back — keeping the shell layer focused on UI.
+  - **Cross-Platform**: Works identically in Tmux and Zellij sessions; the palette's floating pane and `trigger_zsh_func` integration are fully supported.
+  - **Scripts**: New `common/palette/config_manager.sh` (bash module) and `common/palette/kdl_config.py` (Python KDL utility); sourced from `palette.sh` and dispatched from `menu.sh`.
+
 ## [FEAT-18] 🛠️ Interactive Configuration Reload
 - **Status**: Completed
 - **Description**: Interactive reload system that lets users choose which components to refresh via fzf multi-select menu, with fallback non-interactive mode.
