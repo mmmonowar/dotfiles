@@ -128,6 +128,31 @@ function truncate_desc() {
     fi
 }
 
+function resolve_command() {
+    local pkg_name="$1"
+    if command -v "$pkg_name" &>/dev/null; then
+        echo "$pkg_name"
+        return
+    fi
+    local cellar_path
+    cellar_path=$(brew --cellar "$pkg_name" 2>/dev/null)
+    if [[ -n "$cellar_path" && -d "$cellar_path" ]]; then
+        local version_dir
+        version_dir=$(ls -t "$cellar_path" 2>/dev/null | head -1)
+        if [[ -n "$version_dir" && -d "$cellar_path/$version_dir/bin" ]]; then
+            local binaries
+            binaries=$(find "$cellar_path/$version_dir/bin" -maxdepth 1 \( -type f -o -type l \) -exec basename {} \; 2>/dev/null | sort)
+            local bin_count
+            bin_count=$(echo "$binaries" | wc -l)
+            if [[ "$bin_count" -eq 1 ]]; then
+                echo "$binaries"
+                return
+            fi
+        fi
+    fi
+    echo "$pkg_name"
+}
+
 function read_document() {
     local file=$1
     clear

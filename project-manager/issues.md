@@ -219,6 +219,22 @@
     - Changed `#{pane_id}` to `#{client_pane_id}` in `palette.sh:9` — `client_pane_id` returns the pane the client is focused on (the one behind the popup), fixing all `trigger_zsh_func` actions at once.
     - Added `helpers.sh` and `sync.sh` sourcing to `OS/mac/zshrc` to match the sourcing pattern in all other zshrc files, and removed the conflicting `alias dot-reload`.
     - Restructured `dot-reload()` in `sync.sh` to explicitly re-source `sync.sh` after sourcing `~/.zshrc`, preventing stale function definitions.
-    - Simplified `Alt+r` binding in `tmux.conf:83` to send only `dot-reload`, removing the redundant `source ~/.zshrc &&` prefix.
+     - Simplified `Alt+r` binding in `tmux.conf:83` to send only `dot-reload`, removing the redundant `source ~/.zshrc &&` prefix.
+
+## [ISSUE-29] ✅ Command Palette Launch Apps — Binary Name Mismatch (superfile → spf)
+- **Status**: Resolved
+- **Description**: When selecting apps from the Command Palette's Launch App menu (`apps_menu`), some CLI tools fail to launch. For example, `superfile` produces `command not found` instead of opening the file manager. Not all brew package names match their installed binary name.
+- **Diagnosis**:
+    - `common/palette/apps.sh:185` sends the brew package name directly to the shell via `trigger_zsh_func "$selected_app"`.
+    - For `superfile`, the brew formula installs the binary as `spf`, not `superfile`:
+      - `which superfile` → not found
+      - `which spf` → `/home/linuxbrew/.linuxbrew/bin/spf`
+    - Other brew packages may have similar mismatches (e.g., `gemini-cli` vs `gemini`).
+    - The cask-on-Linux launch path (`trigger_zsh_func "$selected_app &"`) has the same vulnerability.
+- **Resolution**:
+    - Added `resolve_command()` to `common/palette/helpers.sh:131` — fast-paths via `command -v "$pkg_name"`, and falls back to inspecting the brew cellar `bin/` directory (via `brew --cellar`) to discover the actual binary name when the package name isn't a valid command. Returns the original name as a graceful fallback.
+    - Updated `common/palette/apps.sh:178-189` to call `resolve_command("$selected_app")` before launching, using the resolved name for both CLI tool and cask-on-Linux launch paths.
+    - Verified: `superfile` → `spf`, `lazygit` → `lazygit` (pass-through), `btop` → `btop` (pass-through).
+
 
 

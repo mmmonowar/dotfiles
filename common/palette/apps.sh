@@ -175,14 +175,17 @@ function apps_menu() {
             fi
         done
         
+        local launch_cmd
+        launch_cmd=$(resolve_command "$selected_app")
+
         if [ "$is_cask" = true ]; then
             if [[ "$OS_ENV" == "mac" ]]; then
                 trigger_zsh_func "open -a '$selected_app'"
             else
-                trigger_zsh_func "$selected_app &"
+                trigger_zsh_func "$launch_cmd &"
             fi
         else
-            trigger_zsh_func "$selected_app"
+            trigger_zsh_func "$launch_cmd"
         fi
     else
         main_menu
