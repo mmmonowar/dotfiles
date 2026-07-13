@@ -14,7 +14,7 @@ function list_all_items() {
     if [[ -z "$query" ]]; then
         # Hierarchical Main Menu
         echo -e "1 | 󱓞  Launch App... | ${dim}Browse and launch installed CLI tools${reset} | CAT | apps"
-        echo -e "2 | 󰈙  Project Documents... | ${dim}Read docs in project-manager/${reset} | CAT | docs"
+        echo -e "2 | 󰈙  Project Documents... | ${dim}Read project documentation${reset} | CAT | docs"
         echo -e "3 | 󰒓  Settings... | ${dim}Tweak security and UX preferences${reset} | CAT | settings"
         echo -e "4 |   Execute Shortcut... | ${dim}Run Tmux window and pane commands${reset} | CAT | shortcuts"
         echo -e "5 | 󰒓  PolyOS-dev... | ${dim}Manage PolyOS dev repos & tools${reset} | CAT | polyos_dev"
@@ -39,8 +39,8 @@ function list_all_items() {
             done < "$META_PATH"
         fi
         # 2. Documents
-        local docs_path="${REPO_PATH}/project-manager"
-        if [[ -d "$docs_path" ]]; then
+        local docs_path="$DOCS_PATH"
+        if [[ -n "$docs_path" && -d "$docs_path" ]]; then
             while IFS= read -r file; do
                 ((idx++))
                 local rel_path="${file#$docs_path/}"
@@ -81,8 +81,8 @@ function list_all_items() {
 }
 
 function documents_menu() {
-    local docs_path="${REPO_PATH}/project-manager"
-    if [[ ! -d "$docs_path" ]]; then
+    local docs_path="$DOCS_PATH"
+    if [[ -z "$docs_path" || ! -d "$docs_path" ]]; then
         echo -e "󰅙  Documentation path missing at:
 $docs_path"
         sleep 2

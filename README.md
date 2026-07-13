@@ -25,4 +25,4 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/
 ```
 
 ## 📖 Documentation
-For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](project-manager/user-manual.md)**.
+For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.

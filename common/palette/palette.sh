@@ -32,6 +32,17 @@ else
     REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 fi
 
+# 4b. Docs Path (cross-repo discovery for project-manager/)
+if [[ -d "${REPO_PATH}/project-manager" ]]; then
+    DOCS_PATH="${REPO_PATH}/project-manager"
+elif [[ -d "${REPO_PATH}/../dotfiles-projectmanager/project-manager" ]]; then
+    DOCS_PATH="${REPO_PATH}/../dotfiles-projectmanager/project-manager"
+elif [[ -n "$POLYTERM_DOCS_PATH" && -d "$POLYTERM_DOCS_PATH" ]]; then
+    DOCS_PATH="$POLYTERM_DOCS_PATH"
+else
+    DOCS_PATH=""
+fi
+
 device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
 BREWFILE_PATH="${REPO_PATH}/OS/${OS_ENV}/Brewfile.apps"
