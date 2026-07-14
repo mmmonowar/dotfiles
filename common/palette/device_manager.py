@@ -58,8 +58,8 @@ def save_devices(yaml_path, devices):
                 f.write(f"    {key}: {dev.get(key, '')}\n")
 
 
-def cmd_list(repo_path):
-    yaml_path = os.path.join(repo_path, 'data', 'device-list.yml')
+def cmd_list(data_path):
+    yaml_path = os.path.join(data_path, 'device-list.yml')
     devices = load_devices(yaml_path)
     for dev_id in sorted(devices.keys()):
         dev = devices[dev_id]
@@ -108,10 +108,9 @@ def cmd_detect():
     print(f"ip-address={ip_addr}")
 
 
-def cmd_update(repo_path, fields):
-    yaml_path = os.path.join(repo_path, 'data', 'device-list.yml')
-    data_dir = os.path.join(repo_path, 'data')
-    os.makedirs(data_dir, exist_ok=True)
+def cmd_update(data_path, fields):
+    yaml_path = os.path.join(data_path, 'device-list.yml')
+    os.makedirs(data_path, exist_ok=True)
 
     devices = load_devices(yaml_path)
 
@@ -138,16 +137,16 @@ def cmd_update(repo_path, fields):
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         print("Usage:")
-        print("  device_manager.py <repo_path> --list")
-        print("  device_manager.py <repo_path> --detect")
-        print("  device_manager.py <repo_path> --update id=xxx [field=value ...]")
+        print("  device_manager.py <data_path> --list")
+        print("  device_manager.py <data_path> --detect")
+        print("  device_manager.py <data_path> --update id=xxx [field=value ...]")
         sys.exit(1)
 
-    repo_path = sys.argv[1]
+    data_path = sys.argv[1]
     command = sys.argv[2]
 
     if command == '--list':
-        cmd_list(repo_path)
+        cmd_list(data_path)
     elif command == '--detect':
         cmd_detect()
     elif command == '--update':
@@ -156,7 +155,7 @@ if __name__ == '__main__':
             if '=' in arg:
                 k, v = arg.split('=', 1)
                 fields[k] = v
-        cmd_update(repo_path, fields)
+        cmd_update(data_path, fields)
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

@@ -48,7 +48,7 @@ function scan_current_device() {
     clear
     echo "󰖟  Scanning current device..."
     echo "----------------------------------------"
-    python3 "$PALETTE_LIB/update_device.py" "$REPO_PATH"
+    python3 "$PALETTE_LIB/update_device.py" "$DOTFILES_DATA"
     local exit_code=$?
     echo ""
     if [[ $exit_code -eq 0 ]]; then
@@ -65,7 +65,7 @@ function ssh_into_device() {
     local dim="\033[2m"
     local reset="\033[0m"
 
-    local device_data=$(python3 "$PALETTE_LIB/device_manager.py" "$REPO_PATH" --list)
+    local device_data=$(python3 "$PALETTE_LIB/device_manager.py" "$DOTFILES_DATA" --list)
 
     if [[ -z "$device_data" ]]; then
         clear
@@ -131,7 +131,7 @@ function manual_device_entry() {
     echo "Press Enter to accept the default value shown in brackets."
     echo ""
 
-    local detected_info=$(python3 "$PALETTE_LIB/device_manager.py" "$REPO_PATH" --detect)
+    local detected_info=$(python3 "$PALETTE_LIB/device_manager.py" "$DOTFILES_DATA" --detect)
     local detected_id=$(echo "$detected_info" | grep "^id=" | head -1 | cut -d= -f2-)
     local detected_user=$(echo "$detected_info" | grep "^username=" | head -1 | cut -d= -f2-)
     local detected_hostname=$(echo "$detected_info" | grep "^device-name=" | head -1 | cut -d= -f2-)
@@ -181,7 +181,7 @@ function manual_device_entry() {
     echo ""
 
     if confirm_action "Save this device?"; then
-        python3 "$PALETTE_LIB/device_manager.py" "$REPO_PATH" --update \
+        python3 "$PALETTE_LIB/device_manager.py" "$DOTFILES_DATA" --update \
             id="$device_id" \
             username="$username" \
             device-name="$device_name" \

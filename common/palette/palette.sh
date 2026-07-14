@@ -32,15 +32,19 @@ else
     REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 fi
 
-# 4b. Docs Path (cross-repo discovery for project-manager/)
-if [[ -d "${REPO_PATH}/project-manager" ]]; then
+# 4b. Data Path (separate private repo for mutable user state)
+DOTFILES_DATA="${DOTFILES_DATA:-${REPO_PATH}/../dotfiles-data}"
+
+# 4c. Docs Path — bundled in dotfiles/docs/ first, then fallback to companion repo
+DOCS_PATH=""
+if [[ -d "${REPO_PATH}/docs" ]]; then
+    DOCS_PATH="${REPO_PATH}/docs"
+elif [[ -d "${REPO_PATH}/project-manager" ]]; then
     DOCS_PATH="${REPO_PATH}/project-manager"
 elif [[ -d "${REPO_PATH}/../dotfiles-projectmanager/project-manager" ]]; then
     DOCS_PATH="${REPO_PATH}/../dotfiles-projectmanager/project-manager"
 elif [[ -n "$POLYTERM_DOCS_PATH" && -d "$POLYTERM_DOCS_PATH" ]]; then
     DOCS_PATH="$POLYTERM_DOCS_PATH"
-else
-    DOCS_PATH=""
 fi
 
 device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
@@ -50,12 +54,12 @@ if [[ -f "${REPO_PATH}/OS/${OS_ENV}/${device_id}/Brewfile.apps" ]]; then
     BREWFILE_PATH="${REPO_PATH}/OS/${OS_ENV}/${device_id}/Brewfile.apps"
 fi
 
-META_PATH="${REPO_PATH}/OS/${OS_ENV}/apps_meta.txt"
-if [[ -f "${REPO_PATH}/OS/${OS_ENV}/${device_id}/apps_meta.txt" ]]; then
-    META_PATH="${REPO_PATH}/OS/${OS_ENV}/${device_id}/apps_meta.txt"
+META_PATH="${DOTFILES_DATA}/cache/OS/${OS_ENV}/apps_meta.txt"
+if [[ -f "${DOTFILES_DATA}/cache/OS/${OS_ENV}/${device_id}/apps_meta.txt" ]]; then
+    META_PATH="${DOTFILES_DATA}/cache/OS/${OS_ENV}/${device_id}/apps_meta.txt"
 fi
 
-SETTINGS_FILE="${REPO_PATH}/common/config/polyterm/.polyterm_settings"
+SETTINGS_FILE="${DOTFILES_DATA}/settings/.polyterm_settings"
 PALETTE_LIB="${REPO_PATH}/common/palette"
 
 # 5. Load Settings

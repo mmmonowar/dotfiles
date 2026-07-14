@@ -23,10 +23,9 @@ def get_ip():
     return ip
 
 def main():
-    repo_root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
-    data_dir = os.path.join(repo_root, "data")
-    os.makedirs(data_dir, exist_ok=True)
-    yaml_path = os.path.join(data_dir, "device-list.yml")
+    data_root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
+    os.makedirs(data_root, exist_ok=True)
+    yaml_path = os.path.join(data_root, "device-list.yml")
 
     # Generate device identifier
     hostname = run_cmd("hostname")
@@ -96,7 +95,6 @@ def main():
     # Write back to YAML
     with open(yaml_path, "w") as f:
         f.write("devices:\n")
-        # Sort to keep file diffs clean
         for dev_id in sorted(devices.keys()):
             dev = devices[dev_id]
             f.write(f"  - id: {dev_id}\n")

@@ -7,6 +7,7 @@
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
+export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
 export OS_ENV="mac"
 
 # Helper function to detect agent or non-interactive environments
@@ -26,8 +27,8 @@ if is_agent_or_non_interactive; then
 fi
 
 # Load UX Settings
-if [[ -f "$DOTFILES_ROOT/common/config/polyterm/.polyterm_settings" ]]; then
-    source "$DOTFILES_ROOT/common/config/polyterm/.polyterm_settings"
+if [[ -f "${DOTFILES_DATA}/settings/.polyterm_settings" ]]; then
+    source "${DOTFILES_DATA}/settings/.polyterm_settings"
 fi
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"

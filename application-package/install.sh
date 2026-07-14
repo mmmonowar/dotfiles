@@ -74,6 +74,25 @@ else
     cd "$TARGET_DIR" && git pull origin main && cd - > /dev/null
 fi
 
+# 4.5. Initialize dotfiles-data (private data repo)
+DATA_DIR="$TARGET_DIR/../dotfiles-data"
+if [ ! -d "$DATA_DIR" ]; then
+    echo -e "📁  ${BLUE}Creating dotfiles-data directory at $DATA_DIR...${NC}"
+    mkdir -p "$DATA_DIR"
+    cd "$DATA_DIR" && git init && cd "$TARGET_DIR"
+    mkdir -p "$DATA_DIR/settings"
+    mkdir -p "$DATA_DIR/cache/OS/mac" "$DATA_DIR/cache/OS/wsl" "$DATA_DIR/cache/OS/linux"
+    mkdir -p "$DATA_DIR/editor/buffers"
+    mkdir -p "$DATA_DIR/scratchpad"
+    mkdir -p "$DATA_DIR/hledger"
+    echo -e "✅  ${GREEN}dotfiles-data initialized at $DATA_DIR${NC}"
+    echo -e "💡  ${YELLOW}To sync data across machines, push this repo to a private remote:${NC}"
+    echo -e "    cd $DATA_DIR && git remote add origin <your-private-repo-url> && git push -u origin main"
+else
+    echo -e "✅  ${GREEN}dotfiles-data already exists at $DATA_DIR.${NC}"
+fi
+export DOTFILES_DATA="$DATA_DIR"
+
 # 5. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"
 
@@ -198,6 +217,27 @@ else
     echo -e "⏭️  ${YELLOW}No optional apps file found. Skipping.${NC}"
 fi
 
+# 6.5. Dependency Verification
+echo -e "\n🔍  ${BLUE}Verifying installed dependencies...${NC}"
+check_deps() {
+    local deps=("python3" "fzf" "git" "tmux" "zsh" "gh" "shellcheck")
+    local all_ok=true
+    for dep in "${deps[@]}"; do
+        if command -v "$dep" &>/dev/null; then
+            echo -e "  ${GREEN}✅ $dep${NC} → $(command -v "$dep")"
+        else
+            echo -e "  ${RED}❌ $dep${NC} → NOT FOUND"
+            all_ok=false
+        fi
+    done
+    if [ "$all_ok" = false ]; then
+        echo -e "\n${YELLOW}⚠️  Some core dependencies are missing. Run 'polyterm setup' again or install manually.${NC}"
+    else
+        echo -e "  ${GREEN}All core dependencies are available.${NC}"
+    fi
+}
+check_deps
+
 # 7. Install TPM (Tmux Plugin Manager)
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     echo -e "🔌  ${BLUE}Installing TPM (Tmux Plugin Manager)...${NC}"
@@ -256,7 +296,7 @@ fi
 # 9.5 Register/Update Device Info
 echo -e "\n🔄  ${BLUE}Registering device details in device-list.yml...${NC}"
 if [ -f "$TARGET_DIR/common/palette/update_device.py" ]; then
-    python3 "$TARGET_DIR/common/palette/update_device.py" "$TARGET_DIR"
+    python3 "$TARGET_DIR/common/palette/update_device.py" "$DATA_DIR"
 fi
 
 # 10. Security Scan
@@ -264,6 +304,7 @@ echo -e "\n🛡️  ${BLUE}Performing initial security scan...${NC}"
 if [ -f "$TARGET_DIR/common/palette/security.sh" ]; then
     # Set DOTFILES_ROOT for the scan
     export DOTFILES_ROOT="$TARGET_DIR"
+    export DOTFILES_DATA="$DATA_DIR"
     source "$TARGET_DIR/common/palette/security.sh"
     dot-scan
 fi
