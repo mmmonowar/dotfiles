@@ -11,6 +11,7 @@ function palette() {
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
+    local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
     local device_id
     device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
@@ -62,20 +63,23 @@ function dot-sync() {
 
         # Dynamically collect and update device list
         if [[ -f "$DOT_PATH/common/palette/update_device.py" ]]; then
-            python3 "$DOT_PATH/common/palette/update_device.py" "$DOT_PATH"
+            python3 "$DOT_PATH/common/palette/update_device.py" "$DATA_PATH"
         fi
 
-        echo "  Syncing configurations to GitHub..."
+        echo "  Syncing dotfiles to GitHub..."
         git add -A
-        # Commit message uses YYYY-MM-DD-hh-mm-ss as required by project memory rules
         local timestamp
         timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
         git commit -m "Sync: ${timestamp} [$(hostname)]"
-        
-        if git push origin main; then
-            echo "󰄬  Dotfiles and Brewfile pushed to GitHub."
-        else
-            echo "󰅙  Failed to push to GitHub. Check your connection or git status."
+        git push origin main && echo "󰄬  Dotfiles pushed to GitHub." || echo "󰅙  Failed to push dotfiles."
+
+        # Sync dotfiles-data (private data repo)
+        if [[ -d "$DATA_PATH/.git" ]]; then
+            echo "󰇊  Syncing dotfiles-data to GitHub..."
+            cd "$DATA_PATH"
+            git add -A
+            git commit -m "Sync: ${timestamp} [$(hostname)]" || true
+            git push origin main && echo "󰄬  dotfiles-data pushed to GitHub." || echo "󰅙  Failed to push dotfiles-data."
         fi
 
         cd "$current_dir"
@@ -87,6 +91,7 @@ function dot-sync() {
 function dot-pull() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
+    local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
     local device_id
     device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
@@ -112,6 +117,12 @@ function dot-pull() {
             if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
                 echo "󰒃  Running post-pull security scan..."
                 dot-scan
+            fi
+
+            # Pull dotfiles-data (private data repo)
+            if [[ -d "$DATA_PATH/.git" ]]; then
+                echo "󰇚  Fetching dotfiles-data updates..."
+                cd "$DATA_PATH" && git pull origin main && cd "$DOT_PATH"
             fi
 
             # Reload configs automatically
@@ -165,7 +176,8 @@ function dot-reload-all() {
     [[ -f "$sync_sh" ]] && source "$sync_sh" 2>/dev/null
 
     echo "󰔄  [2/4] Reloading PolyTerm environment..."
-    local settings_file="${DOTFILES_ROOT}/common/config/polyterm/.polyterm_settings"
+    local data_path="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+    local settings_file="${data_path}/settings/.polyterm_settings"
     [[ -f "$settings_file" ]] && source "$settings_file" 2>/dev/null && echo "  󰄬  PolyTerm settings reloaded"
 
     echo "󰔄  [3/4] Reloading multiplexer configuration..."
@@ -260,7 +272,8 @@ function dot-reload-shell() {
 
 function dot-reload-settings() {
     echo "󰒓  Reloading PolyTerm environment..."
-    local settings_file="${DOTFILES_ROOT}/common/config/polyterm/.polyterm_settings"
+    local data_path="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+    local settings_file="${data_path}/settings/.polyterm_settings"
     [[ -f "$settings_file" ]] && source "$settings_file" 2>/dev/null && echo "  󰄬  PolyTerm settings reloaded"
     echo "󰄬  Settings reloaded."
 }

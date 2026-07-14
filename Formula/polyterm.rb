@@ -23,8 +23,14 @@ class Polyterm < Formula
       To complete the setup of your environment, run:
         polyterm setup
         
-      This will setup your symbolic links and configurations.
-      It will use your existing repository location or clone to ~/dotfiles if not found.
+      This will:
+        - Clone dotfiles to ~/dotfiles (if not already present)
+        - Initialize dotfiles-data at ~/dotfiles-data for private user state
+        - Set up symbolic links and configurations
+        - Install packages and register the device
+      
+      Note: dotfiles-data is a separate private data repository.
+      To sync data across machines, push it to a private remote after setup.
     EOS
   end
 
