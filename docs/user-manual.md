@@ -59,6 +59,38 @@ The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive men
 - **Maintenance**: Access `dot-sync`, `dot-pull`, and interactive environment reloading with component selection.
 - **Alt-Key Fix**: A built-in utility to diagnose and fix keyboard shortcut issues.
 
+### Theme System
+PolyTerm includes a dynamic theme system controlled by the `POLYTERM_THEME` setting.
+
+**Selecting a theme** (via palette):
+1. Open the Command Palette (`Alt+p`).
+2. Go to **Settings** → **Theme...**.
+3. Choose from available presets (Peppermint, Catppuccin Mocha, Tokyo Night) or any custom theme you've created.
+4. The fzf colors update immediately.
+
+**Creating a custom theme** (via palette):
+1. Go to **Settings** → **Theme...** → **Customize theme...**.
+2. Pick a base preset to start from.
+3. Select any color token to edit its hex value (`#rrggbb` format).
+4. When finished, select **Save theme**, enter a name, and it's stored in `dotfiles-data/settings/themes/`.
+
+**Built-in presets** are located in `common/config/themes/`:
+- `peppermint.json` — Dark, Peppermint Teal accent (default)
+- `catppuccin-mocha.json` — Warm mauve/pink accents
+- `tokyo-night.json` — Deep blue/purple accents
+
+**Custom themes** are stored in `dotfiles-data/settings/themes/` (user-private).
+
+### Zellij Theme Colors
+Zellij has its own theme system using `.kdl` files in `common/config/zellij/themes/`.
+
+**Editing Zellij theme colors** (via palette):
+1. Open **Configuration Manager...** → **Zellij...** → **Theme Colors...**.
+2. Pick a theme to edit. The active Zellij theme is marked with `●`.
+3. Select any of the 11 color tokens to change its hex value.
+4. Type `default` or `reset` to restore the original value.
+5. Select **Save**, then restart Zellij for changes to take effect.
+
 ---
 
 ## 🗖 Tmux Shortcuts & Navigation

@@ -118,7 +118,9 @@ function zellij_config_menu() {
 "
     done <<< "$settings_data"
 
-    list_items+="$((idx+1)) | 󰅙  Back                         | ${dim}Return to config manager${reset} | ACTION | main_menu"
+    list_items+="$((idx+1)) | 󰑐  Theme Colors...              | ${dim}Edit colors of installed themes${reset} | THEME_COLORS | theme_colors
+"
+    list_items+="$((idx+2)) | 󰅙  Back                         | ${dim}Return to config manager${reset} | ACTION | main_menu"
 
     local selection=$(echo -e "$list_items" | fzf \
         --ansi \
@@ -159,6 +161,7 @@ function zellij_config_menu() {
             local setting_choices=$(echo "$arg" | cut -d '|' -f 4 | xargs)
             edit_zellij_setting "$setting_key" "$setting_type" "$setting_hint" "$setting_choices"
             ;;
+        THEME_COLORS) zellij_theme_colors_menu ;;
         ACTION) config_manager_menu ;;
     esac
 }
@@ -281,4 +284,188 @@ function edit_zellij_setting() {
     printf "Press Enter to return..."
     read -r
     zellij_config_menu
+}
+
+function _get_active_zellij_theme() {
+    python3 "$KDL_SCRIPT" --get "$ZELLIJ_CONFIG" 2>/dev/null | grep "^theme|" | cut -d '|' -f 2
+}
+
+function zellij_theme_colors_menu() {
+    local dim="\033[2m"
+    local reset="\033[0m"
+    local green="\033[32m"
+
+    local active_theme
+    active_theme=$(_get_active_zellij_theme)
+
+    local items=""
+    local idx=0
+    while IFS= read -r theme_file; do
+        ((idx++))
+        local name
+        name=$(basename "$theme_file" .kdl)
+        local marker="  "
+        [[ "$name" == "$active_theme" ]] && marker="${green}●${reset}"
+        items+="$idx | $marker $name | ${dim}${theme_file}${reset} | PICK | $theme_file
+"
+    done < <(find "$ZELLIJ_THEMES_DIR" -maxdepth 1 -name '*.kdl' 2>/dev/null | sort)
+
+    if [[ -z "$items" ]]; then
+        clear
+        echo "󰅙  No theme files found in $ZELLIJ_THEMES_DIR"
+        sleep 2
+        zellij_config_menu
+        return
+    fi
+
+    items+="$((idx+1)) | 󰅙  Back | ${dim}Return to Zellij config manager${reset} | BACK | back"
+
+    local selection=$(echo -e "$items" | fzf \
+        --ansi \
+        --height 100% \
+        --reverse \
+        --border rounded \
+        --prompt "󰑐  " \
+        --header "  Zellij Theme Colors  |  Active: $active_theme" \
+        --delimiter ' \| ')
+
+    [[ -z "$selection" ]] && zellij_config_menu && return
+
+    local type arg
+    type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+
+    case "$type" in
+        PICK)
+            clear
+            zellij_theme_color_editor "$arg"
+            ;;
+        BACK) zellij_config_menu ;;
+    esac
+}
+
+function zellij_theme_color_editor() {
+    local theme_file="$1"
+    local theme_name
+    theme_name=$(basename "$theme_file" .kdl)
+
+    local tmp_file
+    tmp_file=$(mktemp)
+    cp "$theme_file" "$tmp_file"
+
+    local colors_data
+    colors_data=$(python3 "$KDL_SCRIPT" --get-theme-colors "$tmp_file" 2>/dev/null)
+
+    if [[ -z "$colors_data" ]]; then
+        echo "󰅙  Could not read colors from theme file."
+        sleep 2
+        rm -f "$tmp_file"
+        zellij_theme_colors_menu
+        return
+    fi
+
+    local zellij_color_keys=(black red green yellow blue magenta cyan white orange bg fg)
+    local -A color_map
+
+    while IFS='|' read -r key value; do
+        color_map["$key"]="$value"
+    done <<< "$colors_data"
+
+    while true; do
+        clear
+        local dim="\033[2m"
+        local reset="\033[0m"
+
+        local items=""
+        local idx=0
+        for key in "${zellij_color_keys[@]}"; do
+            ((idx++))
+            local val="${color_map[$key]:---}"
+            local padded_key=$(printf "%-10s" "$key")
+            items+="$idx | 󰴄  ${padded_key} ${val} | ${dim}Edit color${reset} | EDIT | $key|$val
+"
+        done
+
+        items+="$((idx+1)) | 󰄬  Save theme               | ${dim}Save changes and apply${reset} | SAVE | save
+"
+        items+="$((idx+2)) | 󰅙  Cancel                    | ${dim}Discard changes${reset} | CANCEL | cancel"
+
+        local selection=$(echo -e "$items" | fzf \
+            --ansi \
+            --height 100% \
+            --reverse \
+            --border rounded \
+            --prompt "󰅳  " \
+            --header "  Zellij Theme Colors  |  $theme_name" \
+            --delimiter ' \| ')
+
+        [[ -z "$selection" ]] && { rm -f "$tmp_file"; zellij_theme_colors_menu; return; }
+
+        local type arg
+        type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
+        arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+
+        case "$type" in
+            EDIT)
+                local color_key=$(echo "$arg" | cut -d'|' -f1)
+                local current_val=$(echo "$arg" | cut -d'|' -f2)
+                clear
+                echo "󰅳  Edit $color_key"
+                echo "──────────────────────────────"
+                echo "  Current value: $current_val"
+                echo ""
+                echo "  Type 'default' or 'reset' to restore original value."
+                printf "  Enter new hex color (e.g. #ff0000) or Enter to keep: "
+                read -r new_val
+
+                if [[ -z "$new_val" ]]; then
+                    continue
+                fi
+
+                if [[ "$new_val" == "default" || "$new_val" == "reset" ]]; then
+                    local orig_val
+                    orig_val=$(python3 "$KDL_SCRIPT" --get-theme-colors "$theme_file" 2>/dev/null | \
+                        grep "^$color_key|" | cut -d '|' -f 2)
+                    if [[ -n "$orig_val" ]]; then
+                        new_val="$orig_val"
+                    else
+                        echo "  No original value found. Keeping current."
+                        sleep 1
+                        continue
+                    fi
+                elif ! validate_hex "$new_val"; then
+                    echo "  Invalid hex color. Use format #rrggbb"
+                    sleep 2
+                    continue
+                fi
+
+                local result
+                result=$(python3 "$KDL_SCRIPT" --set-theme-color "$tmp_file" "$color_key=$new_val" 2>&1)
+                if [[ $? -eq 0 ]]; then
+                    color_map["$color_key"]="$new_val"
+                    echo "󰄬  $result"
+                    sleep 1
+                else
+                    echo "󰅙  $result"
+                    sleep 2
+                fi
+                ;;
+
+            SAVE)
+                cp "$tmp_file" "$theme_file"
+                rm -f "$tmp_file"
+                clear
+                echo "󰄬  Theme '$theme_name' colors saved to $theme_file"
+                sleep 1
+                trigger_zsh_func "dot-zellij-reload"
+                return
+                ;;
+
+            CANCEL)
+                rm -f "$tmp_file"
+                zellij_theme_colors_menu
+                return
+                ;;
+        esac
+    done
 }

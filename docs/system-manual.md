@@ -75,6 +75,38 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 -   **Logic**: Uses `fzf` with `--ansi`. Settings are persisted in `dotfiles-data/settings/.polyterm_settings`.
 -   **Failure Impact**: Corruption leads to UI rendering issues or script execution errors when selecting menu items.
 
+### 4. Theme System Architecture
+-   **Entry Point**: `common/palette/themes.sh` sourced by `palette.sh` and all OS zshrc files.
+-   **Data Layer**:
+    -   Built-in themes: `common/config/themes/<name>.json` (version-controlled).
+    -   Custom themes: `dotfiles-data/settings/themes/<name>.json` (user-private).
+    -   Each JSON defines `colors` (18 ANSI tokens) and optional `fzf` overrides.
+-   **Loading Chain**:
+    1.  Shell profile sets `POLYTERM_THEME` (default: `peppermint`).
+    2.  `themes.sh` looks for `<name>.json` in user themes dir first, then built-in dir.
+    3.  Python helper extracts `colors` and `fzf` sub-objects.
+    4.  `POLYTERM_FZF_*` and `POLYTERM_COLOR_*` env vars exported.
+    5.  `build_fzf_opts()` constructs `FZF_DEFAULT_OPTS="--color=..."`.
+-   **Theme Selection UI**: `settings.sh` → `theme_menu()` uses fzf to list available themes, calls `update_setting("POLYTERM_THEME", name)` + `load_theme(name)`.
+-   **Custom Theme Editor**: `settings.sh` → `customize_theme_menu()` → `theme_color_editor()` with 18 color tokens, hex validation, save to `dotfiles-data/settings/themes/<slug>.json`.
+-   **Zellij Theme Editor**: A "Theme Colors..." entry in the Zellij Config Manager (`zellij_config_menu()`) provides interactive editing of 11 Zellij KDL color tokens via `kdl_config.py --get-theme-colors`/`--set-theme-color`. The editor copies the `.kdl` file, shows tokens in an fzf loop, validates hex input via `validate_hex()`, supports `default`/`reset` to restore original values. "Save" writes back to the `.kdl` file and calls `trigger_zsh_func "dot-zellij-reload"`.
+-   **Failure Impact**: Corrupted theme JSON → `python3` JSON parse error → `load_theme` falls back to Peppermint silently.
+
+### 5. Configuration Manager (Zellij)
+-   **Location**: `common/palette/config_manager.sh`.
+-   **Logic**: Reads Zellij `config.kdl` settings via `kdl_config.py --get`, displays them in an fzf menu with type metadata. Boolean/choice/string editing modes. Theme color editing via `--get-theme-colors`/`--set-theme-color`.
+-   **Python Backend**: `kdl_config.py` handles KDL parsing, type detection, metadata lookup, and idempotent write-back.
+-   **Failure Impact**: Corrupted `config.kdl` → `kdl_config.py` parse failure → empty settings list → menu shows only "Back".
+
+### 6. Palette File Map
+| File | Purpose | Key Functions |
+| :--- | :--- | :--- |
+| `helpers.sh` | Shared utilities | `update_setting`, `trigger_zsh_func`, `confirm_action`, `dot-zellij-reload` |
+| `themes.sh` | Theme loader | `load_theme`, `list_themes`, `get_theme_color`, `get_theme_display_name` |
+| `settings.sh` | System Preferences | `settings_menu`, `theme_menu`, `theme_color_editor` |
+| `config_manager.sh` | Zellij config | `zellij_config_menu`, `zellij_theme_colors_menu`, `zellij_theme_color_editor` |
+| `kdl_config.py` | KDL parser/writer | `--get`, `--set`, `--get-theme-colors`, `--set-theme-color` |
+
 ---
 
 ## 🛡️ Security & Integrity

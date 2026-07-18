@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-KDL Configuration Editor — Zellij config.kdl parser & writer.
+KDL Configuration Editor — Zellij config.kdl & theme .kdl parser/writer.
 
 Commands:
-  --get <filepath>             List all active top-level settings with metadata
-  --set <filepath> key=value   Update a single setting's value in-place
-  --list-themes <themesdir>    List available theme names from themes directory
+  --get <filepath>                 List all active top-level settings with metadata
+  --set <filepath> key=value       Update a single setting's value in-place
+  --get-theme-colors <file>        List all color properties in a theme .kdl file
+  --set-theme-color <file> k=v     Update a single color in a theme .kdl file in-place
+  --list-themes <themesdir>        List available theme names from themes directory
 """
 import argparse
 import os
@@ -238,6 +240,151 @@ def enrich_settings(settings, themes_dir=None):
     return settings
 
 
+def parse_theme_colors(filepath):
+    """Parse a Zellij theme .kdl file and return color key|value pairs.
+
+    Format: themes { <name> { color_key "hex_value" ... } }
+    Returns list of {key, value, line_index} for color properties at depth 2.
+    """
+    colors = []
+    brace_depth = 0
+    in_multiline_comment = False
+
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+
+    for i, raw_line in enumerate(lines):
+        line = raw_line.strip()
+
+        if not line:
+            continue
+
+        if line.startswith("/*"):
+            in_multiline_comment = True
+            continue
+        if in_multiline_comment:
+            if "*/" in line:
+                in_multiline_comment = False
+            continue
+
+        if line.startswith("//") or line.startswith("#"):
+            continue
+
+        if "{" in line:
+            brace_depth += 1
+            continue
+
+        if "}" in line:
+            brace_depth -= 1
+            continue
+
+        if brace_depth < 2:
+            continue
+
+        match = re.match(r'^(\w[\w.-]*)\s+(.+?)\s*(?://.*)?$', line)
+        if not match:
+            continue
+
+        key = match.group(1)
+        raw_value = match.group(2).strip().rstrip(";")
+        raw_value = re.sub(r'\s*//.*$', '', raw_value).strip()
+        raw_value = re.sub(r'\s*#.*$', '', raw_value).strip()
+
+        if raw_value.startswith('"') and raw_value.endswith('"'):
+            raw_value = raw_value[1:-1]
+
+        colors.append({
+            "key": key,
+            "value": raw_value,
+            "line_index": i,
+        })
+
+    return colors
+
+
+def update_theme_color(filepath, key, new_value):
+    """Update a color property in a Zellij theme .kdl file in-place.
+
+    Handles nested brace depth (themes { name { ... } }).
+    Preserves formatting and comments.
+    Returns (success: bool, message: str)
+    """
+    if not os.path.isfile(filepath):
+        return False, f"File not found: {filepath}"
+
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+
+    key_lower = key.lower()
+    found = False
+    brace_depth = 0
+    in_multiline_comment = False
+
+    for i, raw_line in enumerate(lines):
+        line = raw_line.strip()
+
+        if not line:
+            continue
+
+        if line.startswith("/*"):
+            in_multiline_comment = True
+            continue
+        if in_multiline_comment:
+            if "*/" in line:
+                in_multiline_comment = False
+            continue
+
+        if line.startswith("//") or line.startswith("#"):
+            continue
+
+        if "{" in line:
+            brace_depth += 1
+            continue
+
+        if "}" in line:
+            brace_depth -= 1
+            continue
+
+        if brace_depth < 2:
+            continue
+
+        match = re.match(r'^(\w[\w.-]*)\s+(.+?)\s*(?://.*)?$', line)
+        if not match:
+            continue
+
+        candidate_key = match.group(1)
+        if candidate_key.lower() != key_lower:
+            continue
+
+        raw_value = match.group(2).strip().rstrip(";")
+        raw_value = re.sub(r'\s*//.*$', '', raw_value).strip()
+
+        if raw_value.startswith('"') and raw_value.endswith('"'):
+            new_line = re.sub(
+                r'^(\s*\w[\w.-]*\s+)"[^"]*"(\s*.*)$',
+                r'\1"' + new_value + r'"\2',
+                raw_line,
+            )
+        else:
+            new_line = re.sub(
+                r'^(\s*\w[\w.-]*\s+)' + re.escape(raw_value) + r'(\s*.*)$',
+                r'\1' + new_value + r'\2',
+                raw_line,
+            )
+
+        lines[i] = new_line
+        found = True
+        break
+
+    if not found:
+        return False, f"Color '{key}' not found in theme file"
+
+    with open(filepath, "w") as f:
+        f.writelines(lines)
+
+    return True, f"Color '{key}' updated to '{new_value}'"
+
+
 def list_themes(themes_dir):
     """Return list of theme names (stem of .kdl files in themes_dir)."""
     if not themes_dir or not os.path.isdir(themes_dir):
@@ -362,6 +509,10 @@ def main():
     parser.add_argument("--get", metavar="FILE", help="List all active settings")
     parser.add_argument("--set", nargs=2, metavar=("FILE", "KEY=VAL"),
                         help="Update a setting: <file> <key=value>")
+    parser.add_argument("--get-theme-colors", metavar="FILE",
+                        help="List all color properties in a theme .kdl file")
+    parser.add_argument("--set-theme-color", nargs=2, metavar=("FILE", "KEY=VAL"),
+                        help="Update a theme color: <file> <key=value>")
     parser.add_argument("--list-themes", metavar="DIR", help="List themes in directory")
     parser.add_argument("--get-themes-dir", action="store_true",
                         help="Print the expected themes directory path")
@@ -389,6 +540,28 @@ def main():
             sys.exit(1)
         key, value = kv.split("=", 1)
         success, message = update_setting(filepath, key, value)
+        if success:
+            print(message)
+        else:
+            print(f"Error: {message}", file=sys.stderr)
+            sys.exit(1)
+
+    elif args.get_theme_colors:
+        filepath = args.get_theme_colors
+        if not os.path.isfile(filepath):
+            print(f"Error: file not found: {filepath}", file=sys.stderr)
+            sys.exit(1)
+        colors = parse_theme_colors(filepath)
+        for c in colors:
+            print(f"{c['key']}|{c['value']}")
+
+    elif args.set_theme_color:
+        filepath, kv = args.set_theme_color
+        if "=" not in kv:
+            print("Error: argument must be in key=value format", file=sys.stderr)
+            sys.exit(1)
+        key, value = kv.split("=", 1)
+        success, message = update_theme_color(filepath, key, value)
         if success:
             print(message)
         else:
