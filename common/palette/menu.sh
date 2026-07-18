@@ -127,8 +127,8 @@ $docs_path"
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
     local type arg
-    type=$(echo "$selection" | cut -d '│' -f 4 | xargs)
-    arg=$(echo "$selection" | cut -d '│' -f 5 | xargs)
+    type=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F'│' '{print $5}' | xargs)
 
     case "$type" in
         DOC) read_document "$arg"; documents_menu ;;
@@ -174,8 +174,8 @@ function reload_menu() {
     local restart_mux_flag=""
 
     while IFS= read -r line; do
-        local type=$(echo "$line" | cut -d '│' -f 4 | xargs)
-        local arg=$(echo "$line" | cut -d '│' -f 5 | xargs)
+        local type=$(echo "$line" | awk -F'│' '{print $4}' | xargs)
+        local arg=$(echo "$line" | awk -F'│' '{print $5}' | xargs)
         case "$arg" in
             shell) shell_flag="--shell" ;;
             settings) settings_flag="--settings" ;;
@@ -221,8 +221,8 @@ function polyos_dev_menu() {
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
     local type arg
-    type=$(echo "$selection" | cut -d '│' -f 4 | xargs)
-    arg=$(echo "$selection" | cut -d '│' -f 5 | xargs)
+    type=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F'│' '{print $5}' | xargs)
 
     case "$type" in
         ACTION)
@@ -251,11 +251,11 @@ function main_menu() {
 
     local type arg
     if [[ "$selection" =~ ^[0-9]+[[:space:]]+│ ]]; then
-        type=$(echo "$selection" | cut -d '│' -f 4 | xargs)
-        arg=$(echo "$selection" | cut -d '│' -f 5 | xargs)
+        type=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
+        arg=$(echo "$selection" | awk -F'│' '{print $5}' | xargs)
     else
-        type=$(echo "$selection" | cut -d '│' -f 3 | xargs)
-        arg=$(echo "$selection" | cut -d '│' -f 4 | xargs)
+        type=$(echo "$selection" | awk -F'│' '{print $3}' | xargs)
+        arg=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
     fi
 
     case "$type" in

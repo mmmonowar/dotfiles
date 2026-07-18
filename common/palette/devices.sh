@@ -27,8 +27,8 @@ function devices_menu() {
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
     local type arg
-    type=$(echo "$selection" | cut -d '│' -f 4 | xargs)
-    arg=$(echo "$selection" | cut -d '│' -f 5 | xargs)
+    type=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F'│' '{print $5}' | xargs)
 
     case "$type" in
         ACTION)
@@ -80,7 +80,7 @@ function ssh_into_device() {
         --border rounded \
         --prompt "󰒔  " \
         --header "Select a device to SSH into" \
-        --delimiter ' │ ' \
+        --delimiter ' \| ' \
         --with-nth '1,2,3' \
         --preview "
             echo 'Device: {2}'
@@ -95,10 +95,10 @@ function ssh_into_device() {
         return
     fi
 
-    local device_id=$(echo "$selection" | cut -d '│' -f 1 | xargs)
-    local device_name=$(echo "$selection" | cut -d '│' -f 2 | xargs)
-    local ip_addr=$(echo "$selection" | cut -d '│' -f 3 | xargs)
-    local username=$(echo "$selection" | cut -d '│' -f 4 | xargs)
+    local device_id=$(echo "$selection" | cut -d '|' -f 1 | xargs)
+    local device_name=$(echo "$selection" | cut -d '|' -f 2 | xargs)
+    local ip_addr=$(echo "$selection" | cut -d '|' -f 3 | xargs)
+    local username=$(echo "$selection" | cut -d '|' -f 4 | xargs)
 
     if [[ -z "$ip_addr" || "$ip_addr" == "127.0.0.1" || "$ip_addr" == "0.0.0.0" ]]; then
         clear

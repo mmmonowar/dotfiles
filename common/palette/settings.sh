@@ -96,7 +96,7 @@ function scratchpad_menu() {
         --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local choice=$(echo "$selection" | cut -d '│' -f 4 | xargs)
+        local choice=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
         case "$choice" in
             SET_LINUX) update_scratchpad_path "linux" ;;
             SET_WSL) update_scratchpad_path "wsl" ;;
@@ -451,7 +451,7 @@ function settings_menu() {
         --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local choice=$(echo "$selection" | cut -d '│' -f 4 | xargs)
+        local choice=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
         case "$choice" in
             SCAN_PUSH)
                 update_setting "POLYTERM_SCAN_ON_PUSH" "$([[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && echo false || echo true)"
