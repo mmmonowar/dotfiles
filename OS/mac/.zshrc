@@ -26,15 +26,8 @@ if is_agent_or_non_interactive; then
     return
 fi
 
-# Load UX Settings
-if [[ -f "${DOTFILES_DATA}/settings/.polyterm_settings" ]]; then
-    source "${DOTFILES_DATA}/settings/.polyterm_settings"
-fi
-
-export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-
-# Load theme (sets FZF_DEFAULT_OPTS and POLYTERM_COLOR_* vars)
-[[ -f "$DOTFILES_ROOT/common/palette/themes.sh" ]] && source "$DOTFILES_ROOT/common/palette/themes.sh"
+# Load all settings and themes
+[[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
 
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
 export HOMEBREW_NO_INSTALL_CLEANUP=1
