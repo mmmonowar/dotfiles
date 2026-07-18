@@ -9,6 +9,7 @@
 - **Auto-Updating Agent**: Gemini CLI stays up-to-date automatically in the background.
 - **Cross-Platform**: Seamlessly transition between Mac and Linux with consistent keybindings.
 - **Declarative**: All packages managed via Homebrew Brewfiles.
+- **Dynamic Theme System**: Switch between Peppermint, Catppuccin Mocha, Tokyo Night, or create custom themes via the palette.
 
 ## 📦 Quick Start
 

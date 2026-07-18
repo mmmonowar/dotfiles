@@ -1,22 +1,18 @@
 themes {
     peppermint {
-        // --- Liquid Black-Metal Canvas ---
-        black   "#000000"  // Pure Void Black (Immersive uniform backdrop)
-        bg      "#111614"  // Dark Chromium-Green Glaze (Selection / Inactive background)
-        fg      "#2a2a2a"  // Stark Glass-White (High-gloss primary text)
-        
-        // --- The 30% Frosted Translucent Glass Effect ---
-        white  "#90a099"  // Frosted Jade Glass / Cool Muted Sage Grey (Secondary details)
+        // --- Immersive Canvas (Uniform #000000 background) ---
+        bg      "#000000"  // Pure Black — uniform backdrop across all panes
+        black   "#353535"  // Subdued elements, inactive borders
+        fg      "#c8c8c8"  // Default text color
 
-        // --- Polished Silver & Metallic Monochrome ---
-        yellow  "#e1e9e5"  // Platinum-Silver Mint (Headers & Structural tags)
-        orange  "#cbd5e0"  // Brushed Aluminum (Secondary alerts)
-        red     "#ef4444"  // Muted Crimson (Kept minimal for critical errors only)
-
-        // --- Cold Green Luminescent Glow (The Edge Highlights) ---
-        cyan    "#00ffcc"  // Chromium Mint Flare (High-intensity glow for active borders)
-        blue    "#0f9675"  // Deep Metallic Emerald (Focused pane background hue / primary glow)
-        green   "#4ade80"  // Glacial Glass Green (Success states / active tabs)
-        magenta "#2dd4bf"  // Electric Teal Oxide (Metadata & alternate highlights)
+        // --- Peppermint ANSI Palette ---
+        red     "#e74669"  // Alerts, errors, deletions
+        green   "#89d287"  // Success, additions, tasks
+        yellow  "#dab853"  // Warnings, headers, incomplete tasks
+        blue    "#449fd0"  // Primary accent, status indicators
+        magenta "#da62dc"  // Metadata, tags, highlights
+        cyan    "#14b8a6"  // Focus highlights, active borders (Teal)
+        white   "#b4b4b4"  // Secondary text, subtle elements
+        orange  "#e1e487"  // Bright yellow-orange for secondary alerts
     }
 }

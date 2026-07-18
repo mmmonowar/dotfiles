@@ -19,8 +19,8 @@ else
 fi
 OS_ENV_UPPER=$(echo "$OS_ENV" | tr '[:lower:]' '[:upper:]' )
 
-# 3. FZF Theming (Peppermint Greenish/Dark)
-export FZF_DEFAULT_OPTS="--color=bg+:#2a2a2a,bg:#000000,spinner:#89d287,hl:#14b8a6,fg:#c8c8c8,header:#449fd0,info:#dab853,pointer:#14b8a6,marker:#89d287,fg+:#dfdfdf,prompt:#14b8a6,hl+:#14b8a6,query:#89d287"
+# 3. FZF Theming (loaded from active theme)
+# FZF_DEFAULT_OPTS will be set by themes.sh after settings are loaded
 
 # 4. Dynamic Paths
 # Prioritize user's active repository (via DOTFILES_ROOT or ~/dotfiles) if valid
@@ -68,6 +68,7 @@ if [[ -f "$SETTINGS_FILE" ]]; then
 fi
 
 # 6. Source Modular Scripts
+source "$PALETTE_LIB/themes.sh"
 source "$PALETTE_LIB/helpers.sh"
 source "$PALETTE_LIB/apps.sh"
 # source "$PALETTE_LIB/docs.sh"  # Deprecated: documents_menu was shadowed by menu.sh

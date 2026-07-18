@@ -14,3 +14,6 @@ Thumbs.db
 # IDE directories
 .vscode/
 .idea/
+
+# Secrets & local env files
+.gemini/

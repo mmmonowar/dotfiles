@@ -363,6 +363,8 @@ def main():
     parser.add_argument("--set", nargs=2, metavar=("FILE", "KEY=VAL"),
                         help="Update a setting: <file> <key=value>")
     parser.add_argument("--list-themes", metavar="DIR", help="List themes in directory")
+    parser.add_argument("--get-themes-dir", action="store_true",
+                        help="Print the expected themes directory path")
 
     args = parser.parse_args()
 
@@ -397,6 +399,11 @@ def main():
         themes = list_themes(args.list_themes)
         for t in themes:
             print(t)
+
+    elif args.get_themes_dir:
+        repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        themes_dir = os.path.join(repo_root, "common", "config", "zellij", "themes")
+        print(themes_dir)
 
     else:
         parser.print_help()
