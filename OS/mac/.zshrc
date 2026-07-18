@@ -41,11 +41,29 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
     [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]] && multiplexer="zellij"
     
     if [[ "$multiplexer" == "zellij" ]] && command -v zellij &>/dev/null; then
-        exec zellij attach -c default
+        (
+            export POLYTERM_COLOR_BACKGROUND="$POLYTERM_COLOR_BACKGROUND"
+            export POLYTERM_COLOR_FOREGROUND="$POLYTERM_COLOR_FOREGROUND"
+            export POLYTERM_COLOR_BLACK="$POLYTERM_COLOR_BLACK"
+            export POLYTERM_COLOR_RED="$POLYTERM_COLOR_RED"
+            export POLYTERM_COLOR_GREEN="$POLYTERM_COLOR_GREEN"
+            export POLYTERM_COLOR_YELLOW="$POLYTERM_COLOR_YELLOW"
+            export POLYTERM_COLOR_BLUE="$POLYTERM_COLOR_BLUE"
+            export POLYTERM_COLOR_PURPLE="$POLYTERM_COLOR_PURPLE"
+            export POLYTERM_COLOR_CYAN="$POLYTERM_COLOR_CYAN"
+            export POLYTERM_COLOR_WHITE="$POLYTERM_COLOR_WHITE"
+            export POLYTERM_COLOR_BRIGHT_BLACK="$POLYTERM_COLOR_BRIGHT_BLACK"
+            exec zellij attach -c default
+        )
     elif command -v tmux &>/dev/null; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
         tmux set-environment -g POLYTERM_PATH_PALETTE_SCRIPT "$POLYTERM_PATH_PALETTE_SCRIPT"
         tmux set-environment -g POLYTERM_PATH_TMUX_TPM_DIR "$POLYTERM_PATH_TMUX_TPM_DIR"
+        tmux set-environment -g POLYTERM_TMUX_COLOR_ACCENT "$POLYTERM_TMUX_COLOR_ACCENT"
+        tmux set-environment -g POLYTERM_TMUX_COLOR_BACKGROUND "$POLYTERM_TMUX_COLOR_BACKGROUND"
+        tmux set-environment -g POLYTERM_TMUX_COLOR_FOREGROUND "$POLYTERM_TMUX_COLOR_FOREGROUND"
+        tmux set-environment -g POLYTERM_TMUX_COLOR_INACTIVE "$POLYTERM_TMUX_COLOR_INACTIVE"
+        tmux set-environment -g POLYTERM_TMUX_COLOR_SUBTLE "$POLYTERM_TMUX_COLOR_SUBTLE"
         tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -s Dashboard
     fi
 fi
