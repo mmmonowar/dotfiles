@@ -9,13 +9,10 @@ function devices_menu() {
     local reset="\033[0m"
 
     local list_items=""
-    list_items+="1 | 󰖟  Scan Current Device | ${dim}Auto-detect and update device info${reset} | ACTION | scan_device
-"
-    list_items+="2 | 󰒔  SSH into Device | ${dim}Connect to a registered device${reset} | ACTION | ssh_device
-"
-    list_items+="3 | 󰌋  Manual Device Entry | ${dim}Add or update device data via prompts${reset} | ACTION | manual_device
-"
-    list_items+="4 | 󰅙  Back | ${dim}Return to main menu${reset} | ACTION | main_menu"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰖟  Scan Current Device" "${dim}Auto-detect and update device info${reset}" "ACTION" "scan_device")"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰒔  SSH into Device" "${dim}Connect to a registered device${reset}" "ACTION" "ssh_device")"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰌋  Manual Device Entry" "${dim}Add or update device data via prompts${reset}" "ACTION" "manual_device")"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "4" "󰅙  Back" "${dim}Return to main menu${reset}" "ACTION" "main_menu")"
 
     local selection=$(echo -e "$list_items" | fzf \
         --ansi \
@@ -24,13 +21,14 @@ function devices_menu() {
         --border rounded \
         --prompt "󰖟  " \
         --header "Device Manager" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
     local type arg
-    type=$(echo "$selection" | cut -d '|' -f 4 | xargs)
-    arg=$(echo "$selection" | cut -d '|' -f 5 | xargs)
+    type=$(echo "$selection" | cut -d '│' -f 4 | xargs)
+    arg=$(echo "$selection" | cut -d '│' -f 5 | xargs)
 
     case "$type" in
         ACTION)
@@ -82,7 +80,8 @@ function ssh_into_device() {
         --border rounded \
         --prompt "󰒔  " \
         --header "Select a device to SSH into" \
-        --delimiter ' \| ' \
+        --delimiter ' │ ' \
+        --with-nth '1,2,3' \
         --preview "
             echo 'Device: {2}'
             echo '  ID:  {1}'
@@ -96,10 +95,10 @@ function ssh_into_device() {
         return
     fi
 
-    local device_id=$(echo "$selection" | cut -d '|' -f 1 | xargs)
-    local device_name=$(echo "$selection" | cut -d '|' -f 2 | xargs)
-    local ip_addr=$(echo "$selection" | cut -d '|' -f 3 | xargs)
-    local username=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+    local device_id=$(echo "$selection" | cut -d '│' -f 1 | xargs)
+    local device_name=$(echo "$selection" | cut -d '│' -f 2 | xargs)
+    local ip_addr=$(echo "$selection" | cut -d '│' -f 3 | xargs)
+    local username=$(echo "$selection" | cut -d '│' -f 4 | xargs)
 
     if [[ -z "$ip_addr" || "$ip_addr" == "127.0.0.1" || "$ip_addr" == "0.0.0.0" ]]; then
         clear

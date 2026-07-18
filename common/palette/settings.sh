@@ -80,9 +80,9 @@ function scratchpad_menu() {
     local wsl_mark=""; [[ "$OS_ENV" == "wsl" ]] && wsl_mark=" (Current)"
     local mac_mark=""; [[ "$OS_ENV" == "mac" ]] && mac_mark=" (Current)"
     
-    local options="1 | 󰒓  Set Path (Linux)$linux_mark | ${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_LINUX")${reset} | SET_LINUX\n"
-    options+="2 | 󰒓  Set Path (WSL)$wsl_mark | ${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_WSL")${reset} | SET_WSL\n"
-    options+="3 | 󰒓  Set Path (Mac)$mac_mark | ${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_MAC")${reset} | SET_MAC"
+    local options="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰒓  Set Path (Linux)$linux_mark" "${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_LINUX")${reset}" "ACTION" "SET_LINUX")"
+    options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰒓  Set Path (WSL)$wsl_mark" "${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_WSL")${reset}" "ACTION" "SET_WSL")"
+    options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰒓  Set Path (Mac)$mac_mark" "${dim}$(truncate_desc "$POLYTERM_SCRATCHPAD_MAC")${reset}" "ACTION" "SET_MAC")"
 
     local selection=$(echo -e "$options" | fzf \
         --ansi \
@@ -92,10 +92,11 @@ function scratchpad_menu() {
         --prompt "󰈙  " \
         --query "$query" \
         --header "Scratchpad Configuration" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        local choice=$(echo "$selection" | cut -d '│' -f 4 | xargs)
         case "$choice" in
             SET_LINUX) update_scratchpad_path "linux" ;;
             SET_WSL) update_scratchpad_path "wsl" ;;
@@ -130,13 +131,11 @@ function theme_color_editor() {
             local val
             val=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('colors',{}).get(sys.argv[2],''))" "$theme_file" "$key" 2>/dev/null)
             local padded_key=$(printf "%-18s" "$key")
-            items+="$idx | 󰴄  ${padded_key} ${val} | ${dim}Click to edit color${reset} | EDIT | $key|$val
-"
+            items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰴄  ${padded_key} ${val}" "${dim}Click to edit color${reset}" "EDIT" "$key|$val")"
         done
 
-        items+="$((idx+1)) | 󰄬  Save theme             | ${dim}Save as new custom theme${reset} | SAVE | save
-"
-        items+="$((idx+2)) | 󰅙  Cancel                  | ${dim}Discard changes${reset} | CANCEL | cancel"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+1))" "󰄬  Save theme" "${dim}Save as new custom theme${reset}" "SAVE" "save")"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+2))" "󰅙  Cancel" "${dim}Discard changes${reset}" "CANCEL" "cancel")"
 
         local selection=$(echo -e "$items" | fzf \
             --ansi \
@@ -145,7 +144,8 @@ function theme_color_editor() {
             --border rounded \
             --prompt "󰑐  " \
             --header "  Color Editor  |  $current_name" \
-            --delimiter ' \| ' \
+            --delimiter ' │ ' \
+            --with-nth '1,2,3' \
             --preview '
                 k=$(echo {5} | cut -d"|" -f1)
                 v=$(echo {5} | cut -d"|" -f2)
@@ -157,8 +157,8 @@ function theme_color_editor() {
         [[ -z "$selection" ]] && return 1
 
         local type arg
-        type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-        arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+        type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+        arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
         case "$type" in
             EDIT)
@@ -253,16 +253,14 @@ function customize_theme_menu() {
         local display_name=$(get_theme_display_name "$theme")
         local src="built-in"
         [[ -f "$POLYTERM_USER_THEMES_DIR/$theme.json" ]] && src="custom"
-        items+="$idx | 󰑐  $display_name | ${dim}${src}${reset} | PICK | $theme
-"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰑐  $display_name" "${dim}${src}${reset}" "PICK" "$theme")"
         if [[ -f "$POLYTERM_THEMES_DIR/$theme.json" && -f "$POLYTERM_USER_THEMES_DIR/$theme.json" ]]; then
             ((idx++))
-            items+="$idx | 󰑐  $display_name (built-in) | ${dim}built-in${reset} | PICK | :builtin:$theme
-"
+            items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰑐  $display_name (built-in)" "${dim}built-in${reset}" "PICK" ":builtin:$theme")"
         fi
     done < <(list_themes)
 
-    items+="$((idx+1)) | 󰅙  Back | ${dim}Return to theme menu${reset} | BACK | back"
+    items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+1))" "󰅙  Back" "${dim}Return to theme menu${reset}" "BACK" "back")"
 
     local selection=$(echo -e "$items" | fzf \
         --ansi \
@@ -271,13 +269,14 @@ function customize_theme_menu() {
         --border rounded \
         --prompt "󰑐  " \
         --header "  Pick a base theme to customize" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     [[ -z "$selection" ]] && theme_menu && return
 
     local type arg
-    type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-    arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+        type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+        arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
     case "$type" in
         PICK)
@@ -330,20 +329,17 @@ function theme_menu() {
             if [[ "$theme" == "$POLYTERM_THEME" ]]; then
                 marker="${green}●${reset}"
             fi
-            items+="$idx | $marker $display_name | ${dim}${src}${reset} | SELECT | $theme
-"
+            items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "$marker $display_name" "${dim}${src}${reset}" "SELECT" "$theme")"
             if [[ -f "$POLYTERM_THEMES_DIR/$theme.json" && -f "$POLYTERM_USER_THEMES_DIR/$theme.json" ]]; then
                 ((idx++))
                 local bm="  "
                 [[ ":builtin:$theme" == "$POLYTERM_THEME" ]] && bm="${green}●${reset}"
-                items+="$idx | $bm $display_name (built-in) | ${dim}built-in${reset} | SELECT | :builtin:$theme
-"
+                items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "$bm $display_name (built-in)" "${dim}built-in${reset}" "SELECT" ":builtin:$theme")"
             fi
         done < <(list_themes)
 
-        items+="$((idx+1)) | 󰑐  Customize theme... | ${dim}Create or edit a custom theme${reset} | CUSTOMIZE | customize
-"
-        items+="$((idx+2)) | 󰅙  Back                | ${dim}Return to settings menu${reset} | BACK | back"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+1))" "󰑐  Customize theme..." "${dim}Create or edit a custom theme${reset}" "CUSTOMIZE" "customize")"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+2))" "󰅙  Back" "${dim}Return to settings menu${reset}" "BACK" "back")"
 
         local selection=$(echo -e "$items" | fzf \
             --ansi \
@@ -352,7 +348,8 @@ function theme_menu() {
             --border rounded \
             --prompt "󰑐  " \
             --header "  Select Theme  |  Current: $(get_theme_display_name "$POLYTERM_THEME")" \
-            --delimiter ' \| ' \
+            --delimiter ' │ ' \
+            --with-nth '1,2,3' \
             --preview '
                 raw=$(echo {5} | xargs)
                 n="${raw#:builtin:}"
@@ -394,8 +391,8 @@ print(f\"  BG/FG:   \\033[48;2;{r1};{g1};{b1}m\\033[38;2;{r2};{g2};{b2}m  Aa Bb 
         [[ -z "$selection" ]] && settings_menu && return
 
         local type arg
-        type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-        arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+        type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+        arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
         case "$type" in
             SELECT)
@@ -437,10 +434,10 @@ function settings_menu() {
     local scan_pull_status="[OFF]"
     [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
 
-    local settings_options="1 | 󰒃  Security Check on Push $scan_push_status | ${dim}Toggle pre-push scan${reset} | SCAN_PUSH\n"
-    settings_options+="2 | 󰒃  Security Check on Pull $scan_pull_status | ${dim}Toggle post-pull scan${reset} | SCAN_PULL\n"
-    settings_options+="3 | 󰈙  Scratchpad Settings... | ${dim}Configure paths and access${reset} | SCRATCHPAD\n"
-    settings_options+="4 | 󰑐  Theme... $theme_name | ${dim}Select or customize color theme${reset} | THEME"
+    local settings_options="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰒃  Security Check on Push $scan_push_status" "${dim}Toggle pre-push scan${reset}" "SETTING" "SCAN_PUSH")"
+    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰒃  Security Check on Pull $scan_pull_status" "${dim}Toggle post-pull scan${reset}" "SETTING" "SCAN_PULL")"
+    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰈙  Scratchpad Settings..." "${dim}Configure paths and access${reset}" "ACTION" "SCRATCHPAD")"
+    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "4" "󰑐  Theme... $theme_name" "${dim}Select or customize color theme${reset}" "ACTION" "THEME")"
 
     local selection=$(echo -e "$settings_options" | fzf \
         --ansi \
@@ -450,10 +447,11 @@ function settings_menu() {
         --prompt "󰒓  " \
         --query "$query" \
         --header "Select Setting (Type index or name)" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local choice=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        local choice=$(echo "$selection" | cut -d '│' -f 4 | xargs)
         case "$choice" in
             SCAN_PUSH)
                 update_setting "POLYTERM_SCAN_ON_PUSH" "$([[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && echo false || echo true)"

@@ -109,7 +109,7 @@ function truncate_desc() {
     if [[ "$max_len" == "auto" ]]; then
         local term_width
         term_width=$(tput cols 2>/dev/null || echo 80)
-        local overhead=37
+        local overhead=44
         max_len=$((term_width - overhead))
         [[ $max_len -lt 20 ]] && max_len=20
     fi
