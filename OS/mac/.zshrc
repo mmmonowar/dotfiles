@@ -51,7 +51,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
         exec zellij attach -c default
     elif command -v tmux &>/dev/null; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
-        tmux attach-session -t default 2>/dev/null || tmux new-session -s default
+        tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -s Dashboard
     fi
 fi
 
@@ -123,5 +123,4 @@ fi
 # -----------------------------------------------------------------------------
 [[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"
 
-export PATH="$PATH:/Users/mustafa.fl/.local/bin"
-export PATH="/Users/mustafa.fl/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"

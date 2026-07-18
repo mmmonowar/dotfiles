@@ -108,6 +108,16 @@ function execute_shortcut() {
             fi
         fi
         # Execute tmux command directly (resolving ISSUE-17 redundancy)
-        eval "tmux $cmd"
+        case "$cmd" in
+            "split-window"*)
+                tmux split-window -c "#{pane_current_path}" \; select-layout tiled
+                ;;
+            "kill-pane")
+                tmux kill-pane \; select-layout tiled
+                ;;
+            *)
+                tmux $cmd
+                ;;
+        esac
     fi
 }

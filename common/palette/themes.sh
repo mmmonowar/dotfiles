@@ -42,18 +42,25 @@ except: sys.exit(1)
 " "$file" "$parent" "$child" 2>/dev/null
 }
 
+function _resolve_theme_file() {
+    local theme_name="$1"
+    local file="$POLYTERM_USER_THEMES_DIR/$theme_name.json"
+    if [[ -f "$file" ]]; then
+        echo "$file"
+        return
+    fi
+    file="$POLYTERM_THEMES_DIR/$theme_name.json"
+    if [[ -f "$file" ]]; then
+        echo "$file"
+        return
+    fi
+    echo "$POLYTERM_THEMES_DIR/peppermint.json"
+}
+
 function get_theme_color() {
     local key="$1"
     local theme_name="${2:-$POLYTERM_THEME}"
-    local theme_file
-
-    theme_file="$POLYTERM_USER_THEMES_DIR/$theme_name.json"
-    if [[ ! -f "$theme_file" ]]; then
-        theme_file="$POLYTERM_THEMES_DIR/$theme_name.json"
-    fi
-    if [[ ! -f "$theme_file" ]]; then
-        theme_file="$POLYTERM_THEMES_DIR/peppermint.json"
-    fi
+    local theme_file="$(_resolve_theme_file "$theme_name")"
 
     _theme_get "$key" "$theme_file"
 }
@@ -61,15 +68,7 @@ function get_theme_color() {
 function get_theme_fzf_color() {
     local key="$1"
     local theme_name="${2:-$POLYTERM_THEME}"
-    local theme_file
-
-    theme_file="$POLYTERM_USER_THEMES_DIR/$theme_name.json"
-    if [[ ! -f "$theme_file" ]]; then
-        theme_file="$POLYTERM_THEMES_DIR/$theme_name.json"
-    fi
-    if [[ ! -f "$theme_file" ]]; then
-        theme_file="$POLYTERM_THEMES_DIR/peppermint.json"
-    fi
+    local theme_file="$(_resolve_theme_file "$theme_name")"
 
     local value
     value=$(_theme_get_nested "fzf" "$key" "$theme_file")
@@ -105,10 +104,7 @@ function load_theme() {
     elif [[ "$force_source" == "custom" ]]; then
         theme_file="$POLYTERM_USER_THEMES_DIR/$theme_name.json"
     else
-        theme_file="$POLYTERM_USER_THEMES_DIR/$theme_name.json"
-        if [[ ! -f "$theme_file" ]]; then
-            theme_file="$POLYTERM_THEMES_DIR/$theme_name.json"
-        fi
+        theme_file="$(_resolve_theme_file "$theme_name")"
     fi
     if [[ ! -f "$theme_file" ]]; then
         theme_file="$POLYTERM_THEMES_DIR/peppermint.json"

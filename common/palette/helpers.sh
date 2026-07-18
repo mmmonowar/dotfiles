@@ -12,14 +12,17 @@ function update_setting() {
     # We use a placeholder to avoid expansion during the sed operation
     local sanitized_value=$(echo "$value" | sed "s|$HOME|\$HOME|g")
     
+    # Escape sed metacharacters in the replacement value to prevent injection
+    local escaped_value=$(echo "$sanitized_value" | sed 's/[&/\]/\\&/g')
+    
     if grep -q "export $key=" "$SETTINGS_FILE"; then
         if [[ "$OS_ENV" == "mac" ]]; then
-            sed -i '' "s|^export $key=.*|export $key=\"$sanitized_value\"|" "$SETTINGS_FILE"
+            sed -i '' "s|^export $key=.*|export $key=\"$escaped_value\"|" "$SETTINGS_FILE"
         else
-            sed -i "s|^export $key=.*|export $key=\"$sanitized_value\"|" "$SETTINGS_FILE"
+            sed -i "s|^export $key=.*|export $key=\"$escaped_value\"|" "$SETTINGS_FILE"
         fi
     else
-        echo "export $key=\"$sanitized_value\"" >> "$SETTINGS_FILE"
+        echo "export $key=\"$escaped_value\"" >> "$SETTINGS_FILE"
     fi
     # Re-source to update current environment
     source "$SETTINGS_FILE"
@@ -144,7 +147,7 @@ function resolve_command() {
             binaries=$(find "$cellar_path/$version_dir/bin" -maxdepth 1 \( -type f -o -type l \) -exec basename {} \; 2>/dev/null | sort)
             local bin_count
             bin_count=$(echo "$binaries" | wc -l)
-            if [[ "$bin_count" -eq 1 ]]; then
+            if [[ -n "$binaries" && "$bin_count" -eq 1 ]]; then
                 echo "$binaries"
                 return
             fi

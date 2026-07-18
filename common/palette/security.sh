@@ -5,6 +5,12 @@
 # ==========================================
 
 function dot-scan() {
+    local BLUE='\033[0;34m'
+    local GREEN='\033[0;32m'
+    local YELLOW='\033[1;33m'
+    local RED='\033[0;31m'
+    local NC='\033[0m'
+
     echo -e "${BLUE}==========================================${NC}"
     echo -e "🛡️  Starting Security Vulnerability Scan"
     echo -e "${BLUE}==========================================${NC}"

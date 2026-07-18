@@ -146,7 +146,7 @@ function reload_menu() {
     list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰒹  Multiplexer config" "${dim}Reload tmux/zellij configuration${reset}" "PHASE" "mux_config")"
     list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "4" "󰒠  Restart multiplexer" "${dim}Create fresh session (saves state)${reset}" "PHASE" "restart_mux")"
     list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "5" "󰔄  Reload All" "${dim}Run all four reload phases${reset}" "ACTION" "reload_all")"
-    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "6" "󰅙  Back" "${dim}Return to main menu${reset}" "ACTION" "main_menu")
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "6" "󰅙  Back" "${dim}Return to main menu${reset}" "ACTION" "main_menu")"
 
     local selected=$(echo -e "$list_items" | fzf \
         --ansi \
@@ -206,7 +206,7 @@ function polyos_dev_menu() {
     
     local list_items=""
     list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰇚  poly-sync" "${dim}Clone or update all PolyOS repositories from GitHub${reset}" "ACTION" "poly-sync")"
-    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰅙  Back" "${dim}Return to main menu${reset}" "ACTION" "main_menu")
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰅙  Back" "${dim}Return to main menu${reset}" "ACTION" "main_menu")"
 
     local selection=$(echo -e "$list_items" | fzf \
         --ansi \

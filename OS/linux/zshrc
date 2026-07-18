@@ -56,7 +56,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
         exec zellij attach -c default
     elif command -v tmux &>/dev/null; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
-        tmux attach-session -t default 2>/dev/null || tmux new-session -s default
+        tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -s Dashboard
     fi
 fi
 
@@ -126,7 +126,12 @@ if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]
 
     ask_gemini() {
         if [[ -f "$1" ]]; then
-            local file_size=$(stat -f%z "$1")
+            local file_size
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                file_size=$(stat -f%z "$1")
+            else
+                file_size=$(stat -c %s "$1")
+            fi
             if (( file_size > 50000 )); then
                 echo "󰒃  Safety: File is too large ($file_size bytes). Use grep or tail first."
                 return 1

@@ -99,11 +99,11 @@ case "$1" in
         esac
         ;;
     palette)
-        # Check if inside Tmux
-        if [[ -n "$TMUX" ]]; then
+        # Check if inside Tmux or Zellij
+        if [[ -n "$TMUX" || -n "$ZELLIJ" ]]; then
             "$REPO_PATH/common/palette/palette.sh"
         else
-            echo -e "${YELLOW}Warning: Palette must be run inside a Tmux session.${NC}"
+            echo -e "${YELLOW}Warning: Palette must be run inside a Tmux or Zellij session.${NC}"
             echo -e "Starting a new Tmux session..."
             tmux new-session "$REPO_PATH/common/palette/palette.sh"
         fi
