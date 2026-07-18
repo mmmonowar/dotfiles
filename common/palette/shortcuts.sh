@@ -34,7 +34,7 @@ function shortcuts_menu() {
         --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local cmd=$(echo "$selection" | cut -d '│' -f 5 | xargs)
+        local cmd=$(echo "$selection" | awk -F'│' '{print $5}' | xargs)
         execute_shortcut "$cmd"
     else
         main_menu

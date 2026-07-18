@@ -86,7 +86,7 @@ function uninstall_app() {
         --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local selected_item=$(echo "$selection" | cut -d '│' -f 2 | xargs)
+        local selected_item=$(echo "$selection" | awk -F'│' '{print $2}' | xargs)
         local type=$(echo "$selected_item" | cut -d ':' -f 1 | xargs)
         local app_name=$(echo "$selected_item" | cut -d ':' -f 2 | xargs)
         clear
@@ -167,7 +167,7 @@ function apps_menu() {
         --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local selected_app=$(echo "$selection" | cut -d '│' -f 2 | xargs)
+        local selected_app=$(echo "$selection" | awk -F'│' '{print $2}' | xargs)
         
         # Determine if it's a cask to run with open -a on macOS
         local is_cask=false
