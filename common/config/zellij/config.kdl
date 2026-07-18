@@ -275,12 +275,12 @@ theme "peppermint"
 // Theme to use when the host terminal reports a dark color palette.
 // Requires `theme_light` to also be set; otherwise `theme` is used.
 // 
-theme_dark "peppermint"
+theme_dark "ansi"
  
 // Theme to use when the host terminal reports a light color palette.
 // Requires `theme_dark` to also be set; otherwise `theme` is used.
 // 
-theme_light "peppermint"
+theme_light "vesper"
  
 // Choose the base input mode of zellij.
 // Default: normal
@@ -309,7 +309,7 @@ default_layout "default"
 // The folder in which Zellij will look for themes
 // (Requires restart)
 // 
-theme_dir "/home/muhammad/GitHub/mmmonowar/dotfiles/common/config/zellij/themes/"
+theme_dir "/home/muhammad/GitHub/mmmonowar/dotfiles/common/config/zellij/themes"
  
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could
