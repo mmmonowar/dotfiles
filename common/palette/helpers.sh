@@ -153,6 +153,16 @@ function resolve_command() {
     echo "$pkg_name"
 }
 
+function dot-zellij-reload() {
+    if [[ -n "$ZELLIJ" ]]; then
+        echo "  Zellij theme saved. Restart Zellij (Ctrl+o \u2192 q \u2192 'zellij') to apply."
+    elif [[ -n "$TMUX" ]]; then
+        echo "  Zellij theme file updated. Start a new Zellij session to apply."
+    else
+        echo "  Zellij theme file updated."
+    fi
+}
+
 function read_document() {
     local file=$1
     clear
