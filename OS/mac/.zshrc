@@ -44,6 +44,8 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
         exec zellij attach -c default
     elif command -v tmux &>/dev/null; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+        tmux set-environment -g POLYTERM_PATH_PALETTE_SCRIPT "$POLYTERM_PATH_PALETTE_SCRIPT"
+        tmux set-environment -g POLYTERM_PATH_TMUX_TPM_DIR "$POLYTERM_PATH_TMUX_TPM_DIR"
         tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -s Dashboard
     fi
 fi

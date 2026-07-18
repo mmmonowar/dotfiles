@@ -50,7 +50,14 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
     # Run the multiplexer without 'exec'. 
     # When you detach or exit, you will land safely back in your standard Zsh prompt.
     if command -v "$multiplexer" >/dev/null 2>&1; then
-        "$multiplexer"
+        if [[ "$multiplexer" == "tmux" ]]; then
+            tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+            tmux set-environment -g POLYTERM_PATH_PALETTE_SCRIPT "$POLYTERM_PATH_PALETTE_SCRIPT"
+            tmux set-environment -g POLYTERM_PATH_TMUX_TPM_DIR "$POLYTERM_PATH_TMUX_TPM_DIR"
+            tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -s Dashboard
+        else
+            "$multiplexer"
+        fi
     fi
 fi
 
