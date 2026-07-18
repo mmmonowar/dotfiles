@@ -14,6 +14,7 @@ fi
 
 # Define Dotfiles Root
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
+export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
 
 # Ensure standard path priority
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH}"
@@ -24,30 +25,9 @@ export EDITOR="micro"
 export VISUAL="micro"
 export PAGER="less"
 
-# --- 2. Peppermint Design Tokens ---
-# Pure Black: #000000 | Foreground: #c8c8c8
-# Cyan/Teal: #14b8a6  | Green: #89d287 | Yellow: #dab853
-# Blue: #449fd0       | Purple: #da62dc | White: #b4b4b4
-# Bright Black: #2a2a2a
-
-export PEPPERMINT_BG="#000000"
-export PEPPERMINT_FG="#c8c8c8"
-export PEPPERMINT_TEAL="#14b8a6"
-export PEPPERMINT_GREEN="#89d287"
-export PEPPERMINT_YELLOW="#dab853"
-export PEPPERMINT_BLUE="#449fd0"
-export PEPPERMINT_PURPLE="#da62dc"
-export PEPPERMINT_WHITE="#b4b4b4"
-export PEPPERMINT_BR_BLACK="#2a2a2a"
-
-# Apply Peppermint Theme colors to fzf (Fuzzy Finder)
-export FZF_DEFAULT_OPTS="
-  --color=fg:#c8c8c8,bg:#000000,hl:#449fd0 
-  --color=fg+:#14b8a6,bg+:#2a2a2a,hl+:#14b8a6 
-  --color=info:#da62dc,prompt:#14b8a6,pointer:#14b8a6 
-  --color=marker:#89d287,spinner:#da62dc,header:#dab853
-  --prompt='⸎ ' --pointer='▶' --marker='✓'
-"
+# --- 2. Theme (loaded from active POLYTERM_THEME) ---
+[[ -f "${DOTFILES_DATA}/settings/.polyterm_settings" ]] && source "${DOTFILES_DATA}/settings/.polyterm_settings"
+[[ -f "$DOTFILES_ROOT/common/palette/themes.sh" ]] && source "$DOTFILES_ROOT/common/palette/themes.sh"
 
 # Glow (Markdown Reader) matching terminal colors
 export GLOW_STYLE="dark"

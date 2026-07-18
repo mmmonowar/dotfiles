@@ -33,6 +33,9 @@ fi
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 
+# Load theme (sets FZF_DEFAULT_OPTS and POLYTERM_COLOR_* vars)
+[[ -f "$DOTFILES_ROOT/common/palette/themes.sh" ]] && source "$DOTFILES_ROOT/common/palette/themes.sh"
+
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 

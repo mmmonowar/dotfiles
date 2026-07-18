@@ -42,6 +42,34 @@ function config_manager_menu() {
     esac
 }
 
+_ZELLIJ_THEME_DIR_WARNED=""
+
+function check_zellij_theme_dir() {
+    [[ -n "$_ZELLIJ_THEME_DIR_WARNED" ]] && return
+
+    local current_theme_dir
+    current_theme_dir=$(python3 "$KDL_SCRIPT" --get "$ZELLIJ_CONFIG" 2>/dev/null | \
+        grep "^theme_dir|" | cut -d '|' -f 2)
+
+    if [[ -n "$current_theme_dir" && "$current_theme_dir" != "$ZELLIJ_THEMES_DIR" ]]; then
+        clear
+        echo "󰅙  theme_dir is stale or points to a different location:"
+        echo "   Current: $current_theme_dir"
+        echo "   Expected: $ZELLIJ_THEMES_DIR"
+        echo ""
+        if confirm_action "Fix theme_dir to point to the expected path?"; then
+            local result
+            result=$(python3 "$KDL_SCRIPT" --set "$ZELLIJ_CONFIG" "theme_dir=$ZELLIJ_THEMES_DIR" 2>&1)
+            echo "󰄬  $result"
+            sleep 1
+        else
+            echo "  Skipped. You can edit theme_dir manually from the settings list."
+            sleep 1
+        fi
+        _ZELLIJ_THEME_DIR_WARNED="yes"
+    fi
+}
+
 function zellij_config_menu() {
     local dim="\033[2m"
     local reset="\033[0m"
@@ -63,6 +91,8 @@ function zellij_config_menu() {
         config_manager_menu
         return
     fi
+
+    check_zellij_theme_dir
 
     local settings_data
     settings_data=$(python3 "$KDL_SCRIPT" --get "$ZELLIJ_CONFIG" 2>/dev/null)
@@ -203,8 +233,20 @@ function edit_zellij_setting() {
             echo ""
             echo "  Current value: $current_value"
             echo ""
-            printf "  Enter new value (leave empty to cancel): "
-            read -r new_value
+            if [[ "$key" == "theme_dir" ]]; then
+                local suggested="$ZELLIJ_THEMES_DIR"
+                echo "  Suggested: $suggested"
+                echo "  (Press Enter to accept suggested value)"
+                echo ""
+                printf "  Enter new value: "
+                read -r new_value
+                if [[ -z "$new_value" ]]; then
+                    new_value="$suggested"
+                fi
+            else
+                printf "  Enter new value (leave empty to cancel): "
+                read -r new_value
+            fi
 
             if [[ -z "$new_value" ]]; then
                 echo ""
