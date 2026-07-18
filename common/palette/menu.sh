@@ -250,7 +250,7 @@ function main_menu() {
     if [[ -z "$selection" ]]; then exit 0; fi
 
     local type arg
-    if [[ "$selection" =~ ^[0-9]+[[:space:]]+│ ]]; then
+    if [[ "$selection" =~ ^[[:space:]]*[0-9]+[[:space:]]+│ ]]; then
         type=$(echo "$selection" | awk -F'│' '{print $4}' | xargs)
         arg=$(echo "$selection" | awk -F'│' '{print $5}' | xargs)
     else
