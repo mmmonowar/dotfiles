@@ -102,6 +102,9 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
     if command -v "$multiplexer" >/dev/null 2>&1; then
         # Launch or attach
         if [[ "$multiplexer" == "tmux" ]]; then
+            tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
+            tmux set-environment -g POLYTERM_PATH_PALETTE_SCRIPT "$POLYTERM_PATH_PALETTE_SCRIPT"
+            tmux set-environment -g POLYTERM_PATH_TMUX_TPM_DIR "$POLYTERM_PATH_TMUX_TPM_DIR"
             # Automatically try to attach to the last session, or start 'Dashboard'
             exec tmux attach-session -t Dashboard 2>/dev/null || exec tmux new-session -A -s Dashboard
         elif [[ "$multiplexer" == "zellij" ]]; then

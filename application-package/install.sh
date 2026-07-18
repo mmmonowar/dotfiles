@@ -29,7 +29,7 @@ if [ -d ".git" ] && git remote -v | grep -q "mmmonowar/dotfiles"; then
 else
     TARGET_DIR="$HOME/dotfiles"
 fi
-REPO_URL="https://github.com/mmmonowar/dotfiles.git"
+REPO_URL="${POLYTERM_URL_DOTFILES_REPO:-"https://github.com/mmmonowar/dotfiles.git"}"
 
 # 2. OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -48,7 +48,7 @@ echo -e "🖥️  Detected OS: ${GREEN}$OS_ENV${NC}"
 # 3. Pre-requisites: Homebrew
 if ! command -v brew &> /dev/null; then
     echo -e "🍺  ${BLUE}Installing Homebrew...${NC}"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /bin/bash -c "$(curl -fsSL "${POLYTERM_URL_HOMEBREW_INSTALLER:-"https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"}")"
     
     # Set up brew shellenv for the rest of the script
     if [[ "$OS_ENV" == "mac" ]]; then
@@ -92,6 +92,11 @@ else
     echo -e "✅  ${GREEN}dotfiles-data already exists at $DATA_DIR.${NC}"
 fi
 export DOTFILES_DATA="$DATA_DIR"
+
+# Source settings to get URLs
+if [ -f "$DATA_DIR/settings/.polyterm_settings" ]; then
+    source "$DATA_DIR/settings/.polyterm_settings"
+fi
 
 # 5. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"
@@ -242,7 +247,7 @@ check_deps
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     echo -e "🔌  ${BLUE}Installing TPM (Tmux Plugin Manager)...${NC}"
     mkdir -p "$HOME/.tmux/plugins"
-    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    git clone "${POLYTERM_URL_TPM_REPO:-"https://github.com/tmux-plugins/tpm"}" "$HOME/.tmux/plugins/tpm"
 else
     echo -e "✅  ${GREEN}TPM is already installed.${NC}"
 fi
@@ -250,7 +255,7 @@ fi
 # 7.5 Install Antidote (Zsh Plugin Manager)
 if [ ! -d "$HOME/.antidote" ]; then
     echo -e "🔌  ${BLUE}Installing Antidote Zsh Plugin Manager...${NC}"
-    git clone --depth=1 https://github.com/mattmc3/antidote.git "$HOME/.antidote"
+    git clone --depth=1 "${POLYTERM_URL_ANTIDOTE_REPO:-"https://github.com/mattmc3/antidote.git"}" "$HOME/.antidote"
 else
     echo -e "✅  ${GREEN}Antidote is already installed.${NC}"
 fi
@@ -263,7 +268,7 @@ if [[ "$OS_ENV" != "mac" ]]; then
         FONT_DIR="$HOME/.local/share/fonts"
         mkdir -p "$FONT_DIR"
         # Download the font
-        curl -fLo "$FONT_DIR/JetBrainsMono.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+        curl -fLo "$FONT_DIR/JetBrainsMono.zip" "${POLYTERM_URL_NERDFONT_JETBRAINS:-"https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"}"
         unzip -o "$FONT_DIR/JetBrainsMono.zip" -d "$FONT_DIR"
         rm "$FONT_DIR/JetBrainsMono.zip"
         # Update font cache
