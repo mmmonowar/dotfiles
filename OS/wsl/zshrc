@@ -27,10 +27,8 @@ if is_agent_or_non_interactive; then
     return
 fi
 
-# Load UX Settings
-if [[ -f "${DOTFILES_DATA}/settings/.polyterm_settings" ]]; then
-    source "${DOTFILES_DATA}/settings/.polyterm_settings"
-fi
+# Load all settings and themes
+[[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
 
 export PATH="$HOME/.local/bin:$PATH"
 [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -85,8 +83,6 @@ fi
 
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
-# 3b. FZF Theme (loaded from active POLYTERM_THEME)
-[[ -f "$DOTFILES_ROOT/common/palette/themes.sh" ]] && source "$DOTFILES_ROOT/common/palette/themes.sh"
 
 # 4. ALIASES & KEYBOARDS
 # -----------------------------------------------------------------------------
