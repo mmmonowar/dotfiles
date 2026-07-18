@@ -70,21 +70,23 @@ function uninstall_app() {
     local list_items=""
     local idx=1
     for app in "${apps[@]}"; do
-        list_items+="$idx | $app
-"
+        list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "$app" "\033[2mSelect to uninstall\033[0m" "APP" "$app")"
         ((idx++))
     done
 
     local selection
     selection=$(echo -e "$list_items" | fzf \
+        --ansi \
         --height 100% \
         --reverse \
         --border rounded \
         --prompt "󰆴  " \
-        --header "Select App to Uninstall")
+        --header "Select App to Uninstall" \
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local selected_item=$(echo "$selection" | cut -d '|' -f 2 | xargs)
+        local selected_item=$(echo "$selection" | cut -d '│' -f 2 | xargs)
         local type=$(echo "$selected_item" | cut -d ':' -f 1 | xargs)
         local app_name=$(echo "$selected_item" | cut -d ':' -f 2 | xargs)
         clear
@@ -149,7 +151,7 @@ function apps_menu() {
             type = parts[1]
             name = parts[2]
             desc = cache[name] ? cache[name] : (type == "cask" ? "󰀵  Cask Application" : "󰒓  CLI Tool")
-            print idx " | " name " | \033[2m" desc "\033[0m"
+            printf "%3s │ %-35s │ \033[2m%s\033[0m │ %-8s │ %s\n", idx, name, desc, type, name
         }
     ' "$META_PATH" <(printf "%s\n" "${apps[@]}"))
 
@@ -161,10 +163,11 @@ function apps_menu() {
         --prompt "󱐋  " \
         --query "$query" \
         --header "Select App (Type index or name)" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local selected_app=$(echo "$selection" | cut -d '|' -f 2 | xargs)
+        local selected_app=$(echo "$selection" | cut -d '│' -f 2 | xargs)
         
         # Determine if it's a cask to run with open -a on macOS
         local is_cask=false

@@ -10,27 +10,17 @@ function shortcuts_menu() {
     local dim="\033[2m"
     local reset="\033[0m"
 
-    local menu_items="1 | 󰐕  New Session ($mod+,) | ${dim}Create a fresh tmux session${reset} | new-session
-"
-    menu_items+="2 | 󰑐  Cycle Sessions ($mod+0) | ${dim}Switch to the next active session${reset} | switch-client -n
-"
-    menu_items+="3 | 󰆴  Kill Session ($mod+w) | ${dim}Terminate the current session${reset} | kill-session
-"
-    menu_items+="4 | 󰈔  New Window ($mod+m) | ${dim}Create a new tmux window${reset} | new-window
-"
-    menu_items+="5 | 󰅙  Kill Window ($mod+e) | ${dim}Close the current window${reset} | kill-window
-"
-    menu_items+="6 | 󰁞  Next Window ($mod+Up) | ${dim}Switch to the next window${reset} | next-window
-"
-    menu_items+="7 | 󰁆  Previous Window ($mod+Down) | ${dim}Switch to the previous window${reset} | previous-window
-"
-    menu_items+="8 | 󰁍  Previous Pane ($mod+Left) | ${dim}Switch to the previous pane${reset} | select-pane -t :.-
-"
-    menu_items+="9 | 󰁔  Next Pane ($mod+Right) | ${dim}Switch to the next pane${reset} | select-pane -t :.+
-"
-    menu_items+="10 | 󰐕  Create Pane ($mod+1) | ${dim}Split window and balance layout${reset} | split-window -c "#{pane_current_path}"; select-layout tiled
-"
-    menu_items+="11 | 󰅖  Close Pane ($mod+2) | ${dim}Close the active pane${reset} | kill-pane; select-layout tiled"
+    local menu_items="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰐕  New Session ($mod+,)" "${dim}Create a fresh tmux session${reset}" "SHORTCUT" "new-session")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰑐  Cycle Sessions ($mod+0)" "${dim}Switch to the next active session${reset}" "SHORTCUT" "switch-client -n")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰆴  Kill Session ($mod+w)" "${dim}Terminate the current session${reset}" "SHORTCUT" "kill-session")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "4" "󰈔  New Window ($mod+m)" "${dim}Create a new tmux window${reset}" "SHORTCUT" "new-window")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "5" "󰅙  Kill Window ($mod+e)" "${dim}Close the current window${reset}" "SHORTCUT" "kill-window")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "6" "󰁞  Next Window ($mod+Up)" "${dim}Switch to the next window${reset}" "SHORTCUT" "next-window")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "7" "󰁆  Previous Window ($mod+Down)" "${dim}Switch to the previous window${reset}" "SHORTCUT" "previous-window")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "8" "󰁍  Previous Pane ($mod+Left)" "${dim}Switch to the previous pane${reset}" "SHORTCUT" "select-pane -t :.-")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "9" "󰁔  Next Pane ($mod+Right)" "${dim}Switch to the next pane${reset}" "SHORTCUT" "select-pane -t :.+")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "10" "󰐕  Create Pane ($mod+1)" "${dim}Split window and balance layout${reset}" "SHORTCUT" "split-window -c #{pane_current_path}; select-layout tiled")"
+    menu_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "11" "󰅖  Close Pane ($mod+2)" "${dim}Close the active pane${reset}" "SHORTCUT" "kill-pane; select-layout tiled")"
 
     local selection=$(echo -e "$menu_items" | fzf \
         --ansi \
@@ -40,10 +30,11 @@ function shortcuts_menu() {
         --prompt "  " \
         --query "$query" \
         --header "Select Shortcut (Type index or name)" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -n "$selection" ]]; then
-        local cmd=$(echo "$selection" | cut -d '|' -f 4 | xargs)
+        local cmd=$(echo "$selection" | cut -d '│' -f 5 | xargs)
         execute_shortcut "$cmd"
     else
         main_menu

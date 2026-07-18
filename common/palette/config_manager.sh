@@ -13,9 +13,8 @@ function config_manager_menu() {
     local reset="\033[0m"
 
     local list_items=""
-    list_items+="1 | 󰅳  Zellij... | ${dim}Configure Zellij terminal multiplexer${reset} | CAT | zellij
-"
-    list_items+="2 | 󰅙  Back | ${dim}Return to main menu${reset} | ACTION | main_menu"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰅳  Zellij..." "${dim}Configure Zellij terminal multiplexer${reset}" "CAT" "zellij")"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰅙  Back" "${dim}Return to main menu${reset}" "ACTION" "main_menu")"
 
     local selection=$(echo -e "$list_items" | fzf \
         --ansi \
@@ -24,13 +23,14 @@ function config_manager_menu() {
         --border rounded \
         --prompt "󰒓  " \
         --header "Configuration Manager" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     if [[ -z "$selection" ]]; then main_menu; return; fi
 
     local type arg
-    type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-    arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+    type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
     case "$type" in
         CAT)
@@ -114,13 +114,11 @@ function zellij_config_menu() {
         [[ ${#display_value} -gt 12 ]] && display_value="${display_value:0:9}..."
         local padded_key=$(printf "%-22s" "$key")
         local padded_value=$(printf "%-12s" "$display_value")
-        list_items+="$idx | 󰇒  ${padded_key} ${padded_value} | ${dim}$desc${reset} | SETTING | $key|$stype|$hint|$choices
-"
+        list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰇒  ${padded_key} ${padded_value}" "${dim}$desc${reset}" "SETTING" "$key|$stype|$hint|$choices")"
     done <<< "$settings_data"
 
-    list_items+="$((idx+1)) | 󰑐  Theme Colors...              | ${dim}Edit colors of installed themes${reset} | THEME_COLORS | theme_colors
-"
-    list_items+="$((idx+2)) | 󰅙  Back                         | ${dim}Return to config manager${reset} | ACTION | main_menu"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+1))" "󰑐  Theme Colors..." "${dim}Edit colors of installed themes${reset}" "THEME_COLORS" "theme_colors")"
+    list_items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+2))" "󰅙  Back" "${dim}Return to config manager${reset}" "ACTION" "main_menu")"
 
     local selection=$(echo -e "$list_items" | fzf \
         --ansi \
@@ -129,7 +127,7 @@ function zellij_config_menu() {
         --border rounded \
         --prompt "󰅳  " \
         --header "  Zellij Configuration Manager  |  $(basename "$ZELLIJ_CONFIG")" \
-        --delimiter ' \| ' \
+        --delimiter ' │ ' \
         --with-nth '1,2,3' \
         --preview '
             k=$(echo {5} | cut -d"|" -f1)
@@ -150,8 +148,8 @@ function zellij_config_menu() {
     if [[ -z "$selection" ]]; then config_manager_menu; return; fi
 
     local type arg
-    type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-    arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+    type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
     case "$type" in
         SETTING)
@@ -306,8 +304,7 @@ function zellij_theme_colors_menu() {
         name=$(basename "$theme_file" .kdl)
         local marker="  "
         [[ "$name" == "$active_theme" ]] && marker="${green}●${reset}"
-        items+="$idx | $marker $name | ${dim}${theme_file}${reset} | PICK | $theme_file
-"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "$marker $name" "${dim}${theme_file}${reset}" "PICK" "$theme_file")"
     done < <(find "$ZELLIJ_THEMES_DIR" -maxdepth 1 -name '*.kdl' 2>/dev/null | sort)
 
     if [[ -z "$items" ]]; then
@@ -318,7 +315,7 @@ function zellij_theme_colors_menu() {
         return
     fi
 
-    items+="$((idx+1)) | 󰅙  Back | ${dim}Return to Zellij config manager${reset} | BACK | back"
+    items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+1))" "󰅙  Back" "${dim}Return to Zellij config manager${reset}" "BACK" "back")"
 
     local selection=$(echo -e "$items" | fzf \
         --ansi \
@@ -327,13 +324,14 @@ function zellij_theme_colors_menu() {
         --border rounded \
         --prompt "󰑐  " \
         --header "  Zellij Theme Colors  |  Active: $active_theme" \
-        --delimiter ' \| ')
+        --delimiter ' │ ' \
+        --with-nth '1,2,3')
 
     [[ -z "$selection" ]] && zellij_config_menu && return
 
     local type arg
-    type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-    arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+    type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+    arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
     case "$type" in
         PICK)
@@ -382,13 +380,11 @@ function zellij_theme_color_editor() {
             ((idx++))
             local val="${color_map[$key]:---}"
             local padded_key=$(printf "%-10s" "$key")
-            items+="$idx | 󰴄  ${padded_key} ${val} | ${dim}Edit color${reset} | EDIT | $key|$val
-"
+            items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰴄  ${padded_key} ${val}" "${dim}Edit color${reset}" "EDIT" "$key|$val")"
         done
 
-        items+="$((idx+1)) | 󰄬  Save theme               | ${dim}Save changes and apply${reset} | SAVE | save
-"
-        items+="$((idx+2)) | 󰅙  Cancel                    | ${dim}Discard changes${reset} | CANCEL | cancel"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+1))" "󰄬  Save theme" "${dim}Save changes and apply${reset}" "SAVE" "save")"
+        items+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$((idx+2))" "󰅙  Cancel" "${dim}Discard changes${reset}" "CANCEL" "cancel")"
 
         local selection=$(echo -e "$items" | fzf \
             --ansi \
@@ -397,13 +393,14 @@ function zellij_theme_color_editor() {
             --border rounded \
             --prompt "󰅳  " \
             --header "  Zellij Theme Colors  |  $theme_name" \
-            --delimiter ' \| ')
+            --delimiter ' │ ' \
+            --with-nth '1,2,3')
 
         [[ -z "$selection" ]] && { rm -f "$tmp_file"; zellij_theme_colors_menu; return; }
 
         local type arg
-        type=$(echo "$selection" | awk -F' \\| ' '{print $4}' | xargs)
-        arg=$(echo "$selection" | awk -F' \\| ' '{print $5}' | xargs)
+        type=$(echo "$selection" | awk -F' │ ' '{print $4}' | xargs)
+        arg=$(echo "$selection" | awk -F' │ ' '{print $5}' | xargs)
 
         case "$type" in
             EDIT)
