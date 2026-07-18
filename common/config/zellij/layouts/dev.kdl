@@ -18,9 +18,9 @@ layout {
         plugin location="file:~/GitHub/mmmonowar/dotfiles/common/config/zellij/plugins/zjstatus.wasm" {
             // Layout Placement mapping
             format_left   "{mode}"
-            format_center "#[fg=#2a2a2a,bg=#000000] {command_alt}"
-            format_right  "#[fg=#dab853,bg=#000000]Ctrl+g: toggle lock  #[fg=#89d287,bg=#000000] {command_date} #[fg=#449fd0,bg=#000000] {command_time} "
-            format_space  "#[bg=#000000]"
+            format_center "#[fg={ENV:POLYTERM_COLOR_BRIGHT_BLACK},bg={ENV:POLYTERM_COLOR_BACKGROUND}] {command_alt}"
+            format_right  "#[fg={ENV:POLYTERM_COLOR_YELLOW},bg={ENV:POLYTERM_COLOR_BACKGROUND}]Ctrl+g: toggle lock  #[fg={ENV:POLYTERM_COLOR_GREEN},bg={ENV:POLYTERM_COLOR_BACKGROUND}] {command_date} #[fg={ENV:POLYTERM_COLOR_BLUE},bg={ENV:POLYTERM_COLOR_BACKGROUND}] {command_time} "
+            format_space  "#[bg={ENV:POLYTERM_COLOR_BACKGROUND}]"
 
             // Visually separated Date and Time blocks running custom formatting commands
             command_date_command "date +%Y-%m-%d"
@@ -38,14 +38,14 @@ layout {
 
             // --- Dynamic Interactive Shortcuts (Strictly Non-Bold / Peppermint Colorway) ---
             // These will change dynamically on the left when you switch modes
-            mode_normal        "#[fg=#14b8a6,bg=#000000] NORMAL #[fg=#b4b4b4]→ #[fg=#14b8a6]Ctrl+g#[fg=#c8c8c8] locked  #[fg=#14b8a6]Ctrl+p#[fg=#c8c8c8] pane  #[fg=#14b8a6]Ctrl+t#[fg=#c8c8c8] tab  #[fg=#14b8a6]Ctrl+r#[fg=#c8c8c8] resize"
-            mode_locked        "#[fg=#e74669,bg=#000000] LOCKED #[fg=#b4b4b4]→ Press #[fg=#e74669]Ctrl+g#[fg=#c8c8c8] to unlock"
-            mode_pane          "#[fg=#449fd0,bg=#000000] PANE #[fg=#b4b4b4]→ #[fg=#449fd0]n#[fg=#c8c8c8] new  #[fg=#449fd0]d#[fg=#c8c8c8] down  #[fg=#449fd0]r#[fg=#c8c8c8] right  #[fg=#449fd0]s#[fg=#c8c8c8] stacked  #[fg=#449fd0]x#[fg=#c8c8c8] close"
-            mode_tab           "#[fg=#da62dc,bg=#000000] TAB #[fg=#b4b4b4]→ #[fg=#da62dc]n#[fg=#c8c8c8] new  #[fg=#da62dc]x#[fg=#c8c8c8] close  #[fg=#da62dc]h/l#[fg=#c8c8c8] move  #[fg=#da62dc]r#[fg=#c8c8c8] rename"
-            mode_resize        "#[fg=#dab853,bg=#000000] RESIZE #[fg=#b4b4b4]→ #[fg=#dab853]h/j/k/l#[fg=#c8c8c8] scale  #[fg=#dab853]+/-#[fg=#c8c8c8] size"
-            mode_scroll        "#[fg=#89d287,bg=#000000] SCROLL #[fg=#b4b4b4]→ #[fg=#89d287]j/k#[fg=#c8c8c8] up/down  #[fg=#89d287]PageUp/Dn#[fg=#c8c8c8] flip  #[fg=#89d287]Ctrl+c#[fg=#c8c8c8] exit"
-            mode_move          "#[fg=#14b8a6,bg=#000000] MOVE #[fg=#b4b4b4]→ #[fg=#14b8a6]h/j/k/l#[fg=#c8c8c8] shift layout position"
-            mode_session       "#[fg=#b4b4b4,bg=#000000] SESSION #[fg=#b4b4b4]→ #[fg=#ffffff]d#[fg=#c8c8c8] detach  #[fg=#ffffff]w#[fg=#c8c8c8] session manager"
+            mode_normal        "#[fg={ENV:POLYTERM_COLOR_CYAN},bg={ENV:POLYTERM_COLOR_BACKGROUND}] NORMAL #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg={ENV:POLYTERM_COLOR_CYAN}]Ctrl+g#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] locked  #[fg={ENV:POLYTERM_COLOR_CYAN}]Ctrl+p#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] pane  #[fg={ENV:POLYTERM_COLOR_CYAN}]Ctrl+t#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] tab  #[fg={ENV:POLYTERM_COLOR_CYAN}]Ctrl+r#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] resize"
+            mode_locked        "#[fg={ENV:POLYTERM_COLOR_RED},bg={ENV:POLYTERM_COLOR_BACKGROUND}] LOCKED #[fg={ENV:POLYTERM_COLOR_WHITE}]→ Press #[fg={ENV:POLYTERM_COLOR_RED}]Ctrl+g#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] to unlock"
+            mode_pane          "#[fg={ENV:POLYTERM_COLOR_BLUE},bg={ENV:POLYTERM_COLOR_BACKGROUND}] PANE #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg={ENV:POLYTERM_COLOR_BLUE}]n#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] new  #[fg={ENV:POLYTERM_COLOR_BLUE}]d#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] down  #[fg={ENV:POLYTERM_COLOR_BLUE}]r#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] right  #[fg={ENV:POLYTERM_COLOR_BLUE}]s#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] stacked  #[fg={ENV:POLYTERM_COLOR_BLUE}]x#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] close"
+            mode_tab           "#[fg={ENV:POLYTERM_COLOR_PURPLE},bg={ENV:POLYTERM_COLOR_BACKGROUND}] TAB #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg={ENV:POLYTERM_COLOR_PURPLE}]n#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] new  #[fg={ENV:POLYTERM_COLOR_PURPLE}]x#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] close  #[fg={ENV:POLYTERM_COLOR_PURPLE}]h/l#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] move  #[fg={ENV:POLYTERM_COLOR_PURPLE}]r#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] rename"
+            mode_resize        "#[fg={ENV:POLYTERM_COLOR_YELLOW},bg={ENV:POLYTERM_COLOR_BACKGROUND}] RESIZE #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg={ENV:POLYTERM_COLOR_YELLOW}]h/j/k/l#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] scale  #[fg={ENV:POLYTERM_COLOR_YELLOW}]+/-#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] size"
+            mode_scroll        "#[fg={ENV:POLYTERM_COLOR_GREEN},bg={ENV:POLYTERM_COLOR_BACKGROUND}] SCROLL #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg={ENV:POLYTERM_COLOR_GREEN}]j/k#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] up/down  #[fg={ENV:POLYTERM_COLOR_GREEN}]PageUp/Dn#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] flip  #[fg={ENV:POLYTERM_COLOR_GREEN}]Ctrl+c#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] exit"
+            mode_move          "#[fg={ENV:POLYTERM_COLOR_CYAN},bg={ENV:POLYTERM_COLOR_BACKGROUND}] MOVE #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg={ENV:POLYTERM_COLOR_CYAN}]h/j/k/l#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] shift layout position"
+            mode_session       "#[fg={ENV:POLYTERM_COLOR_WHITE},bg={ENV:POLYTERM_COLOR_BACKGROUND}] SESSION #[fg={ENV:POLYTERM_COLOR_WHITE}]→ #[fg=white]d#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] detach  #[fg=white]w#[fg={ENV:POLYTERM_COLOR_FOREGROUND}] session manager"
         }
     }
 }

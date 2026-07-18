@@ -169,10 +169,10 @@ function dot-zellij-reload() {
 function read_document() {
     local file=$1
     clear
-    if command -v glow &>/dev/null; then
-        glow -p "$file"
+    if command -v "$POLYTERM_APP_MARKDOWN_VIEWER" &>/dev/null; then
+        "$POLYTERM_APP_MARKDOWN_VIEWER" -p "$file"
     else
-        less "$file"
+        "$POLYTERM_APP_PAGER" "$file"
     fi
 }
 
