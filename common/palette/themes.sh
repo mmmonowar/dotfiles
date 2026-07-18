@@ -116,7 +116,7 @@ function load_theme() {
     fi
 
     for var in $(env | grep '^POLYTERM_COLOR_\|^POLYTERM_FZF_' | cut -d= -f1); do
-        unset "$var"
+        unset "$var" 2>/dev/null || true
     done
 
     POLYTERM_THEME="$theme_name"
@@ -136,7 +136,8 @@ for k, v in d.get('colors', {}).items():
 
     while IFS='=' read -r key value; do
         if [[ -n "$key" && -n "$value" ]]; then
-            export "POLYTERM_FZF_${key}=${value}"
+            local sanitized_key=$(echo "$key" | tr '+.' '_')
+            export "POLYTERM_FZF_${sanitized_key}=${value}"
         fi
     done < <(python3 -c "
 import json, sys
@@ -154,7 +155,8 @@ function build_fzf_opts() {
     color_vars=$(env | grep '^POLYTERM_FZF_' | sed 's/^POLYTERM_FZF_//')
     while IFS='=' read -r key value; do
         if [[ -n "$key" && -n "$value" ]]; then
-            opts+="${key}:${value},"
+            local fzf_key=$(echo "$key" | tr '_' '+')
+            opts+="${fzf_key}:${value},"
         fi
     done <<< "$color_vars"
     opts="${opts%,}"
