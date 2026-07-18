@@ -13,7 +13,7 @@ function update_setting() {
     local sanitized_value=$(echo "$value" | sed "s|$HOME|\$HOME|g")
     
     # Escape sed metacharacters in the replacement value to prevent injection
-    local escaped_value=$(echo "$sanitized_value" | sed 's/[&/\]/\\&/g')
+    local escaped_value=$(echo "$sanitized_value" | sed 's/[&|/\\]/\\&/g')
     
     if grep -q "export $key=" "$SETTINGS_FILE"; then
         if [[ "$OS_ENV" == "mac" ]]; then

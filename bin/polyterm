@@ -113,7 +113,7 @@ case "$1" in
         ;;
     "")
         # Default action: Palette
-        if [[ -n "$TMUX" ]]; then
+        if [[ -n "$TMUX" || -n "$ZELLIJ" ]]; then
             "$REPO_PATH/common/palette/palette.sh"
         else
             show_help
