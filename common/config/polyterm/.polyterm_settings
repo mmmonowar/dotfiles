@@ -1,0 +1,53 @@
+# ==========================================
+# ⚙️ PolyTerm User Settings
+# ==========================================
+# This file stores user-specific configuration overrides.
+# It is copied once during initial setup and never overwritten.
+# Edit values here to customize your PolyTerm environment.
+# ==========================================
+
+# --- Theme ---
+export POLYTERM_THEME="peppermint"
+
+# --- Multiplexer ---
+export POLYTERM_MULTIPLEXER="tmux"
+
+# --- Paths ---
+export POLYTERM_PATH_TMUX_TPM_DIR="${HOME}/.tmux/plugins/tpm"
+export POLYTERM_PATH_ZELLIJ_LAYOUTS="${DOTFILES_ROOT}/common/config/zellij/layouts"
+export POLYTERM_PATH_ZELLIJ_THEMES="${DOTFILES_ROOT}/common/config/zellij/themes"
+
+# --- Markdown Viewer ---
+export POLYTERM_APP_MARKDOWN_VIEWER="glow"
+export POLYTERM_APP_PAGER="less"
+export POLYTERM_GLOW_WIDTH="80"
+
+# --- System Monitor ---
+export POLYTERM_APP_MONITOR="btm"
+
+# --- Container CLI ---
+export POLYTERM_APP_CONTAINER_CLI="docker"
+
+# --- Tmux Popup Dimensions ---
+export POLYTERM_POPUP_WIDTH="80%"
+export POLYTERM_POPUP_HEIGHT="80%"
+export POLYTERM_DASHBOARD_PANE_SIZE="35%"
+
+# --- Security Scans ---
+export POLYTERM_SCAN_ON_PUSH="false"
+export POLYTERM_SCAN_ON_PULL="false"
+
+# --- Scratchpad Paths (per OS) ---
+export POLYTERM_SCRATCHPAD_MAC="${HOME}/scratchpad.md"
+export POLYTERM_SCRATCHPAD_WSL="${HOME}/scratchpad.md"
+export POLYTERM_SCRATCHPAD_LINUX="${HOME}/scratchpad.md"
+
+# --- hledger ---
+export POLYTERM_HLEDGER_REPO="${HOME}/GitHub/INTxK/Accounting-Management-System"
+
+# --- Docs ---
+export POLYTERM_DOCS_PATH=""
+
+# --- URLs ---
+export POLYTERM_URL_DOTFILES_REPO="https://github.com/mmmonowar/dotfiles.git"
+export POLYTERM_URL_DOTFILES_PROJECTMANAGER_REPO="https://github.com/mmmonowar/dotfiles-projectmanager.git"

@@ -245,7 +245,7 @@ function main_menu() {
         --delimiter ' │ ' \
         --with-nth '1,2,3' \
         --info=inline \
-        --bind "change:reload($0 --list {q})")
+        --bind "change:reload(${REPO_PATH}/common/palette/palette.sh --list {q})")
 
     if [[ -z "$selection" ]]; then exit 0; fi
 

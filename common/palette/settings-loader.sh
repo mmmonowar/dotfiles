@@ -16,6 +16,9 @@ fi
 # DOTFILES_DATA should also be set, but we can provide a default.
 export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
 
+# Default palette script path — used by tmux keybinding (Alt+P)
+export POLYTERM_PATH_PALETTE_SCRIPT="${POLYTERM_PATH_PALETTE_SCRIPT:-${DOTFILES_ROOT}/common/palette/palette.sh}"
+
 # 2. Load User Settings
 # Source the main settings file which contains user overrides and preferences.
 local SETTINGS_FILE="${DOTFILES_DATA}/settings/.polyterm_settings"
