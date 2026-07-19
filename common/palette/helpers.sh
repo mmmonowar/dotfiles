@@ -105,6 +105,28 @@ function confirm_action() {
     esac
 }
 
+function safe_link() {
+    local src="$1"
+    local dest="$2"
+
+    if [ ! -e "$src" ]; then
+        echo "Error: Source file $src does not exist."
+        return 1
+    fi
+
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+        if [ -L "$dest" ]; then
+            rm "$dest"
+        else
+            echo "Backing up $dest to $dest.bak"
+            mv "$dest" "$dest.bak"
+        fi
+    fi
+
+    ln -sf "$src" "$dest"
+    echo "Linked $dest -> $src"
+}
+
 function truncate_desc() {
     local desc="$1"
     local max_len="${2:-auto}"

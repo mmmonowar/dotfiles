@@ -8,10 +8,83 @@ function palette() {
     source "$DOTFILES_ROOT/common/palette/palette.sh"
 }
 
+function deploy-configs() {
+    local DOT_PATH="${DOTFILES_ROOT:-$HOME/dotfiles}"
+    local DATA_PATH="${DOTFILES_DATA:-${DOT_PATH}/../dotfiles-data}"
+    local HELPERS_PATH="$DOT_PATH/common/palette/helpers.sh"
+
+    [[ -f "$HELPERS_PATH" ]] && source "$HELPERS_PATH"
+
+    # Detect OS if not already set (palette.sh sets this, but zshrc doesn't)
+    [[ -z "$OS_ENV" ]] && {
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            OS_ENV="mac"
+        elif uname -a | grep -iq "microsoft\|wsl"; then
+            OS_ENV="wsl"
+        else
+            OS_ENV="linux"
+        fi
+    }
+
+    local device_id
+    device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
+
+    echo "󰇚  Deploying config files from repo..."
+
+    # Symlink .zshrc (support device override if present)
+    local zshrc_src="$DOT_PATH/OS/$OS_ENV/zshrc"
+    if [[ -f "$DOT_PATH/OS/$OS_ENV/$device_id/zshrc" ]]; then
+        zshrc_src="$DOT_PATH/OS/$OS_ENV/$device_id/zshrc"
+    fi
+    safe_link "$zshrc_src" "$HOME/.zshrc"
+
+    # Symlink .tmux.conf
+    safe_link "$DOT_PATH/common/config/tmux/tmux.conf" "$HOME/.tmux.conf"
+
+    # Symlink micro config directory
+    mkdir -p "$HOME/.config"
+    safe_link "$DOT_PATH/common/config/micro" "$HOME/.config/micro"
+
+    # Symlink gemini settings
+    mkdir -p "$HOME/.gemini"
+    safe_link "$DOT_PATH/common/config/gemini/settings.json" "$HOME/.gemini/settings.json"
+
+    # Symlink glow config
+    mkdir -p "$HOME/.config/glow"
+    safe_link "$DOT_PATH/common/config/glow/glow.yml" "$HOME/.config/glow/glow.yml"
+
+    # Symlink antidote plugin list
+    safe_link "$DOT_PATH/common/config/zsh/plugins.txt" "$HOME/.zsh_plugins.txt"
+
+    # Symlink zellij config
+    mkdir -p "$HOME/.config/zellij"
+    safe_link "$DOT_PATH/common/config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
+
+    # Copy .polyterm_settings template if not yet in dotfiles-data
+    if [[ -f "$DOT_PATH/common/config/polyterm/.polyterm_settings" && ! -f "$DATA_PATH/settings/.polyterm_settings" ]]; then
+        mkdir -p "$DATA_PATH/settings"
+        cp "$DOT_PATH/common/config/polyterm/.polyterm_settings" "$DATA_PATH/settings/.polyterm_settings"
+        echo "Copied .polyterm_settings template to $DATA_PATH/settings/"
+    fi
+
+    echo "󰄬  Config files deployed."
+}
+
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
     local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+
+    [[ -z "$OS_ENV" ]] && {
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            OS_ENV="mac"
+        elif uname -a | grep -iq "microsoft\|wsl"; then
+            OS_ENV="wsl"
+        else
+            OS_ENV="linux"
+        fi
+    }
+
     local device_id
     device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
@@ -89,9 +162,29 @@ function dot-sync() {
 }
 
 function dot-pull() {
+    local deploy_configs_flag=false
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --deploy-configs|-d) deploy_configs_flag=true ;;
+            *) echo "Unknown option: $1"; return 1 ;;
+        esac
+        shift
+    done
+
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
     local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+
+    [[ -z "$OS_ENV" ]] && {
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            OS_ENV="mac"
+        elif uname -a | grep -iq "microsoft\|wsl"; then
+            OS_ENV="wsl"
+        else
+            OS_ENV="linux"
+        fi
+    }
+
     local device_id
     device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
@@ -117,6 +210,11 @@ function dot-pull() {
             if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
                 echo "󰒃  Running post-pull security scan..."
                 dot-scan
+            fi
+
+            # Deploy config files if flag is set
+            if [[ "$deploy_configs_flag" == "true" ]]; then
+                deploy-configs
             fi
 
             # Pull dotfiles-data (private data repo)
