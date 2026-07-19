@@ -85,6 +85,13 @@ if [ ! -d "$DATA_DIR" ]; then
     mkdir -p "$DATA_DIR/editor/buffers"
     mkdir -p "$DATA_DIR/scratchpad"
     mkdir -p "$DATA_DIR/hledger"
+
+    # Copy default settings template if settings file doesn't exist
+    if [[ -f "$TARGET_DIR/common/config/polyterm/.polyterm_settings" && ! -f "$DATA_DIR/settings/.polyterm_settings" ]]; then
+        cp "$TARGET_DIR/common/config/polyterm/.polyterm_settings" "$DATA_DIR/settings/.polyterm_settings"
+        echo -e "  ${GREEN}Created default settings at $DATA_DIR/settings/.polyterm_settings${NC}"
+    fi
+
     echo -e "✅  ${GREEN}dotfiles-data initialized at $DATA_DIR${NC}"
     echo -e "💡  ${YELLOW}To sync data across machines, push this repo to a private remote:${NC}"
     echo -e "    cd $DATA_DIR && git remote add origin <your-private-repo-url> && git push -u origin main"

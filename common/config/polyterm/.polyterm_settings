@@ -1,0 +1,59 @@
+# =============================================================================
+# PolyTerm User Experience Settings (DEFAULT TEMPLATE)
+# =============================================================================
+# This file is a template. On first install, it is copied to:
+#   ~/dotfiles-data/settings/.polyterm_settings
+# Edit the copy in dotfiles-data/ — not this template.
+#
+# Override resolution chain (first match wins):
+#   1. POLYTERM_<KEY>_DEVICE_<device-id>    — device-level override
+#   2. POLYTERM_<KEY>_<OS>                  — OS-level override  (OS=LINUX|WSL|MAC)
+#   3. POLYTERM_<KEY>                       — global default
+#
+# Reference: https://github.com/mmmonowar/dotfiles-data
+
+# ── Global Defaults ──────────────────────────────────────────────────────────
+# Applied on every device unless overridden at a higher level.
+
+export POLYTERM_SCAN_ON_PUSH=false
+export POLYTERM_SCAN_ON_PULL="true"
+export POLYTERM_THEME=peppermint
+export GEMINI_API_KEY=""  # Set your Gemini API key here (https://aistudio.google.com/app/apikey)
+
+# ── OS-level Overrides ───────────────────────────────────────────────────────
+# Applied to all devices running the given operating system.
+# Naming: POLYTERM_<KEY>_<OS>  where OS is one of: LINUX, WSL, MAC, WINDOWS.
+
+export POLYTERM_SCRATCHPAD_LINUX="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
+export POLYTERM_SCRATCHPAD_WSL="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
+export POLYTERM_SCRATCHPAD_MAC="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
+
+# ── Device-level Overrides ───────────────────────────────────────────────────
+# Highest priority. Applied only to the specific device matching the ID.
+# Naming: POLYTERM_<KEY>_DEVICE_<device-id>
+
+# ZELLIJ PATHS
+export POLYTERM_PATH_ZELLIJ_LAYOUTS="${DOTFILES_ROOT}/common/config/zellij/layouts/"
+export POLYTERM_PATH_ZELLIJ_THEMES="${DOTFILES_ROOT}/common/config/zellij/themes/"
+export POLYTERM_PATH_WINDOWS_CLIPBOARD="/mnt/c/Windows/System32/clip.exe"
+
+# TMUX PATHS
+export POLYTERM_PATH_TMUX_TPM_DIR="~/.tmux/plugins/tpm/tpm"
+export POLYTERM_PATH_PALETTE_SCRIPT="${DOTFILES_ROOT}/common/palette/palette.sh"
+
+# INSTALLER URLs
+export POLYTERM_URL_DOTFILES_REPO="https://github.com/mmmonowar/dotfiles.git"
+export POLYTERM_URL_HOMEBREW_INSTALLER="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+export POLYTERM_URL_TPM_REPO="https://github.com/tmux-plugins/tpm"
+export POLYTERM_URL_ANTIDOTE_REPO="https://github.com/mattmc3/antidote.git"
+export POLYTERM_URL_NERDFONT_JETBRAINS="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+
+# APPLICATIONS & LAYOUT
+export POLYTERM_APP_MONITOR="btop"
+export POLYTERM_APP_CONTAINER_CLI="docker ps"
+export POLYTERM_APP_MARKDOWN_VIEWER="glow"
+export POLYTERM_APP_PAGER="less"
+export POLYTERM_POPUP_WIDTH="60%"
+export POLYTERM_POPUP_HEIGHT="60%"
+export POLYTERM_DASHBOARD_PANE_SIZE="33"
+export POLYTERM_GLOW_WIDTH="80"
