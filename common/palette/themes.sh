@@ -142,6 +142,13 @@ for k, v in d.get('fzf', {}).items():
     print(f'{k}={v}')
 " "$theme_file" 2>/dev/null)
 
+    # Tmux theme colors — derived from POLYTERM_COLOR_* (now guaranteed to be set)
+    export POLYTERM_TMUX_COLOR_ACCENT="${POLYTERM_COLOR_cyan}"
+    export POLYTERM_TMUX_COLOR_BACKGROUND="${POLYTERM_COLOR_background}"
+    export POLYTERM_TMUX_COLOR_FOREGROUND="${POLYTERM_COLOR_foreground}"
+    export POLYTERM_TMUX_COLOR_INACTIVE="${POLYTERM_COLOR_brightBlack}"
+    export POLYTERM_TMUX_COLOR_SUBTLE="${POLYTERM_COLOR_white}"
+
     build_fzf_opts
 }
 

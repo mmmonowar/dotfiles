@@ -23,14 +23,34 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH}"
 # Preferred applications
 export EDITOR="micro"
 export VISUAL="micro"
-export PAGER="$POLYTERM_APP_PAGER"
-alias glow="$POLYTERM_APP_MARKDOWN_VIEWER -w $POLYTERM_GLOW_WIDTH"
+
+# Helper function to detect agent or non-interactive environments
+is_agent_or_non_interactive() {
+    [[ $- != *i* ]] && return 0
+    [[ "$TERM" == "dumb" ]] && return 0
+    [[ ! -t 1 ]] && return 0
+    [[ -n "$CI" || -n "$GITHUB_ACTIONS" || -n "$AGENT_ENV" || -n "$ANTIGRAVITY" ]] && return 0
+    return 1
+}
+
+if is_agent_or_non_interactive; then
+    export PROMPT='$ '
+    export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+    return
+fi
 
 # --- 2. Theme (loaded from active POLYTERM_THEME) ---
 [[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
 
+# Preferred applications (after settings-loader so POLYTERM_* vars are available)
+export PAGER="$POLYTERM_APP_PAGER"
+alias glow="$POLYTERM_APP_MARKDOWN_VIEWER -w $POLYTERM_GLOW_WIDTH"
+
 # Glow (Markdown Reader) matching terminal colors
 export GLOW_STYLE="dark"
+
+# Skip multiplexer autostart when invoked for a CLI command (e.g. polyterm sync)
+[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return
 
 # --- 3. History Configuration ---
 HISTFILE="${HOME}/.zsh_history"
@@ -64,8 +84,9 @@ PROMPT="%F{#14b8a6}⸎ %F{#b4b4b4}%~ %F{#89d287}›%f "
 
 # --- 6. Aliases & Functions ---
 
-# Palette Helpers & Sync (shared functions)
+# Palette Helpers & Automation (shared functions)
 [[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
 [[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
 
 # Shell reload is handled by dot-reload() from sync.sh (sourced above)
