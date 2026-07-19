@@ -299,16 +299,6 @@ default_shell "zsh"
 // 
 default_layout "default"
  
-// The folder in which Zellij will look for layouts
-// (Requires restart)
-// 
-layout_dir { path "ENV:POLYTERM_PATH_ZELLIJ_LAYOUTS"; }
- 
-// The folder in which Zellij will look for themes
-// (Requires restart)
-// 
-theme_dir { path "ENV:POLYTERM_PATH_ZELLIJ_THEMES"; }
- 
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could
 // potentially interfere with copying text.
