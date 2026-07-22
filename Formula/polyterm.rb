@@ -1,7 +1,7 @@
 class Polyterm < Formula
   desc "Central management tool for the PolyTerm dotfiles environment"
   homepage "https://github.com/mmmonowar/dotfiles"
-  url "https://github.com/mmmonowar/dotfiles.git", branch: "main"
+  url "https://github.com/mmmonowar/dotfiles/archive/refs/heads/main.tar.gz"
   version "1.0.0"
 
   depends_on "fzf"
@@ -9,10 +9,8 @@ class Polyterm < Formula
   depends_on "zsh"
 
   def install
-    # Install the bin/polyterm script
     bin.install "bin/polyterm"
 
-    # Install only what polyterm needs at runtime
     prefix.install "application-package"
     prefix.install "common"
     prefix.install "OS"
@@ -23,16 +21,16 @@ class Polyterm < Formula
   def caveats
     <<~EOS
       PolyTerm has been installed!
-      
+
       To complete the setup of your environment, run:
         polyterm setup
-        
+
       This will:
         - Clone dotfiles to ~/dotfiles (if not already present)
         - Initialize dotfiles-data at ~/dotfiles-data for private user state
         - Set up symbolic links and configurations
         - Install packages and register the device
-      
+
       Note: dotfiles-data is a separate private data repository.
       To sync data across machines, push it to a private remote after setup.
     EOS
