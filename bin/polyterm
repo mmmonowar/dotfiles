@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Refuse to run setup as root — Homebrew does not support running as root
+if [[ $EUID -eq 0 && "$1" == "setup" ]]; then
+    echo -e "\033[0;31m'polyterm setup' must not be run as root.\033[0m"
+    echo -e "\033[1;33mHomebrew drops privileges on installation and running it as root\033[0m"
+    echo -e "\033[1;33mwould give all build scripts full access to your system.\033[0m"
+    exit 1
+fi
+
 # ==========================================
 # 🚀  POLYTERM CLI
 # ==========================================
