@@ -25,6 +25,16 @@ polyterm setup
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"
 ```
 
+## 📦 Package Tiers
+
+PolyTerm installs packages in three tiers:
+
+| Tier | What | How | Examples |
+|---|---|---|---|
+| **1 — Core** (Brewfile.core) | Required for PolyTerm to function | Auto-installed, no prompt | `fzf`, `git`, `tmux`, `zsh` |
+| **2 — App Dependencies** | Required for specific PolyTerm features | Auto-installed during onboarding | `micro` (Scratchpad), `btop` (Dashboard), `glow` (Docs viewer) |
+| **3 — Optional** (Brewfile.apps) | Extra tools of your choice | Interactive fzf picker during onboarding | `lazygit`, `bat`, `emacs`, `rust` |
+
 ## 🔧 Troubleshooting
 
 ### macOS Alt/Option Keys
@@ -36,6 +46,13 @@ If `Alt+P` (Command Palette) produces a character like `π` instead of opening t
 - **Manual fix**: Run `polyterm palette` → Fix Alt Keys, or configure your terminal:
   - **Terminal.app**: Settings → Profiles → Keyboard → Check "Use Option as Meta key"
   - **iTerm2**: Settings → Profiles → Keys → Left Option key → Esc+
+
+### Quick Exit from Tmux/Zellij
+
+Use `polyterm quit` to kill the current multiplexer session:
+- Inside **Tmux**: kills the current session, returns to parent shell
+- Inside **Zellij**: quits Zellij, returns to parent shell
+- Outside both: prints "Not inside a Tmux or Zellij session."
 
 ## 📖 Documentation
 For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.

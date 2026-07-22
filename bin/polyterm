@@ -51,6 +51,7 @@ function show_help() {
     echo -e "  ${GREEN}pull${NC}         Pull latest updates from GitHub (dot-pull)"
     echo -e "  ${GREEN}reload${NC}       Reload configurations (interactive by default)"
     echo -e "  ${GREEN}--start ${GREEN}tmux|zellij${NC}  Start multiplexer (install if missing)"
+    echo -e "  ${GREEN}quit${NC}          Quit current Tmux or Zellij session"
     echo -e "  ${GREEN}help${NC}          Show this help message"
     echo ""
     echo "Reload Options:"
@@ -165,6 +166,17 @@ case "$1" in
                 exit 1
                 ;;
         esac
+        ;;
+    quit)
+        if [[ -n "$TMUX" ]]; then
+            echo -e "👋  ${BLUE}Killing Tmux session...${NC}"
+            tmux kill-session
+        elif [[ -n "$ZELLIJ" ]]; then
+            echo -e "👋  ${BLUE}Quitting Zellij...${NC}"
+            zellij action quit
+        else
+            echo -e "${YELLOW}Not inside a Tmux or Zellij session.${NC}"
+        fi
         ;;
     help|--help|-h)
         show_help
