@@ -22,14 +22,17 @@ choose_multiplexer() {
     echo -e "Both offer the same Command Palette (Alt+P)"
     echo -e "and keybindings."
     echo ""
-    echo -e "  ${GREEN}1${NC}) tmux    — Dashboard session with auto-start"
-    echo -e "  ${GREEN}2${NC}) zellij  — Dev layout with auto-attach"
+    echo -e "  ${GREEN}1${NC}) tmux    — Auto-start Tmux Dashboard on terminal open"
+    echo -e "  ${GREEN}2${NC}) zellij  — Auto-start Zellij on terminal open"
+    echo -e "  ${GREEN}3${NC}) none    — Start multiplexer manually (zsh prompt only)"
     echo ""
-    printf "Choose [1/2] (default: tmux): "
+    printf "Choose [1/2/3] (default: none): "
     read -r mux_choice
 
-    local value="tmux"
-    if [[ "$mux_choice" == "2" || "$mux_choice" == "zellij" ]]; then
+    local value="none"
+    if [[ "$mux_choice" == "1" || "$mux_choice" == "tmux" ]]; then
+        value="tmux"
+    elif [[ "$mux_choice" == "2" || "$mux_choice" == "zellij" ]]; then
         value="zellij"
     fi
 
@@ -44,9 +47,11 @@ choose_multiplexer() {
     fi
 
     if [[ "$value" == "tmux" ]]; then
-        echo -e "${GREEN}✅  Tmux selected.${NC}"
+        echo -e "${GREEN}✅  Tmux selected — will auto-start on terminal open.${NC}"
+    elif [[ "$value" == "zellij" ]]; then
+        echo -e "${GREEN}✅  Zellij selected — will auto-start on terminal open.${NC}"
     else
-        echo -e "${GREEN}✅  Zellij selected.${NC}"
+        echo -e "${GREEN}✅  No auto-start — type 'tmux' or 'zellij' manually when needed.${NC}"
     fi
 }
 

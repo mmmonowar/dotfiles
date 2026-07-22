@@ -39,18 +39,13 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 # Boot up x-cmd
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X"
 
-# Skip multiplexer autostart when invoked for a CLI command (e.g. polyterm sync)
-[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return
-
 # Auto-start multiplexer cockpit on interactive shell login
-if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
-    # Default to zellij, but maintain your POLYTERM_MULTIPLEXER override logic
-    local multiplexer="${POLYTERM_MULTIPLEXER:-zellij}"
-    
+# Only auto-launch when POLYTERM_MULTIPLEXER is explicitly set to "tmux" or "zellij"
+if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && [[ -n "$POLYTERM_MULTIPLEXER" ]]; then
     # Run the multiplexer without 'exec'. 
     # When you detach or exit, you will land safely back in your standard Zsh prompt.
-    if command -v "$multiplexer" >/dev/null 2>&1; then
-        if [[ "$multiplexer" == "tmux" ]]; then
+    if command -v "$POLYTERM_MULTIPLEXER" >/dev/null 2>&1; then
+        if [[ "$POLYTERM_MULTIPLEXER" == "tmux" ]]; then
             tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
             tmux set-environment -g POLYTERM_PATH_PALETTE_SCRIPT "$POLYTERM_PATH_PALETTE_SCRIPT"
             tmux set-environment -g POLYTERM_PATH_TMUX_TPM_DIR "$POLYTERM_PATH_TMUX_TPM_DIR"
@@ -78,7 +73,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
                 export POLYTERM_COLOR_CYAN="$POLYTERM_COLOR_CYAN"
                 export POLYTERM_COLOR_WHITE="$POLYTERM_COLOR_WHITE"
                 export POLYTERM_COLOR_BRIGHT_BLACK="$POLYTERM_COLOR_BRIGHT_BLACK"
-                "$multiplexer"
+                "$POLYTERM_MULTIPLEXER"
             )
         fi
     fi
