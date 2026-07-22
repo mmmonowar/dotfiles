@@ -117,6 +117,27 @@ if [ -f "$DATA_DIR/settings/.polyterm_settings" ]; then
     source "$DATA_DIR/settings/.polyterm_settings"
 fi
 
+# 4.25. Self-heal ownership from any previous sudo run
+fix_root_ownership() {
+    local path="$1"
+    local name="$2"
+    if ! find "$path" -user root 2>/dev/null | head -1 | grep -q .; then
+        return 0
+    fi
+    echo -e "\n${RED}⚠️  Some files in $name are owned by root (from a previous sudo run).${NC}"
+    echo -e "${YELLOW}  This can cause 'git pull' and symlink permission errors.${NC}"
+    printf "Fix ownership with sudo chown? (Y/n): "
+    read -r resp
+    if [[ ! "$resp" =~ ^[nN] ]]; then
+        sudo chown -R "$(whoami)" "$path" 2>/dev/null || true
+        echo -e "  ${GREEN}✅ Ownership fixed for $name.${NC}"
+    fi
+}
+fix_root_ownership "$TARGET_DIR" "dotfiles repository"
+fix_root_ownership "$DATA_DIR" "dotfiles-data directory"
+fix_root_ownership "$HOME/.config" "~/.config"
+fix_root_ownership "$HOME/.gemini" "~/.gemini"
+
 # 5. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"
 
@@ -124,25 +145,24 @@ function safe_link() {
     local src="$1"
     local dest="$2"
     
-    # Ensure source exists
     if [ ! -e "$src" ]; then
         echo -e "${RED}❌ Error: Source file $src does not exist.${NC}"
         return 1
     fi
 
-    # Handle existing destination
     if [ -e "$dest" ] || [ -L "$dest" ]; then
         if [ -L "$dest" ]; then
-            # If it's a symlink, just remove it
-            rm "$dest"
+            rm -f "$dest" 2>/dev/null || sudo rm -f "$dest" 2>/dev/null || true
         else
-            # If it's a real file/dir, back it up
             echo -e "💾  ${YELLOW}Backing up $dest to $dest.bak${NC}"
-            mv "$dest" "$dest.bak"
+            mv -f "$dest" "$dest.bak" 2>/dev/null || sudo mv -f "$dest" "$dest.bak" 2>/dev/null || true
         fi
     fi
     
-    ln -sf "$src" "$dest"
+    ln -sf "$src" "$dest" 2>/dev/null || {
+        echo -e "${RED}❌ Failed to link $dest${NC}"
+        return 1
+    }
     echo -e "✅  Linked ${BLUE}$dest${NC} -> ${GREEN}$src${NC}"
 }
 
