@@ -93,10 +93,20 @@ elif [[ "$OS" == "mac" ]]; then
         fi
 
     else
-        echo "  ⚠️  Unrecognized terminal. Please configure manually:"
+        echo "  ⚠️  Terminal not detected (e.g. SSH session). Trying both fixes..."
         echo ""
-        echo "    iTerm2:      Settings -> Profiles -> Keys -> Left Option Key -> Esc+"
-        echo "    Terminal.app: Settings -> Profiles -> Keyboard -> Check 'Use Option as Meta key'"
+        echo "  🔄  Enabling Terminal.app Option as Meta..."
+        defaults write com.apple.Terminal "Use Option as Meta Key" -bool true 2>/dev/null || true
+
+        plist="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+        if [ -f "$plist" ]; then
+            echo "  🔄  Setting iTerm2 Left Option Key to Esc+..."
+            /usr/libexec/PlistBuddy -c "Set :New Bookmarks:0:Option Key Sends 2" "$plist" 2>/dev/null || \
+            /usr/libexec/PlistBuddy -c "Add :New Bookmarks:0:Option Key Sends integer 2" "$plist" 2>/dev/null
+        fi
+
+        echo "  ✅  Both fixes applied (harmless if app not installed)."
+        echo "      Open a new terminal window or SSH session to test."
     fi
 
 elif [[ "$OS" == "wsl" ]]; then
