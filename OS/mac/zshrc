@@ -138,7 +138,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
             tmux set-environment -g POLYTERM_POPUP_HEIGHT "$POLYTERM_POPUP_HEIGHT"
             tmux set-environment -g POLYTERM_DASHBOARD_PANE_SIZE "$POLYTERM_DASHBOARD_PANE_SIZE"
             # Automatically try to attach to the last session, or start 'Dashboard'
-            exec tmux attach-session -t Dashboard 2>/dev/null || exec tmux new-session -A -s Dashboard
+            tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -A -s Dashboard
         elif [[ "$multiplexer" == "zellij" ]]; then
             (
                 export POLYTERM_COLOR_BACKGROUND="$POLYTERM_COLOR_BACKGROUND"
@@ -152,7 +152,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
                 export POLYTERM_COLOR_CYAN="$POLYTERM_COLOR_CYAN"
                 export POLYTERM_COLOR_WHITE="$POLYTERM_COLOR_WHITE"
                 export POLYTERM_COLOR_BRIGHT_BLACK="$POLYTERM_COLOR_BRIGHT_BLACK"
-                exec zellij
+                zellij
             )
         fi
     fi
