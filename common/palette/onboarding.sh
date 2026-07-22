@@ -115,17 +115,57 @@ configure_alt_keys() {
     echo -e "\n${YELLOW}── Alt/Option Key Setup ───────────────────${NC}"
 
     if [[ "$OS_ENV" == "mac" ]]; then
-        echo -e "${YELLOW}On macOS, you need to configure your terminal${NC}"
-        echo -e "${YELLOW}to send Alt/Option as Meta:${NC}"
-        echo ""
-        echo -e "  ${GREEN}iTerm2${NC}:"
-        echo -e "    Settings → Profiles → Keys →"
-        echo -e "    Left Option Key → ${GREEN}Esc+${NC}"
-        echo ""
-        echo -e "  ${GREEN}Terminal.app${NC}:"
-        echo -e "    Settings → Profiles → Keyboard →"
-        echo -e "    Check ${GREEN}\"Use Option as Meta key\"${NC}"
-        echo ""
+        local terminal=""
+        if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]]; then
+            terminal="terminal.app"
+        elif [[ "$TERM_PROGRAM" == "iTerm.app" ]] || [[ -n "$ITERM_SESSION_ID" ]]; then
+            terminal="iterm2"
+        elif [[ -n "$WARP_IS_LOCAL_SHELL" ]]; then
+            terminal="warp"
+        else
+            terminal="unknown"
+        fi
+
+        echo -e "Detected: ${GREEN}${terminal}${NC}"
+
+        if [[ "$terminal" == "terminal.app" ]]; then
+            local current
+            current=$(defaults read com.apple.Terminal "Use Option as Meta Key" 2>/dev/null)
+            if [[ "$current" == "1" ]] || [[ "$current" == "true" ]] || [[ "$current" == "YES" ]]; then
+                echo -e "${GREEN}✅  Alt keys already configured.${NC}"
+            else
+                echo -e "🔄  Enabling 'Use Option as Meta key'..."
+                defaults write com.apple.Terminal "Use Option as Meta Key" -bool true
+                echo -e "${GREEN}✅  Option Key now sends Meta (Esc+).${NC}"
+                echo -e "${YELLOW}   Applies to new Terminal windows.${NC}"
+            fi
+
+        elif [[ "$terminal" == "iterm2" ]]; then
+            local plist="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+            if [ -f "$plist" ]; then
+                local current
+                current=$(/usr/libexec/PlistBuddy -c "Print :New Bookmarks:0:Option Key Sends" "$plist" 2>/dev/null)
+                if [[ "$current" == "2" ]]; then
+                    echo -e "${GREEN}✅  Alt keys already configured (Esc+).${NC}"
+                else
+                    echo -e "🔄  Setting Left Option Key to Esc+..."
+                    /usr/libexec/PlistBuddy -c "Set :New Bookmarks:0:Option Key Sends 2" "$plist" 2>/dev/null || \
+                    /usr/libexec/PlistBuddy -c "Add :New Bookmarks:0:Option Key Sends integer 2" "$plist" 2>/dev/null
+                    echo -e "${GREEN}✅  Option Key now sends Esc+.${NC}"
+                    echo -e "${YELLOW}   Restart iTerm2 or open a new window.${NC}"
+                fi
+            else
+                echo -e "${YELLOW}iTerm2 plist not found. Using custom prefs folder?${NC}"
+                echo -e "${YELLOW}Set manually: Settings → Profiles → Keys → Left Option Key → Esc+${NC}"
+            fi
+
+        else
+            echo -e "${YELLOW}Unrecognized terminal. Please configure manually:${NC}"
+            echo ""
+            echo -e "  ${GREEN}iTerm2${NC}:    Settings → Profiles → Keys → Left Option Key → ${GREEN}Esc+${NC}"
+            echo -e "  ${GREEN}Terminal.app${NC}: Settings → Profiles → Keyboard → Check ${GREEN}\"Use Option as Meta key\"${NC}"
+            echo ""
+        fi
 
     elif [[ "$OS_ENV" == "linux" ]]; then
         local distro=""

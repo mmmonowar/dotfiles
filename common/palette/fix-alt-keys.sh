@@ -49,14 +49,55 @@ if [[ "$OS" == "ubuntu" ]]; then
 elif [[ "$OS" == "mac" ]]; then
     echo "------------------------------------------------"
     echo "󰘳  Fixing Alt/Option keys for macOS..."
-    echo ""
-    echo "🔧  FOR ITERM2 (Recommended):"
-    echo "   1. Settings (Cmd+,) -> Profiles -> Keys"
-    echo "   2. Set 'Left Option Key' to 'Esc+'"
-    echo ""
-    echo "🔧  FOR TERMINAL.APP:"
-    echo "   1. Settings (Cmd+,) -> Profiles -> Keyboard"
-    echo "   2. Check 'Use Option as Meta key'"
+
+    terminal=""
+    if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]]; then
+        terminal="terminal.app"
+    elif [[ "$TERM_PROGRAM" == "iTerm.app" ]] || [[ -n "$ITERM_SESSION_ID" ]]; then
+        terminal="iterm2"
+    elif [[ -n "$WARP_IS_LOCAL_SHELL" ]]; then
+        terminal="warp"
+    else
+        terminal="unknown"
+    fi
+
+    echo "  Detected terminal: $terminal"
+
+    if [[ "$terminal" == "terminal.app" ]]; then
+        current=$(defaults read com.apple.Terminal "Use Option as Meta Key" 2>/dev/null)
+        if [[ "$current" == "1" ]] || [[ "$current" == "true" ]] || [[ "$current" == "YES" ]]; then
+            echo "  ✅  Alt keys already configured."
+        else
+            echo "  🔄  Enabling 'Use Option as Meta key'..."
+            defaults write com.apple.Terminal "Use Option as Meta Key" -bool true
+            echo "  ✅  Option Key now sends Meta (Esc+)."
+            echo "      Applies to new Terminal windows."
+        fi
+
+    elif [[ "$terminal" == "iterm2" ]]; then
+        plist="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+        if [ -f "$plist" ]; then
+            current=$(/usr/libexec/PlistBuddy -c "Print :New Bookmarks:0:Option Key Sends" "$plist" 2>/dev/null)
+            if [[ "$current" == "2" ]]; then
+                echo "  ✅  Alt keys already configured (Esc+)."
+            else
+                echo "  🔄  Setting Left Option Key to Esc+..."
+                /usr/libexec/PlistBuddy -c "Set :New Bookmarks:0:Option Key Sends 2" "$plist" 2>/dev/null || \
+                /usr/libexec/PlistBuddy -c "Add :New Bookmarks:0:Option Key Sends integer 2" "$plist" 2>/dev/null
+                echo "  ✅  Option Key now sends Esc+."
+                echo "      Restart iTerm2 or open a new window."
+            fi
+        else
+            echo "  ⚠️  iTerm2 plist not found. Using custom prefs folder?"
+            echo "      Set manually: Settings -> Profiles -> Keys -> Left Option Key -> Esc+"
+        fi
+
+    else
+        echo "  ⚠️  Unrecognized terminal. Please configure manually:"
+        echo ""
+        echo "    iTerm2:      Settings -> Profiles -> Keys -> Left Option Key -> Esc+"
+        echo "    Terminal.app: Settings -> Profiles -> Keyboard -> Check 'Use Option as Meta key'"
+    fi
 
 elif [[ "$OS" == "wsl" ]]; then
     echo "------------------------------------------------"
