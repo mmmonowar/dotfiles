@@ -362,11 +362,18 @@ if [ -f "$TARGET_DIR/common/palette/security.sh" ]; then
     dot-scan
 fi
 
+# 11. Onboarding wizard (interactive first-run configuration)
 echo -e "\n${GREEN}=========================================="
 echo -e "✨  Installation Complete!"
 echo -e "==========================================${NC}"
-echo -e "To finalize the setup:"
-echo -e "1. Restart your terminal or run: ${BLUE}source ~/.zshrc${NC}"
-echo -e "2. In Tmux, press ${BLUE}Alt+I${NC} (capital I) to install plugins."
-echo -e "3. Use ${BLUE}Alt+P${NC} to open the Command Palette in Tmux or Zellij."
+if [ -f "$TARGET_DIR/common/palette/onboarding.sh" ]; then
+    export DOTFILES_ROOT="$TARGET_DIR"
+    export DOTFILES_DATA="$DATA_DIR"
+    export OS_ENV
+    source "$TARGET_DIR/common/palette/onboarding.sh"
+    onboarding_welcome
+    choose_multiplexer
+    configure_alt_keys
+    onboarding_done
+fi
 
