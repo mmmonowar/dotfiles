@@ -46,6 +46,7 @@ function show_help() {
     echo "Commands:"
     echo -e "  ${GREEN}palette${NC}  (Default) Launch the Tmux Command Palette"
     echo -e "  ${GREEN}setup${NC}    Run the bootstrap installer"
+    echo -e "  ${GREEN}offboard${NC} Remove PolyTerm and restore system to defaults"
     echo -e "  ${GREEN}sync${NC}     Sync configurations to GitHub (dot-sync)"
     echo -e "  ${GREEN}pull${NC}     Pull latest updates from GitHub (dot-pull)"
     echo -e "  ${GREEN}reload${NC}   Reload configurations (interactive by default)"
@@ -97,6 +98,10 @@ case "$1" in
         check_root_artifacts
         echo -e "🚀  ${BLUE}Starting PolyTerm Setup...${NC}"
         bash "$REPO_PATH/application-package/install.sh"
+        ;;
+    offboard)
+        echo -e "🗑️  ${BLUE}Starting PolyTerm Offboarding...${NC}"
+        bash "$REPO_PATH/application-package/uninstall.sh"
         ;;
     scan)
         echo -e "🛡️  ${BLUE}Starting Security Scan...${NC}"
