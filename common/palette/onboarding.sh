@@ -160,10 +160,20 @@ configure_alt_keys() {
             fi
 
         else
-            echo -e "${YELLOW}Unrecognized terminal. Please configure manually:${NC}"
+            echo -e "${YELLOW}Terminal not detected (e.g. SSH session). Trying both fixes...${NC}"
             echo ""
-            echo -e "  ${GREEN}iTerm2${NC}:    Settings → Profiles → Keys → Left Option Key → ${GREEN}Esc+${NC}"
-            echo -e "  ${GREEN}Terminal.app${NC}: Settings → Profiles → Keyboard → Check ${GREEN}\"Use Option as Meta key\"${NC}"
+            echo -e "  🔄  Enabling Terminal.app Option as Meta..."
+            defaults write com.apple.Terminal "Use Option as Meta Key" -bool true 2>/dev/null || true
+
+            local _plist="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+            if [ -f "$_plist" ]; then
+                echo -e "  🔄  Setting iTerm2 Left Option Key to Esc+..."
+                /usr/libexec/PlistBuddy -c "Set :New Bookmarks:0:Option Key Sends 2" "$_plist" 2>/dev/null || \
+                /usr/libexec/PlistBuddy -c "Add :New Bookmarks:0:Option Key Sends integer 2" "$_plist" 2>/dev/null
+            fi
+
+            echo -e "${GREEN}✅  Both fixes applied (harmless if app not installed).${NC}"
+            echo -e "${YELLOW}   Open a new terminal window or SSH session to test.${NC}"
             echo ""
         fi
 

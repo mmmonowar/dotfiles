@@ -25,5 +25,17 @@ polyterm setup
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"
 ```
 
+## 🔧 Troubleshooting
+
+### macOS Alt/Option Keys
+
+If `Alt+P` (Command Palette) produces a character like `π` instead of opening the palette:
+
+- **Local terminal**: The first-run onboarding wizard automatically detects your terminal (Terminal.app or iTerm2) and configures the Option key as Meta.
+- **SSH session**: Terminal detection may fall back to applying both fixes. Open a new terminal window on the host machine for changes to take effect.
+- **Manual fix**: Run `polyterm palette` → Fix Alt Keys, or configure your terminal:
+  - **Terminal.app**: Settings → Profiles → Keyboard → Check "Use Option as Meta key"
+  - **iTerm2**: Settings → Profiles → Keys → Left Option key → Esc+
+
 ## 📖 Documentation
 For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.

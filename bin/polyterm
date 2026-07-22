@@ -44,13 +44,14 @@ function show_help() {
     echo -e "Usage: ${GREEN}polyterm${NC} [command] [options]"
     echo ""
     echo "Commands:"
-    echo -e "  ${GREEN}palette${NC}  (Default) Launch the Tmux Command Palette"
-    echo -e "  ${GREEN}setup${NC}    Run the bootstrap installer"
-    echo -e "  ${GREEN}offboard${NC} Remove PolyTerm and restore system to defaults"
-    echo -e "  ${GREEN}sync${NC}     Sync configurations to GitHub (dot-sync)"
-    echo -e "  ${GREEN}pull${NC}     Pull latest updates from GitHub (dot-pull)"
-    echo -e "  ${GREEN}reload${NC}   Reload configurations (interactive by default)"
-    echo -e "  ${GREEN}help${NC}     Show this help message"
+    echo -e "  ${GREEN}palette${NC}      Launch the Tmux Command Palette"
+    echo -e "  ${GREEN}setup${NC}        Run the bootstrap installer"
+    echo -e "  ${GREEN}offboard${NC}     Remove PolyTerm and restore system to defaults"
+    echo -e "  ${GREEN}sync${NC}         Sync configurations to GitHub (dot-sync)"
+    echo -e "  ${GREEN}pull${NC}         Pull latest updates from GitHub (dot-pull)"
+    echo -e "  ${GREEN}reload${NC}       Reload configurations (interactive by default)"
+    echo -e "  ${GREEN}--start ${GREEN}tmux|zellij${NC}  Start multiplexer (install if missing)"
+    echo -e "  ${GREEN}help${NC}          Show this help message"
     echo ""
     echo "Reload Options:"
     echo -e "  ${GREEN}--all${NC}        Reload all configs non-interactively"
@@ -154,15 +155,25 @@ case "$1" in
             tmux new-session "$REPO_PATH/common/palette/palette.sh"
         fi
         ;;
+    --start)
+        case "$2" in
+            tmux|zellij)
+                bash "$REPO_PATH/common/palette/launcher.sh" "$2"
+                ;;
+            *)
+                echo -e "${RED}Usage: polyterm --start tmux|zellij${NC}"
+                exit 1
+                ;;
+        esac
+        ;;
     help|--help|-h)
         show_help
         ;;
     "")
-        # Default action: Palette
         if [[ -n "$TMUX" || -n "$ZELLIJ" ]]; then
             "$REPO_PATH/common/palette/palette.sh"
         else
-            show_help
+            bash "$REPO_PATH/common/palette/launcher.sh"
         fi
         ;;
     *)
