@@ -60,8 +60,41 @@ function show_help() {
     echo ""
 }
 
+# Detect and fix root-owned artifacts from a previous aborted sudo run
+check_root_artifacts() {
+    local found=false
+    local paths=("$HOME/dotfiles" "$HOME/dotfiles/../dotfiles-data" "$HOME/.config" "$HOME/.gemini")
+    for p in "${paths[@]}"; do
+        [[ -d "$p" ]] || continue
+        if find "$p" -user root 2>/dev/null | head -1 | grep -q .; then
+            found=true
+            break
+        fi
+    done
+
+    if [[ "$found" == false ]]; then
+        return 0
+    fi
+
+    echo -e "${RED}⚠️  Some files from a previous sudo run are still owned by root.${NC}"
+    echo -e "${YELLOW}This blocks 'git pull' and symlink creation during setup.${NC}"
+    echo ""
+    echo -e "Run this command to fix:"
+    echo -e "  ${GREEN}sudo chown -R $(whoami) ~/dotfiles ~/dotfiles/../dotfiles-data ~/.config ~/.gemini${NC}"
+    echo ""
+    printf "Fix ownership now? (Y/n): "
+    read -r resp
+    if [[ ! "$resp" =~ ^[nN] ]]; then
+        sudo chown -R "$(whoami)" ~/dotfiles ~/dotfiles/../dotfiles-data ~/.config ~/.gemini 2>/dev/null || true
+        echo -e "${GREEN}✅  Ownership fixed.${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Skipping ownership fix — setup may fail with permission errors.${NC}"
+    fi
+}
+
 case "$1" in
     setup)
+        check_root_artifacts
         echo -e "🚀  ${BLUE}Starting PolyTerm Setup...${NC}"
         bash "$REPO_PATH/application-package/install.sh"
         ;;

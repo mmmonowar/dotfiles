@@ -57,6 +57,33 @@ fi
 
 echo -e "🖥️  Detected OS: ${GREEN}$OS_ENV${NC}"
 
+# 2.5. Self-heal ownership from a previous sudo run before git/clone operations
+fix_root_ownership() {
+    local path="$1"
+    local name="$2"
+    if [ ! -e "$path" ]; then
+        return 0
+    fi
+    if ! find "$path" -user root 2>/dev/null | head -1 | grep -q .; then
+        return 0
+    fi
+    echo -e "\n${RED}⚠️  Some files in $name are owned by root (from a previous sudo run).${NC}"
+    echo -e "${YELLOW}  This can cause 'git pull' and symlink permission errors.${NC}"
+    echo -e "  Run the following to fix:"
+    echo -e "  ${GREEN}sudo chown -R $(whoami) $path${NC}"
+    printf "Fix ownership now? (Y/n): "
+    read -r resp
+    if [[ ! "$resp" =~ ^[nN] ]]; then
+        sudo chown -R "$(whoami)" "$path" 2>/dev/null || true
+        echo -e "  ${GREEN}✅ Ownership fixed for $name.${NC}"
+    else
+        echo -e "  ${YELLOW}⚠️  Skipped — setup may fail with permission errors.${NC}"
+    fi
+}
+fix_root_ownership "$TARGET_DIR" "dotfiles repository"
+fix_root_ownership "$HOME/.config" "~/.config"
+fix_root_ownership "$HOME/.gemini" "~/.gemini"
+
 # 3. Pre-requisites: Homebrew
 if ! command -v brew &> /dev/null; then
     echo -e "🍺  ${BLUE}Installing Homebrew...${NC}"
@@ -117,26 +144,8 @@ if [ -f "$DATA_DIR/settings/.polyterm_settings" ]; then
     source "$DATA_DIR/settings/.polyterm_settings"
 fi
 
-# 4.25. Self-heal ownership from any previous sudo run
-fix_root_ownership() {
-    local path="$1"
-    local name="$2"
-    if ! find "$path" -user root 2>/dev/null | head -1 | grep -q .; then
-        return 0
-    fi
-    echo -e "\n${RED}⚠️  Some files in $name are owned by root (from a previous sudo run).${NC}"
-    echo -e "${YELLOW}  This can cause 'git pull' and symlink permission errors.${NC}"
-    printf "Fix ownership with sudo chown? (Y/n): "
-    read -r resp
-    if [[ ! "$resp" =~ ^[nN] ]]; then
-        sudo chown -R "$(whoami)" "$path" 2>/dev/null || true
-        echo -e "  ${GREEN}✅ Ownership fixed for $name.${NC}"
-    fi
-}
-fix_root_ownership "$TARGET_DIR" "dotfiles repository"
+# 4.25. Self-heal ownership for dotfiles-data (defined after repo init)
 fix_root_ownership "$DATA_DIR" "dotfiles-data directory"
-fix_root_ownership "$HOME/.config" "~/.config"
-fix_root_ownership "$HOME/.gemini" "~/.gemini"
 
 # 5. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"
