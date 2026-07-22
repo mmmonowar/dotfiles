@@ -49,9 +49,6 @@ alias glow="$POLYTERM_APP_MARKDOWN_VIEWER -w $POLYTERM_GLOW_WIDTH"
 # Glow (Markdown Reader) matching terminal colors
 export GLOW_STYLE="dark"
 
-# Skip multiplexer autostart when invoked for a CLI command (e.g. polyterm sync)
-[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return
-
 # --- 3. History Configuration ---
 HISTFILE="${HOME}/.zsh_history"
 HISTSIZE=10000
@@ -113,17 +110,10 @@ alias v-zellij="micro ${HOME}/.config/zellij/config.kdl"
 
 # --- 7. Auto-start Multiplexer (Cockpit) ---
 # Prevents spawning inside already active TMUX or Zellij nested environments
-if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
-    # Default is tmux unless POLYTERM_MULTIPLEXER environment variable overrides it
-    local multiplexer="tmux"
-    if [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]]; then
-        multiplexer="zellij"
-    fi
-    
-    # Check if selected command exists before executing
-    if command -v "$multiplexer" >/dev/null 2>&1; then
-        # Launch or attach
-        if [[ "$multiplexer" == "tmux" ]]; then
+# Only auto-launch when POLYTERM_MULTIPLEXER is explicitly set to "tmux" or "zellij"
+if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && [[ -n "$POLYTERM_MULTIPLEXER" ]]; then
+    if command -v "$POLYTERM_MULTIPLEXER" >/dev/null 2>&1; then
+        if [[ "$POLYTERM_MULTIPLEXER" == "tmux" ]]; then
             tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
             tmux set-environment -g POLYTERM_PATH_PALETTE_SCRIPT "$POLYTERM_PATH_PALETTE_SCRIPT"
             tmux set-environment -g POLYTERM_PATH_TMUX_TPM_DIR "$POLYTERM_PATH_TMUX_TPM_DIR"
@@ -139,7 +129,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
             tmux set-environment -g POLYTERM_DASHBOARD_PANE_SIZE "$POLYTERM_DASHBOARD_PANE_SIZE"
             # Automatically try to attach to the last session, or start 'Dashboard'
             tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -A -s Dashboard
-        elif [[ "$multiplexer" == "zellij" ]]; then
+        else
             (
                 export POLYTERM_COLOR_BACKGROUND="$POLYTERM_COLOR_BACKGROUND"
                 export POLYTERM_COLOR_FOREGROUND="$POLYTERM_COLOR_FOREGROUND"

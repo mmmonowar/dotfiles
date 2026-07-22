@@ -49,8 +49,9 @@ export POLYTERM_URL_ANTIDOTE_REPO="https://github.com/mattmc3/antidote.git"
 export POLYTERM_URL_NERDFONT_JETBRAINS="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
 
 # MULTIPLEXER
-# Set the default terminal multiplexer: "tmux" or "zellij".
-export POLYTERM_MULTIPLEXER="tmux"
+# Set the default terminal multiplexer: "tmux", "zellij", or "none".
+# When set to "none" (or unset), the terminal opens to a plain zsh prompt.
+export POLYTERM_MULTIPLEXER="none"
 
 # APPLICATIONS & LAYOUT
 export POLYTERM_APP_MONITOR="btop"

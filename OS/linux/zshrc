@@ -36,15 +36,10 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 # Boot up x-cmd
 [ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X"
 
-# Skip multiplexer autostart when invoked for a CLI command (e.g. polyterm sync)
-[[ -n "$POLYTERM_CLI" ]] && unset POLYTERM_CLI && return
-
 # Auto-start multiplexer cockpit on interactive shell login
-if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
-    local multiplexer="tmux"
-    [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]] && multiplexer="zellij"
-    
-    if [[ "$multiplexer" == "zellij" ]] && command -v zellij &>/dev/null; then
+# Only auto-launch when POLYTERM_MULTIPLEXER is explicitly set to "tmux" or "zellij"
+if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && [[ -n "$POLYTERM_MULTIPLEXER" ]]; then
+    if [[ "$POLYTERM_MULTIPLEXER" == "zellij" ]] && command -v zellij &>/dev/null; then
         (
             export POLYTERM_COLOR_BACKGROUND="$POLYTERM_COLOR_BACKGROUND"
             export POLYTERM_COLOR_FOREGROUND="$POLYTERM_COLOR_FOREGROUND"
