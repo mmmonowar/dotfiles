@@ -216,60 +216,6 @@ fi
 echo -e "📦  ${BLUE}Installing CORE packages from $brew_core_path...${NC}"
 brew bundle --verbose --file="$brew_core_path"
 
-# Interactive App Selection
-echo -e "\n🧩  ${BLUE}Optional Applications Selection${NC}"
-brew_apps_path="$TARGET_DIR/OS/$OS_ENV/Brewfile.apps"
-if [[ -f "$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.apps" ]]; then
-    brew_apps_path="$TARGET_DIR/OS/$OS_ENV/$device_id/Brewfile.apps"
-fi
-APPS_FILE="$brew_apps_path"
-
-
-if [ -f "$APPS_FILE" ]; then
-    echo -e "You can now choose which optional apps to install."
-    
-    # Use fzf if available (it should be, as it is in core)
-    if command -v fzf &> /dev/null; then
-        # Parse Brewfile.apps to get clean names for selection
-        # Supports: brew "name", cask "name", vscode "name"
-        all_apps=()
-        while IFS= read -r app; do
-            all_apps+=("$app")
-        done < <(grep -E '^(brew|cask|vscode)' "$APPS_FILE" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\1: \2/')
-        
-        if [ ${#all_apps[@]} -gt 0 ]; then
-            echo -e "${YELLOW}Instructions: Use TAB to select multiple, ENTER to confirm, ESC to skip all.${NC}"
-            selected=$(printf "%s\n" "${all_apps[@]}" | fzf --multi --header "Select Optional Apps to Install" --reverse --border rounded)
-            
-            if [ -n "$selected" ]; then
-                TEMP_BREWFILE=$(mktemp)
-                echo -e "📝  ${BLUE}Generating temporary Brewfile for selected apps...${NC}"
-                
-                while read -r line; do
-                    type=$(echo "$line" | cut -d: -f1)
-                    name=$(echo "$line" | cut -d: -f2 | xargs)
-                    grep "^$type \"$name\"" "$APPS_FILE" >> "$TEMP_BREWFILE"
-                done <<< "$selected"
-                
-                echo -e "📦  ${BLUE}Installing selected apps...${NC}"
-                brew bundle --verbose --file="$TEMP_BREWFILE"
-                rm "$TEMP_BREWFILE"
-            else
-                echo -e "⏭️  ${YELLOW}No optional apps selected. Skipping.${NC}"
-            fi
-        fi
-    else
-        # Fallback for systems without fzf (though it should be in core)
-        printf "Install all optional apps from %s/Brewfile.apps? (y/N): " "$OS_ENV"
-        read -r resp
-        if [[ "$resp" =~ ^[yY] ]]; then
-            brew bundle --verbose --file="$APPS_FILE"
-        fi
-    fi
-else
-    echo -e "⏭️  ${YELLOW}No optional apps file found. Skipping.${NC}"
-fi
-
 # 6.5. Dependency Verification
 echo -e "\n🔍  ${BLUE}Verifying installed dependencies...${NC}"
 check_deps() {
@@ -373,6 +319,7 @@ if [ -f "$TARGET_DIR/common/palette/onboarding.sh" ]; then
     source "$TARGET_DIR/common/palette/onboarding.sh"
     onboarding_welcome
     choose_multiplexer
+    choose_apps
     configure_alt_keys
     onboarding_done
 fi

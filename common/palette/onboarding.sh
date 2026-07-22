@@ -55,6 +55,62 @@ choose_multiplexer() {
     fi
 }
 
+choose_apps() {
+    echo -e "\n${YELLOW}── Optional Applications ────────────────${NC}"
+
+    local brew_apps_path="${DOTFILES_ROOT}/OS/${OS_ENV}/Brewfile.apps"
+    local device_apps_path="${DOTFILES_ROOT}/OS/${OS_ENV}/${device_id}/Brewfile.apps"
+    [[ -f "$device_apps_path" ]] && brew_apps_path="$device_apps_path"
+
+    if [ ! -f "$brew_apps_path" ]; then
+        echo -e "${YELLOW}No optional apps file found for ${OS_ENV}. Skipping.${NC}"
+        return
+    fi
+
+    echo -e "Pick additional tools to install."
+    echo -e "Use ${GREEN}TAB${NC} to select multiple, ${GREEN}ENTER${NC} to confirm, ${GREEN}ESC${NC} to skip."
+    echo ""
+
+    if command -v fzf &> /dev/null; then
+        local apps=()
+        while IFS= read -r app; do
+            apps+=("$app")
+        done < <(grep -E '^(brew|cask|vscode)' "$brew_apps_path" | sed -E 's/^(brew|cask|vscode) "([^"]+)".*/\1: \2/')
+
+        if [ ${#apps[@]} -eq 0 ]; then
+            echo -e "${YELLOW}No installable entries found in Brewfile.apps.${NC}"
+            return
+        fi
+
+        local selected
+        selected=$(printf "%s\n" "${apps[@]}" | fzf --multi --header "Select Optional Apps" --reverse --border rounded)
+
+        if [ -n "$selected" ]; then
+            local tmpfile
+            tmpfile=$(mktemp)
+            echo -e "📝  ${BLUE}Preparing selected apps...${NC}"
+            while read -r line; do
+                local type name
+                type=$(echo "$line" | cut -d: -f1)
+                name=$(echo "$line" | cut -d: -f2 | xargs)
+                grep "^$type \"$name\"" "$brew_apps_path" >> "$tmpfile"
+            done <<< "$selected"
+
+            echo -e "📦  ${BLUE}Installing selected apps...${NC}"
+            brew bundle --verbose --file="$tmpfile"
+            rm "$tmpfile"
+        else
+            echo -e "⏭️  ${YELLOW}No apps selected. Skipping.${NC}"
+        fi
+    else
+        printf "Install all optional apps? (y/N): "
+        read -r resp
+        if [[ "$resp" =~ ^[yY] ]]; then
+            brew bundle --verbose --file="$brew_apps_path"
+        fi
+    fi
+}
+
 configure_alt_keys() {
     echo -e "\n${YELLOW}── Alt/Option Key Setup ───────────────────${NC}"
 
