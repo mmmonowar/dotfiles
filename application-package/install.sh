@@ -319,6 +319,7 @@ if [ -f "$TARGET_DIR/common/palette/onboarding.sh" ]; then
     source "$TARGET_DIR/common/palette/onboarding.sh"
     onboarding_welcome
     choose_multiplexer
+    install_core_apps
     choose_apps
     configure_alt_keys
     onboarding_done
