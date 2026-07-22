@@ -11,9 +11,13 @@ class Polyterm < Formula
   def install
     # Install the bin/polyterm script
     bin.install "bin/polyterm"
-    
-    # Install the rest of the repository to the prefix so polyterm can find it
-    prefix.install Dir["*"]
+
+    # Install only what polyterm needs at runtime
+    prefix.install "application-package"
+    prefix.install "common"
+    prefix.install "OS"
+    prefix.install "docs"
+    prefix.install "README.md"
   end
 
   def caveats
