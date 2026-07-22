@@ -53,7 +53,7 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]]; then
             export POLYTERM_COLOR_CYAN="$POLYTERM_COLOR_CYAN"
             export POLYTERM_COLOR_WHITE="$POLYTERM_COLOR_WHITE"
             export POLYTERM_COLOR_BRIGHT_BLACK="$POLYTERM_COLOR_BRIGHT_BLACK"
-            exec zellij attach -c default
+            zellij attach -c default
         )
     elif command -v tmux &>/dev/null; then
         tmux set-environment -g DOTFILES_ROOT "$DOTFILES_ROOT"
