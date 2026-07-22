@@ -10,6 +10,18 @@
 
 set -e
 
+# Refuse to run as root — Homebrew does not support running as root
+if [[ $EUID -eq 0 ]]; then
+    echo -e "${RED}This script must not be run as root.${NC}"
+    echo -e "${YELLOW}Homebrew drops privileges on installation and running it as root${NC}"
+    echo -e "${YELLOW}would give all build scripts full access to your system.${NC}"
+    echo ""
+    echo -e "Run the script as a regular user instead:"
+    echo -e "  ${GREEN}bash <(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)${NC}"
+    echo -e "  ${GREEN}polyterm setup${NC}"
+    exit 1
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
