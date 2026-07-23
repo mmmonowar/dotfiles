@@ -56,6 +56,8 @@ The `polyterm` command is your central hub for environment management.
 | `polyterm reload --mux-restart` | Restart multiplexer only |
 | `polyterm help` | Displays available commands |
 
+> **Maintenance**: For install, update, reinstall, repair, and uninstall commands, see the [Common Operations](https://github.com/mmmonowar/dotfiles#%EF%B8%8F-common-operations) section in the README.
+
 ---
 
 ## 🎛️ Unified Command Palette (`Alt+p`)

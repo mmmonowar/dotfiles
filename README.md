@@ -66,5 +66,18 @@ This one-liner installs all system packages, Homebrew, and polyterm — then run
 brew update && brew install polyterm && polyterm setup
 ```
 
+## ⚙️ Common Operations
+
+| Task | Command |
+|------|---------|
+| **Install** (macOS/Linux) | `brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles && brew install polyterm && polyterm setup` |
+| **Install** (WSL) | `bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/bin/bootstrap-wsl)"` |
+| **Update** | `brew update && brew upgrade polyterm` |
+| **Reinstall** | `brew reinstall polyterm` |
+| **Repair** | `polyterm setup` |
+| **Uninstall** | `brew uninstall polyterm` |
+| **Remove symlinks** | `polyterm offboard` |
+| **Full removal** | `brew uninstall polyterm && polyterm offboard && rm -rf ~/dotfiles ~/dotfiles-data` |
+
 ## 📖 Documentation
 For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.
