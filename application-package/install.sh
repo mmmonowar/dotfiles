@@ -118,6 +118,32 @@ else
     echo -e "✅  ${GREEN}Homebrew is already installed.${NC}"
 fi
 
+# 4.5. GitHub Auth + SSH Key (required for private repo via Homebrew tap)
+if [[ "$OS_ENV" != "mac" ]]; then
+    # Authenticate with GitHub if not already done
+    if command -v gh &>/dev/null && ! gh auth status &>/dev/null 2>&1; then
+        echo -e "\n${YELLOW}GitHub CLI is not authenticated. You will be prompted to log in via browser.${NC}"
+        gh auth login --scopes repo
+    fi
+
+    # Generate SSH key if not present
+    SSH_KEY="$HOME/.ssh/id_ed25519"
+    if [[ ! -f "$SSH_KEY" ]]; then
+        echo -e "🔑  ${BLUE}Generating SSH key...${NC}"
+        ssh-keygen -t ed25519 -f "$SSH_KEY" -N "" -q
+    fi
+
+    # Add SSH key to GitHub if not already present
+    if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
+        PUB_KEY=$(cat "${SSH_KEY}.pub")
+        if ! gh ssh-key list 2>/dev/null | grep -qF "$PUB_KEY"; then
+            echo -e "  ${BLUE}Adding SSH key to GitHub...${NC}"
+            gh ssh-key add "${SSH_KEY}.pub" --title "WSL $(hostname)" --type authentication
+            echo -e "  ${GREEN}✅  SSH key added to GitHub.${NC}"
+        fi
+    fi
+fi
+
 # 5. Install polyterm via Homebrew tap (gives us the `polyterm` command on PATH)
 if command -v brew &>/dev/null && ! command -v polyterm &>/dev/null; then
     echo -e "🍺  ${BLUE}Installing polyterm from tap...${NC}"
