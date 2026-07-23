@@ -37,30 +37,37 @@ echo -e "🚀  PolyTerm WSL Bootstrap"
 echo -e "==========================================${NC}"
 
 # ── 1. System packages ──────────────────────────────────────────
-echo -e "\n${BLUE}[1/5]  Installing system packages...${NC}"
+echo -e "\n${BLUE}[1/6]  Installing system packages...${NC}"
 sudo apt-get update -qq
-sudo apt-get install -y -qq zsh git fzf tmux curl build-essential
+sudo apt-get install -y -qq zsh git fzf tmux curl build-essential gh
 
 # ── 2. Homebrew ─────────────────────────────────────────────────
 if command -v brew &>/dev/null; then
     echo -e "${GREEN}✅  Homebrew already installed.${NC}"
 else
-    echo -e "\n${BLUE}[2/5]  Installing Homebrew...${NC}"
+    echo -e "\n${BLUE}[2/6]  Installing Homebrew...${NC}"
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# ── 3. Tap & install polyterm ──────────────────────────────────
-echo -e "\n${BLUE}[3/5]  Installing polyterm via Homebrew...${NC}"
+# ── 3. GitHub Auth (required for private repo clone) ─────────────
+if ! gh auth status &>/dev/null; then
+    echo -e "\n${BLUE}[3/6]  Authenticating with GitHub...${NC}"
+    echo -e "${YELLOW}You will be prompted to log in via browser (device flow).${NC}"
+    gh auth login --scopes repo
+fi
+
+# ── 4. Tap & install polyterm ──────────────────────────────────
+echo -e "\n${BLUE}[4/6]  Installing polyterm via Homebrew...${NC}"
 brew tap mmmonowar/dotfiles
 brew cleanup --prune=all 2>/dev/null || true
 brew install polyterm
 
-# ── 4. Run full setup ──────────────────────────────────────────
-echo -e "\n${BLUE}[4/5]  Running polyterm setup...${NC}"
+# ── 5. Run full setup ──────────────────────────────────────────
+echo -e "\n${BLUE}[5/6]  Running polyterm setup...${NC}"
 polyterm setup
 
-# ── 5. Done ────────────────────────────────────────────────────
+# ── 6. Done ────────────────────────────────────────────────────
 echo -e "\n${GREEN}=========================================="
 echo -e "✅  Bootstrap Complete!"
 echo -e "==========================================${NC}"
