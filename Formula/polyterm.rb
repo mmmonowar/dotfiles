@@ -9,14 +9,11 @@ class Polyterm < Formula
   depends_on "zsh"
 
   def install
-    bin.install "bin/polyterm"
-
-    prefix.install "application-package"
-    prefix.install "common"
-    prefix.install "OS"
-    prefix.install "docs"
-    prefix.install "README.md"
-  end
+  system "git", "clone", "--depth=1", "-b", "main",
+         "https://github.com/mmmonowar/dotfiles.git", "."
+  bin.install "bin/polyterm"
+  prefix.install "application-package", "common", "OS", "docs", "README.md"
+end
 
   def caveats
     <<~EOS
