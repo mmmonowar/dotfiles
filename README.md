@@ -54,5 +54,19 @@ Use `polyterm quit` to kill the current multiplexer session:
 - Inside **Zellij**: quits Zellij, returns to parent shell
 - Outside both: prints "Not inside a Tmux or Zellij session."
 
+### WSL: Errno::EINVAL on `brew install polyterm`
+
+If `brew install polyterm` fails with:
+```
+Errno::EINVAL: Invalid argument @ apply2files - /var/tmp/polyterm-...
+```
+
+Run before retrying:
+```bash
+brew cleanup --prune=all
+brew update
+brew install polyterm
+```
+
 ## 📖 Documentation
 For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.

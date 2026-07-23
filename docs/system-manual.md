@@ -131,3 +131,26 @@ If critical configuration files are deleted or corrupted:
 1.  **Manual Recovery**: Use `git checkout .` to restore files from the local repository.
 2.  **Full Reinstall**: Run `polyterm setup` or the remote bootstrap command:
     `bash -c "$(curl -fsSL raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"`
+
+---
+
+## 🔧 Homebrew Formula
+
+### Download Strategy
+
+The `Formula/polyterm.rb` uses a **tarball URL** (`archive/refs/heads/main.tar.gz`) instead of a git URL. This avoids the `GitDownloadStrategy` which triggers `Errno::EINVAL` on WSL during build staging.
+
+The tarball approach:
+- Uses standard `CurlDownloadStrategy` + `tar` extraction (reliable on all platforms)
+- Excludes `.git/` history from the build directory (smaller, faster)
+- Has no effect on `polyterm setup` or `dot-pull` — those operate on your personal `~/dotfiles` clone independently
+
+### Explicit Directory Installs
+
+The formula installs only the directories the CLI needs at runtime:
+- `application-package/` → `setup`, `offboard`
+- `common/` → `palette`, sync, security, configs
+- `OS/` → Brewfiles, zshrc templates
+- `docs/`, `README.md` → informational
+
+Skipped: `bin/` (already installed by `bin.install`), `Formula/`, `data/`, hidden files.

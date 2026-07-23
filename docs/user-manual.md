@@ -25,6 +25,17 @@ Ideal for fresh systems where Homebrew might not yet be configured.
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"
 ```
 
+### WSL Installation Notes
+
+If `brew install polyterm` fails with `Errno::EINVAL: Invalid argument @ apply2files`:
+```bash
+brew cleanup --prune=all
+brew update
+brew install polyterm
+```
+
+This clears stale git-cached source and pulls the latest formula which uses a tarball-based download strategy compatible with WSL.
+
 ---
 
 ## 🛠️ The `polyterm` CLI
