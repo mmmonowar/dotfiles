@@ -138,11 +138,10 @@ If critical configuration files are deleted or corrupted:
 
 ### Download Strategy
 
-`Formula/polyterm.rb` uses a **git URL** with branch-based checkout. On WSL, the `GitDownloadStrategy` can trigger `Errno::EINVAL` during build staging. If this occurs, override the Homebrew temp directory:
+`Formula/polyterm.rb` uses a **git URL** with branch-based checkout. On WSL, Homebrew 6.0.12's `GitDownloadStrategy` triggers `Errno::EINVAL` during build staging (`/var/tmp/`). The formula bypasses this by performing its own `git clone --depth=1` inside the `install` method, avoiding the buggy staging pipeline entirely.
 
 ```bash
-brew cleanup --prune=all
-HOMEBREW_TEMP=~/tmp brew install polyterm
+brew update && brew cleanup --prune=all && brew install polyterm
 ```
 
 This has no effect on `polyterm setup` or `dot-pull` — those operate on your personal `~/dotfiles` clone independently.

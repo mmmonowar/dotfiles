@@ -27,13 +27,11 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/
 
 ### WSL Installation Notes
 
-If `brew install polyterm` fails with `Errno::EINVAL: Invalid argument @ apply2files`:
 ```bash
-brew cleanup --prune=all
-HOMEBREW_TEMP=~/tmp brew install polyterm
+brew update && brew cleanup --prune=all && brew install polyterm
 ```
 
-This overrides Homebrew's temp directory to avoid `/var/tmp/` filesystem quirks on WSL.
+The formula uses a manual `git clone` in its install method to avoid a known Homebrew 6.0.12 `GitDownloadStrategy` bug on WSL.
 
 ---
 
