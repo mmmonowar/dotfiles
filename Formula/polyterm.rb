@@ -1,7 +1,7 @@
 class Polyterm < Formula
   desc "Central management tool for the PolyTerm dotfiles environment"
   homepage "https://github.com/mmmonowar/dotfiles"
-  url "https://github.com/mmmonowar/dotfiles/archive/refs/heads/main.tar.gz"
+  url "https://github.com/mmmonowar/dotfiles.git", branch: "main"
   version "1.0.0"
 
   depends_on "fzf"
