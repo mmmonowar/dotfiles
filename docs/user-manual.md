@@ -25,13 +25,16 @@ Ideal for fresh systems where Homebrew might not yet be configured.
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"
 ```
 
-### WSL Installation Notes
-
+### WSL (Fresh Install)
 ```bash
-brew update && brew cleanup --prune=all && brew install polyterm
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/bin/bootstrap-wsl)"
 ```
+Installs system packages, Homebrew, and polyterm in one shot. Then runs full setup.
 
-The formula uses a manual `git clone` in its install method to avoid a known Homebrew 6.0.12 `GitDownloadStrategy` bug on WSL.
+### WSL (Homebrew Already Installed)
+```bash
+brew update && brew install polyterm && polyterm setup
+```
 
 ---
 

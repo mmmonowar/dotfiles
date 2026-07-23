@@ -54,13 +54,17 @@ Use `polyterm quit` to kill the current multiplexer session:
 - Inside **Zellij**: quits Zellij, returns to parent shell
 - Outside both: prints "Not inside a Tmux or Zellij session."
 
-### WSL Installation
-
+### WSL (Fresh Install)
 ```bash
-brew update && brew cleanup --prune=all && brew install polyterm
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/bin/bootstrap-wsl)"
 ```
 
-After install, run `polyterm setup` to initialize your environment.
+This one-liner installs all system packages, Homebrew, and polyterm — then runs full setup.
+
+### WSL (Homebrew Already Installed)
+```bash
+brew update && brew install polyterm && polyterm setup
+```
 
 ## 📖 Documentation
 For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.

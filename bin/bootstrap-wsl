@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# ==========================================
+# 🚀  POLYTERM WSL BOOTSTRAP
+# ==========================================
+# One-shot setup for fresh WSL/Ubuntu installations.
+# Installs system packages, Homebrew, and polyterm, then runs full setup.
+#
+# Usage:
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/bin/bootstrap-wsl)"
+# ==========================================
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# ── Guard: WSL only ─────────────────────────────────────────────
+if ! grep -qi microsoft /proc/version 2>/dev/null; then
+    echo -e "${RED}This script is for WSL only.${NC}"
+    echo -e "On macOS or native Linux, run:"
+    echo -e "  ${GREEN}bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)\"${NC}"
+    exit 1
+fi
+
+# ── Guard: not root ─────────────────────────────────────────────
+if [[ $EUID -eq 0 ]]; then
+    echo -e "${RED}This script must not be run as root.${NC}"
+    exit 1
+fi
+
+echo -e "${BLUE}=========================================="
+echo -e "🚀  PolyTerm WSL Bootstrap"
+echo -e "==========================================${NC}"
+
+# ── 1. System packages ──────────────────────────────────────────
+echo -e "\n${BLUE}[1/5]  Installing system packages...${NC}"
+sudo apt-get update -qq
+sudo apt-get install -y -qq zsh git fzf tmux curl build-essential
+
+# ── 2. Homebrew ─────────────────────────────────────────────────
+if command -v brew &>/dev/null; then
+    echo -e "${GREEN}✅  Homebrew already installed.${NC}"
+else
+    echo -e "\n${BLUE}[2/5]  Installing Homebrew...${NC}"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# ── 3. Tap & install polyterm ──────────────────────────────────
+echo -e "\n${BLUE}[3/5]  Installing polyterm via Homebrew...${NC}"
+brew tap mmmonowar/dotfiles
+brew cleanup --prune=all 2>/dev/null || true
+brew install polyterm
+
+# ── 4. Run full setup ──────────────────────────────────────────
+echo -e "\n${BLUE}[4/5]  Running polyterm setup...${NC}"
+polyterm setup
+
+# ── 5. Done ────────────────────────────────────────────────────
+echo -e "\n${GREEN}=========================================="
+echo -e "✅  Bootstrap Complete!"
+echo -e "==========================================${NC}"
+echo -e "Restart your terminal or run:"
+echo -e "  ${GREEN}source ~/.zshrc${NC}"
+echo -e "  ${GREEN}polyterm palette${NC}"

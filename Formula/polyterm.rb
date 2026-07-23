@@ -8,9 +8,13 @@ class Polyterm < Formula
   depends_on "tmux"
   depends_on "zsh"
 
-  def install
+  def stage
+    # Bypass Homebrew's GitDownloadStrategy#stage (apply2files bug on WSL)
     system "git", "clone", "--depth=1", "-b", "main",
-           "https://github.com/mmmonowar/dotfiles.git", "."
+           "https://github.com/mmmonowar/dotfiles.git", Dir.pwd
+  end
+
+  def install
     bin.install "bin/polyterm"
     prefix.install "application-package", "common", "OS", "docs", "README.md"
   end

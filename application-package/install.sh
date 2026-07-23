@@ -84,7 +84,22 @@ fix_root_ownership "$TARGET_DIR" "dotfiles repository"
 fix_root_ownership "$HOME/.config" "~/.config"
 fix_root_ownership "$HOME/.gemini" "~/.gemini"
 
-# 3. Pre-requisites: Homebrew
+# 3. Pre-requisites: System packages (WSL/Linux only)
+if [[ "$OS_ENV" == "wsl" || "$OS_ENV" == "linux" ]]; then
+    MISSING_APT_PKGS=()
+    for pkg in zsh git fzf tmux curl build-essential; do
+        if ! dpkg -s "$pkg" &>/dev/null; then
+            MISSING_APT_PKGS+=("$pkg")
+        fi
+    done
+    if [[ ${#MISSING_APT_PKGS[@]} -gt 0 ]]; then
+        echo -e "📦  ${BLUE}Installing system packages: ${MISSING_APT_PKGS[*]}...${NC}"
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq "${MISSING_APT_PKGS[@]}"
+    fi
+fi
+
+# 4. Pre-requisites: Homebrew
 if ! command -v brew &> /dev/null; then
     echo -e "🍺  ${BLUE}Installing Homebrew...${NC}"
     /bin/bash -c "$(curl -fsSL "${POLYTERM_URL_HOMEBREW_INSTALLER:-"https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"}")"
@@ -103,7 +118,14 @@ else
     echo -e "✅  ${GREEN}Homebrew is already installed.${NC}"
 fi
 
-# 4. Clone Repository
+# 5. Install polyterm via Homebrew tap (gives us the `polyterm` command on PATH)
+if command -v brew &>/dev/null && ! command -v polyterm &>/dev/null; then
+    echo -e "🍺  ${BLUE}Installing polyterm from tap...${NC}"
+    brew tap mmmonowar/dotfiles
+    brew install polyterm
+fi
+
+# 6. Clone Repository
 if [ ! -d "$TARGET_DIR" ]; then
     echo -e "📥  ${BLUE}Cloning repository to $TARGET_DIR...${NC}"
     git clone "$REPO_URL" "$TARGET_DIR"
@@ -113,7 +135,7 @@ else
     cd "$TARGET_DIR" && git pull origin main && cd - > /dev/null
 fi
 
-# 4.5. Initialize dotfiles-data (private data repo)
+# 6.5. Initialize dotfiles-data (private data repo)
 DATA_DIR="$TARGET_DIR/../dotfiles-data"
 if [ ! -d "$DATA_DIR" ]; then
     echo -e "📁  ${BLUE}Creating dotfiles-data directory at $DATA_DIR...${NC}"
@@ -144,10 +166,10 @@ if [ -f "$DATA_DIR/settings/.polyterm_settings" ]; then
     source "$DATA_DIR/settings/.polyterm_settings"
 fi
 
-# 4.25. Self-heal ownership for dotfiles-data (defined after repo init)
+# 6.25. Self-heal ownership for dotfiles-data (defined after repo init)
 fix_root_ownership "$DATA_DIR" "dotfiles-data directory"
 
-# 5. Backup & Symlink Configuration Files
+# 7. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"
 
 function safe_link() {
