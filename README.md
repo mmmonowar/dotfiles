@@ -61,11 +61,10 @@ If `brew install polyterm` fails with:
 Errno::EINVAL: Invalid argument @ apply2files - /var/tmp/polyterm-...
 ```
 
-Run before retrying:
+Run:
 ```bash
 brew cleanup --prune=all
-brew update
-brew install polyterm
+HOMEBREW_TEMP=~/tmp brew install polyterm
 ```
 
 ## 📖 Documentation

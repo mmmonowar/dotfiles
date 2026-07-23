@@ -30,11 +30,10 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/
 If `brew install polyterm` fails with `Errno::EINVAL: Invalid argument @ apply2files`:
 ```bash
 brew cleanup --prune=all
-brew update
-brew install polyterm
+HOMEBREW_TEMP=~/tmp brew install polyterm
 ```
 
-This clears stale git-cached source and pulls the latest formula which uses a tarball-based download strategy compatible with WSL.
+This overrides Homebrew's temp directory to avoid `/var/tmp/` filesystem quirks on WSL.
 
 ---
 

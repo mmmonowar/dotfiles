@@ -138,12 +138,14 @@ If critical configuration files are deleted or corrupted:
 
 ### Download Strategy
 
-The `Formula/polyterm.rb` uses a **tarball URL** (`archive/refs/heads/main.tar.gz`) instead of a git URL. This avoids the `GitDownloadStrategy` which triggers `Errno::EINVAL` on WSL during build staging.
+`Formula/polyterm.rb` uses a **git URL** with branch-based checkout. On WSL, the `GitDownloadStrategy` can trigger `Errno::EINVAL` during build staging. If this occurs, override the Homebrew temp directory:
 
-The tarball approach:
-- Uses standard `CurlDownloadStrategy` + `tar` extraction (reliable on all platforms)
-- Excludes `.git/` history from the build directory (smaller, faster)
-- Has no effect on `polyterm setup` or `dot-pull` — those operate on your personal `~/dotfiles` clone independently
+```bash
+brew cleanup --prune=all
+HOMEBREW_TEMP=~/tmp brew install polyterm
+```
+
+This has no effect on `polyterm setup` or `dot-pull` — those operate on your personal `~/dotfiles` clone independently.
 
 ### Explicit Directory Installs
 
