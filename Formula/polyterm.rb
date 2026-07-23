@@ -8,7 +8,7 @@ class Polyterm < Formula
   depends_on "tmux"
   depends_on "zsh"
 
-  def stage
+  def stage(*)
     # Bypass Homebrew's GitDownloadStrategy#stage (apply2files bug on WSL)
     system "git", "clone", "--depth=1", "-b", "main",
            "https://github.com/mmmonowar/dotfiles.git", Dir.pwd
