@@ -154,17 +154,12 @@ keybinds clear-defaults=true {
         }
     }
     shared_among "normal" "locked" {
-        bind "Alt left" { FocusPreviousPane; }
+        bind "Alt left" { MoveFocusOrTab "left"; }
         bind "Alt down" { GoToPreviousTab; }
         bind "Alt up" { GoToNextTab; }
-        bind "Alt right" { FocusNextPane; }
+        bind "Alt right" { MoveFocusOrTab "right"; }
         bind "Alt +" { Resize "Increase"; }
-        bind "Alt ," {
-            LaunchOrFocusPlugin "session-manager" {
-                floating true
-                move_to_focused_tab true
-            }
-        }
+        bind "Alt ," { NewSession; }
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt 0" { Detach; }
         bind "Alt 1" { NewPane; }
@@ -173,10 +168,9 @@ keybinds clear-defaults=true {
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt e" { CloseTab; }
-        bind "Alt f" { ToggleFloatingPanes; }
         bind "Alt m" { NewTab; }
-        bind "Alt p" { NewPane; TogglePaneEmbedOrFloating; WriteChars "palette\r"; SwitchToMode "locked"; }
-        bind "Alt w" { Quit; }
+        bind "Alt p" { ToggleFloatingPanes; }
+        bind "Alt w" { Detach; }
     }
     shared_except "locked" "renametab" "renamepane" {
         bind "Ctrl g" { SwitchToMode "locked"; }
@@ -197,14 +191,31 @@ keybinds clear-defaults=true {
     shared_except "locked" "tab" "entersearch" "renametab" "renamepane" {
         bind "t" { SwitchToMode "tab"; }
     }
-    shared_among "normal" "resize" "tab" "scroll" "prompt" "tmux" {
+    shared_among "normal" "resize" "tab" "scroll" "prompt" {
         bind "p" { SwitchToMode "pane"; }
     }
-    shared_among "normal" "resize" "search" "move" "prompt" "tmux" {
+    shared_among "normal" "resize" "search" "move" "prompt" {
         bind "s" { SwitchToMode "scroll"; }
     }
     shared_except "locked" "resize" "pane" "tab" "entersearch" "renametab" "renamepane" {
         bind "r" { SwitchToMode "resize"; }
+    }
+    shared_among "scroll" "search" {
+        bind "PageDown" { PageScrollDown; }
+        bind "PageUp" { PageScrollUp; }
+        bind "left" { PageScrollUp; }
+        bind "down" { ScrollDown; }
+        bind "up" { ScrollUp; }
+        bind "right" { PageScrollDown; }
+        bind "Ctrl b" { PageScrollUp; }
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "locked"; }
+        bind "d" { HalfPageScrollDown; }
+        bind "Ctrl f" { PageScrollDown; }
+        bind "h" { PageScrollUp; }
+        bind "j" { ScrollDown; }
+        bind "k" { ScrollUp; }
+        bind "l" { PageScrollDown; }
+        bind "u" { HalfPageScrollUp; }
     }
     entersearch {
         bind "Ctrl c" { SwitchToMode "scroll"; }
