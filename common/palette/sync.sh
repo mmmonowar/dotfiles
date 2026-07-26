@@ -71,7 +71,15 @@ function dot-sync() {
         local timestamp
         timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
         git commit -m "Sync: ${timestamp} [$(hostname)]"
-        git push origin main && echo "󰄬  Dotfiles pushed to GitHub." || echo "󰅙  Failed to push dotfiles."
+        local remote_url
+        remote_url=$(git remote get-url origin 2>/dev/null)
+        if [[ "$remote_url" == *"mmmonowar/dotfiles"* ]]; then
+            echo "⚠️  Skipping dotfiles push — remote is upstream, not your fork."
+            echo "   Fork the repo and change your remote:"
+            echo "   git remote set-url origin https://github.com/YOUR_USER/dotfiles.git"
+        else
+            git push origin main && echo "󰄬  Dotfiles pushed to GitHub." || echo "󰅙  Failed to push dotfiles."
+        fi
 
         # Sync polyterm-data (private data repo)
         if [[ -d "$DATA_PATH/.git" ]]; then
