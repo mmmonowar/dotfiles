@@ -55,8 +55,10 @@ if ! gh auth status &>/dev/null; then
     echo -e "\n${BLUE}[3/7]  Authenticating with GitHub...${NC}"
     echo -e "${YELLOW}You will be prompted to log in via browser (device flow).${NC}"
     gh auth login --scopes repo
+    git config --global credential.helper '!gh auth git-credential'
 else
     echo -e "${GREEN}✅  GitHub already authenticated.${NC}"
+    git config --global credential.helper '!gh auth git-credential'
 fi
 
 # ── 4. SSH Key ──────────────────────────────────────────────────
@@ -66,6 +68,12 @@ if [[ ! -f "$SSH_KEY" ]]; then
     ssh-keygen -t ed25519 -f "$SSH_KEY" -N "" -q
     echo -e "${GREEN}✅  SSH key generated at $SSH_KEY${NC}"
 fi
+
+# Start ssh-agent and load key (needed for formula's SSH git clone)
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)" >/dev/null
+fi
+ssh-add "$SSH_KEY" 2>/dev/null
 
 # Add SSH key to GitHub if not already present
 PUB_KEY=$(cat "${SSH_KEY}.pub")
@@ -79,9 +87,16 @@ fi
 
 # ── 5. Tap & install polyterm ──────────────────────────────────
 echo -e "\n${BLUE}[5/7]  Installing polyterm via Homebrew...${NC}"
-brew tap mmmonowar/dotfiles
+brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles
 brew cleanup --prune=all 2>/dev/null || true
-brew install polyterm
+if ! brew install polyterm; then
+    echo -e "\n${RED}❌  brew install polyterm failed.${NC}"
+    echo -e "${YELLOW}Authentication may be required. Ensure:${NC}"
+    echo -e "  1. GitHub CLI is authenticated: ${GREEN}gh auth status${NC}"
+    echo -e "  2. SSH key is registered: ${GREEN}gh ssh-key list${NC}"
+    echo -e "  3. Git credential helper: ${GREEN}git config --global credential.helper${NC}"
+    exit 1
+fi
 
 # ── 6. Run full setup ──────────────────────────────────────────
 echo -e "\n${BLUE}[6/7]  Running polyterm setup...${NC}"
