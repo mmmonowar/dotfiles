@@ -11,8 +11,10 @@ class Polyterm < Formula
   def stage(*)
     # Bypass Homebrew's GitDownloadStrategy#stage (apply2files bug on WSL)
     # Public repo — HTTPS clone requires no authentication.
-    system "git", "clone", "--depth=1", "-b", "main",
-           "https://github.com/mmmonowar/dotfiles.git", Dir.pwd
+    # GIT_CONFIG_* bypasses broken .gitconfig permissions (ISSUE-73).
+    system({"GIT_CONFIG_NOSYSTEM" => "1", "GIT_CONFIG_GLOBAL" => "/dev/null"},
+           "git", "clone", "--depth=1", "-b", "main",
+           "https://github.com/mmmonowar/dotfiles.git", Dir.pwd)
   end
 
   def install
