@@ -141,7 +141,7 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 
 - **Automated Cockpit**: Terminal launch automatically switches to Zsh and initializes a Tmux "default" session.
 - **Smart Dashboard**: A dedicated `Dashboard` session starts with `btop` and `docker ps` on launch.
-- **AI & LLM Aliases**: Use `gemini`, `gemini-flash`, and `gemini-pro` for context-aware AI interactions. All sessions include a **1-hour timeout** and billing monitoring (`check-spend`) to manage costs.
+- **AI & LLM Aliases**: Use `gemini`, `gemini-flash`, and `gemini-pro` for context-aware AI interactions. All sessions include a **1-hour timeout** to manage costs.
 - **`search <query>`**: Instant DuckDuckGo search from the command line via `ddgr`.
 - **`dot-sync`**: Automated workflow that checks for missing dependencies (self-healing), runs `brew bundle dump`, git adds, commits with a timestamp, and pushes.
 - **`dot-pull`**: Automated workflow that pulls latest changes and runs `brew bundle` to stay in sync.

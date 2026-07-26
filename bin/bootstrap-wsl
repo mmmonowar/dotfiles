@@ -50,6 +50,10 @@ else
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# ── 2.5 Personal aliases (optional) ─────────────────────────────
+export POLYTERM_USER_EMAIL="${POLYTERM_USER_EMAIL:-}"
+export POLYTERM_GITHUB_ORG="${POLYTERM_GITHUB_ORG:-}"
+
 # ── 3. Tap & install polyterm ──────────────────────────────────
 echo -e "\n${BLUE}[3/5]  Installing polyterm via Homebrew...${NC}"
 brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles
