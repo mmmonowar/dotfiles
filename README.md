@@ -25,6 +25,15 @@ polyterm setup
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/mmmonowar/dotfiles/main/application-package/install.sh)"
 ```
 
+## 🔑 Personal Aliases (Optional)
+
+After install, re-enable your personal aliases by adding to `~/.zshrc_local`:
+```bash
+export POLYTERM_USER_EMAIL="you@example.com"
+export POLYTERM_GITHUB_ORG="your-org"
+```
+These enable: `gemini` (requires email), `poly-sync` (requires org).
+
 ## 📦 Package Tiers
 
 PolyTerm installs packages in three tiers:
