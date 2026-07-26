@@ -77,7 +77,7 @@ brew update && brew install polyterm && polyterm setup
 | **Repair** | `polyterm setup` |
 | **Uninstall** | `brew uninstall polyterm` |
 | **Remove symlinks** | `polyterm offboard` |
-| **Full removal** | `brew uninstall polyterm && polyterm offboard && rm -rf ~/dotfiles ~/dotfiles-data` |
+| **Full removal** | `brew uninstall polyterm && polyterm offboard && rm -rf ~/polyterm ~/polyterm-data` |
 
 ## 📖 Documentation
 For detailed usage instructions, keybindings, and troubleshooting, see the **[User Manual](https://github.com/mmmonowar/dotfiles-projectmanager/blob/main/project-manager/80%20Manuals/user-manual.md)**.

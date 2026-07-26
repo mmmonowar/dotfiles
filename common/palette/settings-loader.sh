@@ -14,7 +14,7 @@ if [[ -z "$DOTFILES_ROOT" ]]; then
 fi
 
 # DOTFILES_DATA should also be set, but we can provide a default.
-export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
 
 # 2. Load User Settings
 # Source the main settings file which contains user overrides and preferences.

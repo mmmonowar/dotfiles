@@ -21,7 +21,7 @@ choose_scope() {
     echo ""
     echo -e "  ${GREEN}1${NC}) PolyTerm configuration only"
     echo -e "     (symlinks, plugins, shell, CLI)"
-    echo -e "     ${BLUE}~/dotfiles${NC} and ${BLUE}~/dotfiles-data${NC} will be kept"
+    echo -e "     ${BLUE}~/polyterm${NC} and ${BLUE}~/polyterm-data${NC} will be kept"
     echo ""
     echo -e "  ${GREEN}2${NC}) Everything"
     echo -e "     (configuration + repos + data)"
@@ -48,7 +48,7 @@ choose_scope() {
         echo -e "${RED}You selected: Everything${NC}"
         echo -e "${YELLOW}This will remove PolyTerm AND your repos and data.${NC}"
         echo ""
-        printf "Remove ~/dotfiles and ~/dotfiles-data? (y/N): "
+        printf "Remove ~/polyterm and ~/polyterm-data? (y/N): "
         read -r resp
         if [[ "$resp" =~ ^[yY] ]]; then
             REMOVE_REPOS=true
@@ -298,7 +298,7 @@ offboarding_done() {
     [[ "$REMOVED_FONTS" == true ]] && echo -e "    - JetBrains Mono Nerd Font"
     [[ "$SHELL_RESTORED" == true ]] && echo -e "    - Default shell restored to bash"
     [[ "$CLI_REMOVED" == true ]] && echo -e "    - polyterm CLI"
-    [[ "$REPOS_REMOVED" == true ]] && echo -e "    - ~/dotfiles and ~/dotfiles-data"
+    [[ "$REPOS_REMOVED" == true ]] && echo -e "    - ~/polyterm and ~/polyterm-data"
     [[ "$PACKAGES_UNINSTALLED" == true ]] && echo -e "    - Homebrew packages"
     echo ""
     echo -e "  ${YELLOW}Next steps:${NC}"

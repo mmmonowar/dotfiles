@@ -28,12 +28,12 @@ class Polyterm < Formula
         polyterm setup
 
       This will:
-        - Clone dotfiles to ~/dotfiles (if not already present)
-        - Initialize dotfiles-data at ~/dotfiles-data for private user state
+        - Clone dotfiles to ~/polyterm (if not already present)
+        - Initialize polyterm-data at ~/polyterm-data for private user state
         - Set up symbolic links and configurations
         - Install packages and register the device
 
-      Note: dotfiles-data is a separate private data repository.
+      Note: polyterm-data is a separate private data repository.
       To sync data across machines, push it to a private remote after setup.
     EOS
   end

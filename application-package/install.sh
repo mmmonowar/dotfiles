@@ -39,7 +39,7 @@ if [ -d ".git" ] && git remote -v | grep -q "mmmonowar/dotfiles"; then
     TARGET_DIR=$(pwd)
     echo -e "📍  ${BLUE}Detected existing repository at $TARGET_DIR${NC}"
 else
-    TARGET_DIR="$HOME/dotfiles"
+    TARGET_DIR="$HOME/polyterm"
 fi
 REPO_URL="${POLYTERM_URL_DOTFILES_REPO:-"https://github.com/mmmonowar/dotfiles.git"}"
 
@@ -161,10 +161,10 @@ else
     cd "$TARGET_DIR" && git pull origin main && cd - > /dev/null
 fi
 
-# 6.5. Initialize dotfiles-data (private data repo)
-DATA_DIR="$TARGET_DIR/../dotfiles-data"
+# 6.5. Initialize polyterm-data (private data repo)
+DATA_DIR="$TARGET_DIR/../polyterm-data"
 if [ ! -d "$DATA_DIR" ]; then
-    echo -e "📁  ${BLUE}Creating dotfiles-data directory at $DATA_DIR...${NC}"
+    echo -e "📁  ${BLUE}Creating polyterm-data directory at $DATA_DIR...${NC}"
     mkdir -p "$DATA_DIR"
     cd "$DATA_DIR" && git init && cd "$TARGET_DIR"
     mkdir -p "$DATA_DIR/settings"
@@ -179,11 +179,11 @@ if [ ! -d "$DATA_DIR" ]; then
         echo -e "  ${GREEN}Created default settings at $DATA_DIR/settings/.polyterm_settings${NC}"
     fi
 
-    echo -e "✅  ${GREEN}dotfiles-data initialized at $DATA_DIR${NC}"
+    echo -e "✅  ${GREEN}polyterm-data initialized at $DATA_DIR${NC}"
     echo -e "💡  ${YELLOW}To sync data across machines, push this repo to a private remote:${NC}"
     echo -e "    cd $DATA_DIR && git remote add origin <your-private-repo-url> && git push -u origin main"
 else
-    echo -e "✅  ${GREEN}dotfiles-data already exists at $DATA_DIR.${NC}"
+    echo -e "✅  ${GREEN}polyterm-data already exists at $DATA_DIR.${NC}"
 fi
 export DOTFILES_DATA="$DATA_DIR"
 
@@ -192,8 +192,8 @@ if [ -f "$DATA_DIR/settings/.polyterm_settings" ]; then
     source "$DATA_DIR/settings/.polyterm_settings"
 fi
 
-# 6.25. Self-heal ownership for dotfiles-data (defined after repo init)
-fix_root_ownership "$DATA_DIR" "dotfiles-data directory"
+# 6.25. Self-heal ownership for polyterm-data (defined after repo init)
+fix_root_ownership "$DATA_DIR" "polyterm-data directory"
 
 # 7. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"

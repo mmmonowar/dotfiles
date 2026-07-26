@@ -23,17 +23,17 @@ OS_ENV_UPPER=$(echo "$OS_ENV" | tr '[:lower:]' '[:upper:]' )
 # FZF_DEFAULT_OPTS will be set by themes.sh after settings are loaded
 
 # 4. Dynamic Paths
-# Prioritize user's active repository (via DOTFILES_ROOT or ~/dotfiles) if valid
+# Prioritize user's active repository (via DOTFILES_ROOT or ~/polyterm) if valid
 if [[ -n "$DOTFILES_ROOT" && -d "$DOTFILES_ROOT/common/palette" ]]; then
     REPO_PATH="$DOTFILES_ROOT"
-elif [[ -d "$HOME/dotfiles/common/palette" ]]; then
-    REPO_PATH="$HOME/dotfiles"
+elif [[ -d "$HOME/polyterm/common/palette" ]]; then
+    REPO_PATH="$HOME/polyterm"
 else
     REPO_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 fi
 
 # 4b. Data Path (separate private repo for mutable user state)
-DOTFILES_DATA="${DOTFILES_DATA:-${REPO_PATH}/../dotfiles-data}"
+DOTFILES_DATA="${DOTFILES_DATA:-${REPO_PATH}/../polyterm-data}"
 
 # 4c. Docs Path — bundled in dotfiles/docs/ first, then fallback to companion repo
 DOCS_PATH=""

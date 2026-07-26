@@ -11,7 +11,7 @@ function palette() {
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
-    local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+    local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
     local device_id
     device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
@@ -73,13 +73,13 @@ function dot-sync() {
         git commit -m "Sync: ${timestamp} [$(hostname)]"
         git push origin main && echo "󰄬  Dotfiles pushed to GitHub." || echo "󰅙  Failed to push dotfiles."
 
-        # Sync dotfiles-data (private data repo)
+        # Sync polyterm-data (private data repo)
         if [[ -d "$DATA_PATH/.git" ]]; then
-            echo "󰇊  Syncing dotfiles-data to GitHub..."
+            echo "󰇊  Syncing polyterm-data to GitHub..."
             cd "$DATA_PATH"
             git add -A
             git commit -m "Sync: ${timestamp} [$(hostname)]" || true
-            git push origin main && echo "󰄬  dotfiles-data pushed to GitHub." || echo "󰅙  Failed to push dotfiles-data."
+            git push origin main && echo "󰄬  polyterm-data pushed to GitHub." || echo "󰅙  Failed to push polyterm-data."
         fi
 
         cd "$current_dir"
@@ -91,7 +91,7 @@ function dot-sync() {
 function dot-pull() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
-    local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+    local DATA_PATH="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
     local device_id
     device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
@@ -119,9 +119,9 @@ function dot-pull() {
                 dot-scan
             fi
 
-            # Pull dotfiles-data (private data repo)
+            # Pull polyterm-data (private data repo)
             if [[ -d "$DATA_PATH/.git" ]]; then
-                echo "󰇚  Fetching dotfiles-data updates..."
+                echo "󰇚  Fetching polyterm-data updates..."
                 cd "$DATA_PATH" && git pull origin main && cd "$DOT_PATH"
             fi
 
@@ -176,7 +176,7 @@ function dot-reload-all() {
     [[ -f "$sync_sh" ]] && source "$sync_sh" 2>/dev/null
 
     echo "󰔄  [2/4] Reloading PolyTerm environment..."
-    local data_path="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+    local data_path="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
     local settings_file="${data_path}/settings/.polyterm_settings"
     [[ -f "$settings_file" ]] && source "$settings_file" 2>/dev/null && echo "  󰄬  PolyTerm settings reloaded"
 
@@ -272,7 +272,7 @@ function dot-reload-shell() {
 
 function dot-reload-settings() {
     echo "󰒓  Reloading PolyTerm environment..."
-    local data_path="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+    local data_path="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
     local settings_file="${data_path}/settings/.polyterm_settings"
     [[ -f "$settings_file" ]] && source "$settings_file" 2>/dev/null && echo "  󰄬  PolyTerm settings reloaded"
     echo "󰄬  Settings reloaded."
