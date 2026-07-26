@@ -113,7 +113,7 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # -----------------------------------------------------------------------------
 alias search='ddgr --reg en-us --num 5'
 alias glow="$POLYTERM_APP_MARKDOWN_VIEWER -w $POLYTERM_GLOW_WIDTH"
-alias poly-sync="gh repo list INTxK --topic polyos --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | while read -r repo; do dir=\${repo##*/}; if [ -d \"\$dir\" ]; then echo \"󰇚 Updating \$dir...\"; git -C \"\$dir\" pull; else echo \"󰇚 Cloning \$dir...\"; gh repo clone \"\$repo\"; fi; done"
+alias poly-sync="gh repo list \${POLYTERM_GITHUB_ORG:-\$(gh api user -q .login)} --topic polyos --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | while read -r repo; do dir=\${repo##*/}; if [ -d \"\$dir\" ]; then echo \"󰇚 Updating \$dir...\"; git -C \"\$dir\" pull; else echo \"󰇚 Cloning \$dir...\"; gh repo clone \"\$repo\"; fi; done"
 alias reload-tmux='dot-reload'
 alias restart-tmux='tmux kill-server'
 alias kbcheck='hidutil property --get "UserKeyMapping"'
@@ -138,11 +138,10 @@ fi
 
 # 7. AI & LLM ALIASES
 # -----------------------------------------------------------------------------
-if [[ "$(git config user.email 2>/dev/null)" == "developer11.intxk@gmail.com" ]]; then
+if [[ "$(git config user.email 2>/dev/null)" == "${POLYTERM_USER_EMAIL:-}" ]] && [[ -n "$POLYTERM_USER_EMAIL" ]]; then
     alias gemini="timeout 1h gemini --model flash-lite"
     alias gemini-flash="timeout 1h gemini --model flash-3.0"
     alias gemini-pro="timeout 1h gemini --model pro-3.1"
-    alias check-spend="gcloud beta billing quotas list --format='table(limit,usage)'"
 
     ask_gemini() {
         if [[ -f "$1" ]]; then

@@ -5,7 +5,7 @@
 
 function sync_hledger() {
     local HLEDGER_LINK="$HOME/.hledger.journal"
-    local HLEDGER_REPO_DIR="${POLYTERM_HLEDGER_REPO:-$HOME/GitHub/INTxK/Accounting-Management-System}"
+    local HLEDGER_REPO_DIR="${POLYTERM_HLEDGER_REPO:-$HOME/Accounting}"
     local HLEDGER_REPO_DATA_DIR="$HLEDGER_REPO_DIR/hledger/data"
     local HLEDGER_REPO_FILE="$HLEDGER_REPO_DATA_DIR/hledger.journal"
     local HLEDGER_REPO_HIDDEN_FILE="$HLEDGER_REPO_DATA_DIR/.hledger.journal"

@@ -24,9 +24,9 @@ export GEMINI_API_KEY=""  # Set your Gemini API key here (https://aistudio.googl
 # Applied to all devices running the given operating system.
 # Naming: POLYTERM_<KEY>_<OS>  where OS is one of: LINUX, WSL, MAC, WINDOWS.
 
-export POLYTERM_SCRATCHPAD_LINUX="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
-export POLYTERM_SCRATCHPAD_WSL="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
-export POLYTERM_SCRATCHPAD_MAC="$HOME/GitHub/mmmonowar/log-captures/10 Worklogs/scratch-pad.md"
+export POLYTERM_SCRATCHPAD_LINUX="$HOME/Documents/scratch-pad.md"
+export POLYTERM_SCRATCHPAD_WSL="$HOME/Documents/scratch-pad.md"
+export POLYTERM_SCRATCHPAD_MAC="$HOME/Documents/scratch-pad.md"
 
 # ── Device-level Overrides ───────────────────────────────────────────────────
 # Highest priority. Applied only to the specific device matching the ID.

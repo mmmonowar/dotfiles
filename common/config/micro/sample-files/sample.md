@@ -17,7 +17,7 @@ Hope is all there is
 [?]
 [!]
 
-hello.intxk@gmail.com
+user@example.com
 
 file.md
 
