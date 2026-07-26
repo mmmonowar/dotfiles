@@ -138,9 +138,7 @@ If critical configuration files are deleted or corrupted:
 
 ### Download Strategy
 
-`Formula/polyterm.rb` uses a **git URL** with branch-based checkout. On WSL, Homebrew 6.0.12's `GitDownloadStrategy` triggers `Errno::EINVAL` during build staging (`/var/tmp/`). The formula overrides the `stage` method to perform a direct `git clone --depth=1` into the build directory using the **SSH URL** (`git@github.com:mmmonowar/dotfiles.git`), bypassing the buggy staging pipeline entirely. SSH avoids the `GIT_TERMINAL_PROMPT=0` credential prompt issue.
-
-**Prerequisites**: SSH key configured for GitHub (auto-generated + uploaded by `bootstrap-wsl` or `install.sh`).
+`Formula/polyterm.rb` uses a **git URL** with branch-based checkout. On WSL, Homebrew 6.0.12's `GitDownloadStrategy` triggers `Errno::EINVAL` during build staging (`/var/tmp/`). The formula overrides the `stage` method to perform a direct `git clone --depth=1` into the build directory using the **HTTPS URL** (`https://github.com/mmmonowar/dotfiles.git`), bypassing the buggy staging pipeline entirely. The repo is public — no authentication required.
 
 ```bash
 brew update && brew install polyterm

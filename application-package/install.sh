@@ -118,51 +118,13 @@ else
     echo -e "✅  ${GREEN}Homebrew is already installed.${NC}"
 fi
 
-# 4.5. GitHub Auth + SSH Key (required for private repo via Homebrew tap)
-if [[ "$OS_ENV" != "mac" ]]; then
-    # Authenticate with GitHub if not already done
-    if command -v gh &>/dev/null && ! gh auth status &>/dev/null 2>&1; then
-        echo -e "\n${YELLOW}GitHub CLI is not authenticated. You will be prompted to log in via browser.${NC}"
-        gh auth login --scopes repo
-        git config --global credential.helper '!gh auth git-credential'
-    else
-        git config --global credential.helper '!gh auth git-credential'
-    fi
-
-    # Generate SSH key if not present
-    SSH_KEY="$HOME/.ssh/id_ed25519"
-    if [[ ! -f "$SSH_KEY" ]]; then
-        echo -e "🔑  ${BLUE}Generating SSH key...${NC}"
-        ssh-keygen -t ed25519 -f "$SSH_KEY" -N "" -q
-    fi
-
-    # Start ssh-agent and load key (needed for formula's SSH git clone)
-    if [ -z "$SSH_AUTH_SOCK" ]; then
-        eval "$(ssh-agent -s)" >/dev/null
-    fi
-    ssh-add "$SSH_KEY" 2>/dev/null
-
-    # Add SSH key to GitHub if not already present
-    if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
-        PUB_KEY=$(cat "${SSH_KEY}.pub")
-        if ! gh ssh-key list 2>/dev/null | grep -qF "$PUB_KEY"; then
-            echo -e "  ${BLUE}Adding SSH key to GitHub...${NC}"
-            gh ssh-key add "${SSH_KEY}.pub" --title "WSL $(hostname)" --type authentication
-            echo -e "  ${GREEN}✅  SSH key added to GitHub.${NC}"
-        fi
-    fi
-fi
-
 # 5. Install polyterm via Homebrew tap (gives us the `polyterm` command on PATH)
 if command -v brew &>/dev/null && ! command -v polyterm &>/dev/null; then
     echo -e "🍺  ${BLUE}Installing polyterm from tap...${NC}"
     brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles
     if ! brew install polyterm; then
         echo -e "\n${RED}❌  brew install polyterm failed.${NC}"
-        echo -e "${YELLOW}Ensure GitHub authentication is complete:${NC}"
-        echo -e "  ${GREEN}gh auth status${NC}"
-        echo -e "  ${GREEN}git config --global credential.helper '!gh auth git-credential'${NC}"
-        echo -e "  ${GREEN}gh ssh-key list${NC}"
+        echo -e "${YELLOW}Check your network connection and try again.${NC}"
         exit 1
     fi
 fi
@@ -177,7 +139,7 @@ else
     cd "$TARGET_DIR" && git pull origin main && cd - > /dev/null
 fi
 
-# 6.5. Initialize polyterm-data (private data repo)
+# 6.5. Initialize polyterm-data (user state repo)
 DATA_DIR="$TARGET_DIR/../polyterm-data"
 if [ ! -d "$DATA_DIR" ]; then
     echo -e "📁  ${BLUE}Creating polyterm-data directory at $DATA_DIR...${NC}"
@@ -196,8 +158,8 @@ if [ ! -d "$DATA_DIR" ]; then
     fi
 
     echo -e "✅  ${GREEN}polyterm-data initialized at $DATA_DIR${NC}"
-    echo -e "💡  ${YELLOW}To sync data across machines, push this repo to a private remote:${NC}"
-    echo -e "    cd $DATA_DIR && git remote add origin <your-private-repo-url> && git push -u origin main"
+    echo -e "💡  ${YELLOW}To sync data across machines, push this repo to a remote:${NC}"
+    echo -e "    cd $DATA_DIR && git remote add origin <your-repo-url> && git push -u origin main"
 else
     echo -e "✅  ${GREEN}polyterm-data already exists at $DATA_DIR.${NC}"
 fi

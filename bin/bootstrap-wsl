@@ -37,72 +37,34 @@ echo -e "🚀  PolyTerm WSL Bootstrap"
 echo -e "==========================================${NC}"
 
 # ── 1. System packages ──────────────────────────────────────────
-echo -e "\n${BLUE}[1/7]  Installing system packages...${NC}"
+echo -e "\n${BLUE}[1/5]  Installing system packages...${NC}"
 sudo apt-get update -qq
-sudo apt-get install -y -qq zsh git fzf tmux curl build-essential gh
+sudo apt-get install -y -qq zsh git fzf tmux curl build-essential
 
 # ── 2. Homebrew ─────────────────────────────────────────────────
 if command -v brew &>/dev/null; then
     echo -e "${GREEN}✅  Homebrew already installed.${NC}"
 else
-    echo -e "\n${BLUE}[2/7]  Installing Homebrew...${NC}"
+    echo -e "\n${BLUE}[2/5]  Installing Homebrew...${NC}"
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# ── 3. GitHub Auth ──────────────────────────────────────────────
-if ! gh auth status &>/dev/null; then
-    echo -e "\n${BLUE}[3/7]  Authenticating with GitHub...${NC}"
-    echo -e "${YELLOW}You will be prompted to log in via browser (device flow).${NC}"
-    gh auth login --scopes repo
-    git config --global credential.helper '!gh auth git-credential'
-else
-    echo -e "${GREEN}✅  GitHub already authenticated.${NC}"
-    git config --global credential.helper '!gh auth git-credential'
-fi
-
-# ── 4. SSH Key ──────────────────────────────────────────────────
-SSH_KEY="$HOME/.ssh/id_ed25519"
-if [[ ! -f "$SSH_KEY" ]]; then
-    echo -e "\n${BLUE}[4/7]  Generating SSH key...${NC}"
-    ssh-keygen -t ed25519 -f "$SSH_KEY" -N "" -q
-    echo -e "${GREEN}✅  SSH key generated at $SSH_KEY${NC}"
-fi
-
-# Start ssh-agent and load key (needed for formula's SSH git clone)
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval "$(ssh-agent -s)" >/dev/null
-fi
-ssh-add "$SSH_KEY" 2>/dev/null
-
-# Add SSH key to GitHub if not already present
-PUB_KEY=$(cat "${SSH_KEY}.pub")
-if ! gh ssh-key list 2>/dev/null | grep -qF "$PUB_KEY"; then
-    echo -e "  ${BLUE}Adding SSH key to GitHub...${NC}"
-    gh ssh-key add "${SSH_KEY}.pub" --title "WSL $(hostname)" --type authentication
-    echo -e "${GREEN}✅  SSH key added to GitHub.${NC}"
-else
-    echo -e "${GREEN}✅  SSH key already on GitHub.${NC}"
-fi
-
-# ── 5. Tap & install polyterm ──────────────────────────────────
-echo -e "\n${BLUE}[5/7]  Installing polyterm via Homebrew...${NC}"
+# ── 3. Tap & install polyterm ──────────────────────────────────
+echo -e "\n${BLUE}[3/5]  Installing polyterm via Homebrew...${NC}"
 brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles
 brew cleanup --prune=all 2>/dev/null || true
 if ! brew install polyterm; then
     echo -e "\n${RED}❌  brew install polyterm failed.${NC}"
-    echo -e "${YELLOW}Authentication may be required. Ensure:${NC}"
-    echo -e "  1. GitHub CLI is authenticated: ${GREEN}gh auth status${NC}"
-    echo -e "  2. SSH key is registered: ${GREEN}gh ssh-key list${NC}"
-    echo -e "  3. Git credential helper: ${GREEN}git config --global credential.helper${NC}"
+    echo -e "${YELLOW}Check your network connection and try again.${NC}"
     exit 1
 fi
 
-# ── 6. Run full setup ──────────────────────────────────────────
-echo -e "\n${BLUE}[6/7]  Running polyterm setup...${NC}"
+# ── 4. Run full setup ──────────────────────────────────────────
+echo -e "\n${BLUE}[4/5]  Running polyterm setup...${NC}"
 polyterm setup
 
-# ── 7. Done ────────────────────────────────────────────────────
+# ── 5. Done ────────────────────────────────────────────────────
 echo -e "\n${GREEN}=========================================="
 echo -e "✅  Bootstrap Complete!"
 echo -e "==========================================${NC}"

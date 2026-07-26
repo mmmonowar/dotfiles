@@ -10,9 +10,9 @@ class Polyterm < Formula
 
   def stage(*)
     # Bypass Homebrew's GitDownloadStrategy#stage (apply2files bug on WSL)
-    # Uses SSH URL — requires SSH key configured for GitHub on the user's machine.
+    # Public repo — HTTPS clone requires no authentication.
     system "git", "clone", "--depth=1", "-b", "main",
-           "git@github.com:mmmonowar/dotfiles.git", Dir.pwd
+           "https://github.com/mmmonowar/dotfiles.git", Dir.pwd
   end
 
   def install
