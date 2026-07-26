@@ -14,7 +14,7 @@ fi
 
 # Define Dotfiles Root
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
-export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
 
 # Ensure standard path priority
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH}"

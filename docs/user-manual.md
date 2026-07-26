@@ -85,14 +85,14 @@ PolyTerm includes a dynamic theme system controlled by the `POLYTERM_THEME` sett
 1. Go to **Settings** → **Theme...** → **Customize theme...**.
 2. Pick a base preset to start from.
 3. Select any color token to edit its hex value (`#rrggbb` format).
-4. When finished, select **Save theme**, enter a name, and it's stored in `dotfiles-data/settings/themes/`.
+4. When finished, select **Save theme**, enter a name, and it's stored in `polyterm-data/settings/themes/`.
 
 **Built-in presets** are located in `common/config/themes/`:
 - `peppermint.json` — Dark, Peppermint Teal accent (default)
 - `catppuccin-mocha.json` — Warm mauve/pink accents
 - `tokyo-night.json` — Deep blue/purple accents
 
-**Custom themes** are stored in `dotfiles-data/settings/themes/` (user-private).
+**Custom themes** are stored in `polyterm-data/settings/themes/` (user-private).
 
 ### Zellij Theme Colors
 Zellij has its own theme system using `.kdl` files in `common/config/zellij/themes/`.

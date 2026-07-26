@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
-export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../dotfiles-data}"
+export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
 export OS_ENV="wsl"
 
 # Helper function to detect agent or non-interactive environments

@@ -15,7 +15,7 @@ layout {
 
     // 3. Immersive Peppermint Status Bar
     pane size=1 borderless=true {
-        plugin location="file:~/GitHub/mmmonowar/dotfiles/common/config/zellij/plugins/zjstatus.wasm" {
+        plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
             // Layout Placement mapping
             format_left   "{mode}"
             format_center "#[fg={ENV:POLYTERM_COLOR_BRIGHT_BLACK},bg={ENV:POLYTERM_COLOR_BACKGROUND}] {command_alt}"

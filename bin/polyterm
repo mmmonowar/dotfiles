@@ -14,11 +14,11 @@ fi
 # Central management tool for the PolyTerm dotfiles environment.
 
 # Determine the repository root dynamically
-# Prioritize user's active repository (via DOTFILES_ROOT or ~/dotfiles) if valid
+# Prioritize user's active repository (via DOTFILES_ROOT or ~/polyterm) if valid
 if [[ -n "$DOTFILES_ROOT" && -d "$DOTFILES_ROOT/common/palette" ]]; then
     REPO_PATH="$DOTFILES_ROOT"
-elif [[ -d "$HOME/dotfiles/common/palette" ]]; then
-    REPO_PATH="$HOME/dotfiles"
+elif [[ -d "$HOME/polyterm/common/palette" ]]; then
+    REPO_PATH="$HOME/polyterm"
 else
     # Fallback to resolving relative to the executable (handling symlinks recursively)
     SOURCE="$0"
@@ -66,7 +66,7 @@ function show_help() {
 # Detect and fix root-owned artifacts from a previous aborted sudo run
 check_root_artifacts() {
     local found=false
-    local paths=("$HOME/dotfiles" "$HOME/dotfiles/../dotfiles-data" "$HOME/.config" "$HOME/.gemini")
+    local paths=("$HOME/polyterm" "$HOME/polyterm/../polyterm-data" "$HOME/.config" "$HOME/.gemini")
     for p in "${paths[@]}"; do
         [[ -d "$p" ]] || continue
         if find "$p" -user root 2>/dev/null | head -1 | grep -q .; then
@@ -83,12 +83,12 @@ check_root_artifacts() {
     echo -e "${YELLOW}This blocks 'git pull' and symlink creation during setup.${NC}"
     echo ""
     echo -e "Run this command to fix:"
-    echo -e "  ${GREEN}sudo chown -R $(whoami) ~/dotfiles ~/dotfiles/../dotfiles-data ~/.config ~/.gemini${NC}"
+    echo -e "  ${GREEN}sudo chown -R $(whoami) ~/polyterm ~/polyterm/../polyterm-data ~/.config ~/.gemini${NC}"
     echo ""
     printf "Fix ownership now? (Y/n): "
     read -r resp
     if [[ ! "$resp" =~ ^[nN] ]]; then
-        sudo chown -R "$(whoami)" ~/dotfiles ~/dotfiles/../dotfiles-data ~/.config ~/.gemini 2>/dev/null || true
+        sudo chown -R "$(whoami)" ~/polyterm ~/polyterm/../polyterm-data ~/.config ~/.gemini 2>/dev/null || true
         echo -e "${GREEN}✅  Ownership fixed.${NC}"
     else
         echo -e "${YELLOW}⚠️  Skipping ownership fix — setup may fail with permission errors.${NC}"

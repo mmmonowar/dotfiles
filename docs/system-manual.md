@@ -72,14 +72,14 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 
 ### 3. Command Palette UI
 -   **Location**: `common/palette.sh` (Entry) → `common/palette/*.sh` (Implementation).
--   **Logic**: Uses `fzf` with `--ansi`. Settings are persisted in `dotfiles-data/settings/.polyterm_settings`.
+-   **Logic**: Uses `fzf` with `--ansi`. Settings are persisted in `polyterm-data/settings/.polyterm_settings`.
 -   **Failure Impact**: Corruption leads to UI rendering issues or script execution errors when selecting menu items.
 
 ### 4. Theme System Architecture
 -   **Entry Point**: `common/palette/themes.sh` sourced by `palette.sh` and all OS zshrc files.
 -   **Data Layer**:
     -   Built-in themes: `common/config/themes/<name>.json` (version-controlled).
-    -   Custom themes: `dotfiles-data/settings/themes/<name>.json` (user-private).
+    -   Custom themes: `polyterm-data/settings/themes/<name>.json` (user-private).
     -   Each JSON defines `colors` (18 ANSI tokens) and optional `fzf` overrides.
 -   **Loading Chain**:
     1.  Shell profile sets `POLYTERM_THEME` (default: `peppermint`).
@@ -88,7 +88,7 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
     4.  `POLYTERM_FZF_*` and `POLYTERM_COLOR_*` env vars exported.
     5.  `build_fzf_opts()` constructs `FZF_DEFAULT_OPTS="--color=..."`.
 -   **Theme Selection UI**: `settings.sh` → `theme_menu()` uses fzf to list available themes, calls `update_setting("POLYTERM_THEME", name)` + `load_theme(name)`.
--   **Custom Theme Editor**: `settings.sh` → `customize_theme_menu()` → `theme_color_editor()` with 18 color tokens, hex validation, save to `dotfiles-data/settings/themes/<slug>.json`.
+-   **Custom Theme Editor**: `settings.sh` → `customize_theme_menu()` → `theme_color_editor()` with 18 color tokens, hex validation, save to `polyterm-data/settings/themes/<slug>.json`.
 -   **Zellij Theme Editor**: A "Theme Colors..." entry in the Zellij Config Manager (`zellij_config_menu()`) provides interactive editing of 11 Zellij KDL color tokens via `kdl_config.py --get-theme-colors`/`--set-theme-color`. The editor copies the `.kdl` file, shows tokens in an fzf loop, validates hex input via `validate_hex()`, supports `default`/`reset` to restore original values. "Save" writes back to the `.kdl` file and calls `trigger_zsh_func "dot-zellij-reload"`.
 -   **Failure Impact**: Corrupted theme JSON → `python3` JSON parse error → `load_theme` falls back to Peppermint silently.
 
@@ -146,7 +146,7 @@ If critical configuration files are deleted or corrupted:
 brew update && brew install polyterm
 ```
 
-This has no effect on `polyterm setup` or `dot-pull` — those operate on your personal `~/dotfiles` clone independently.
+This has no effect on `polyterm setup` or `dot-pull` — those operate on your personal `~/polyterm` clone independently.
 
 ### Explicit Directory Installs
 

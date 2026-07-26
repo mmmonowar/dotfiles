@@ -24,14 +24,14 @@ fi
 # Resolve repository path (same logic as bin/polyterm)
 if [[ -n "$DOTFILES_ROOT" && -d "$DOTFILES_ROOT/common/palette" ]]; then
     TARGET_DIR="$DOTFILES_ROOT"
-elif [[ -d "$HOME/dotfiles/common/palette" ]]; then
-    TARGET_DIR="$HOME/dotfiles"
+elif [[ -d "$HOME/polyterm/common/palette" ]]; then
+    TARGET_DIR="$HOME/polyterm"
 else
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     TARGET_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 fi
 
-DATA_DIR="$TARGET_DIR/../dotfiles-data"
+DATA_DIR="$TARGET_DIR/../polyterm-data"
 
 device_id=$(hostname | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_-]//g')
 
