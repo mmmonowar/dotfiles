@@ -52,6 +52,7 @@ fi
 
 # ── 3. Tap & install polyterm ──────────────────────────────────
 echo -e "\n${BLUE}[3/5]  Installing polyterm via Homebrew...${NC}"
+brew untap mmmonowar/dotfiles 2>/dev/null || true
 brew tap mmmonowar/dotfiles https://github.com/mmmonowar/dotfiles
 brew cleanup --prune=all 2>/dev/null || true
 if ! brew install polyterm; then
