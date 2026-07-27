@@ -169,6 +169,7 @@ keybinds clear-defaults=true {
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt e" { CloseTab; }
         bind "Alt m" { NewTab; }
+        bind "Ctrl Shift p" { ToggleFloatingPanes; }
         bind "Alt p" { ToggleFloatingPanes; }
         bind "Alt w" { Detach; }
     }
