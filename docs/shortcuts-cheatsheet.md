@@ -5,10 +5,12 @@
 > Status: Active
 
 ## Unified Keybindings (Tmux & Zellij)
-Key combinations use the Alt/Meta modifier uniformly across all platforms.
+Key combinations use the Alt/Meta modifier uniformly across all platforms, with `Ctrl+Shift+P` as the primary Command Palette trigger.
 
 | Binding | Action (Tmux) | Action (Zellij) |
 | --- | --- | --- |
+| `Ctrl + Shift + p` | Display Command Palette | Display Command Palette |
+| `Alt + p` | Display Command Palette (fallback) | Display Command Palette (fallback) |
 | `Alt + Up` | Next Window | Next Tab |
 | `Alt + Down` | Previous Window | Previous Tab |
 | `Alt + m` | New Window | New Tab |
@@ -18,4 +20,3 @@ Key combinations use the Alt/Meta modifier uniformly across all platforms.
 | `Alt + Right` | Focus Right Pane | Focus Right Pane |
 | `Alt + 1` | Create Tiled Pane (Max 4) | Create Pane (Max 4) |
 | `Alt + 2` | Close Pane | Close Pane |
-| `Alt + p` | Display Command Palette | Display Command Palette |

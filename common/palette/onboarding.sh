@@ -19,7 +19,7 @@ onboarding_welcome() {
 choose_multiplexer() {
     echo -e "\n${YELLOW}── Multiplexer ───────────────────────────${NC}"
     echo -e "PolyTerm works with both Tmux and Zellij."
-    echo -e "Both offer the same Command Palette (Alt+P)"
+    echo -e "Both offer the same Command Palette (Ctrl+Shift+P)"
     echo -e "and keybindings."
     echo ""
     echo -e "  ${GREEN}1${NC}) tmux    — Auto-start Tmux Dashboard on terminal open"
@@ -221,6 +221,6 @@ onboarding_done() {
     echo -e "=========================================${NC}"
     echo -e "Next steps:"
     echo -e "  1. ${BLUE}Restart your terminal${NC} or run: ${GREEN}source ~/.zshrc${NC}"
-    echo -e "  2. Press ${GREEN}Alt+P${NC} to open the Command Palette"
+    echo -e "  2. Press ${GREEN}Ctrl+Shift+P${NC} to open the Command Palette"
     echo -e "  3. In Tmux, press ${GREEN}Alt+I${NC} to install plugins"
 }

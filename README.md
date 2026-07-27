@@ -4,7 +4,7 @@
 
 ## ✨ Highlights
 - **One-Command Install**: Setup your entire environment in seconds.
-- **Unified Command Palette**: `Alt+p` to launch apps, manage packages, and execute shortcuts.
+- **Unified Command Palette**: `Ctrl+Shift+P` to launch apps, manage packages, and execute shortcuts.
 - **Self-Healing Sync**: `dot-sync` automatically repairs your environment by installing missing dependencies.
 - **Auto-Updating Agent**: Gemini CLI stays up-to-date automatically in the background.
 - **Cross-Platform**: Seamlessly transition between Mac and Linux with consistent keybindings.
@@ -46,11 +46,12 @@ PolyTerm installs packages in three tiers:
 
 ## 🔧 Troubleshooting
 
-### macOS Alt/Option Keys
+### Command Palette Not Opening
 
-If `Alt+P` (Command Palette) produces a character like `π` instead of opening the palette:
+If `Ctrl+Shift+P` doesn't open the Command Palette:
 
-- **Local terminal**: The first-run onboarding wizard automatically detects your terminal (Terminal.app or iTerm2) and configures the Option key as Meta.
+- Try the fallback binding `Alt+p`.
+- **macOS**: The first-run onboarding wizard automatically detects your terminal (Terminal.app or iTerm2) and configures the Option key as Meta for Alt fallback.
 - **SSH session**: Terminal detection may fall back to applying both fixes. Open a new terminal window on the host machine for changes to take effect.
 - **Manual fix**: Run `polyterm palette` → Fix Alt Keys, or configure your terminal:
   - **Terminal.app**: Settings → Profiles → Keyboard → Check "Use Option as Meta key"

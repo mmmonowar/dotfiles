@@ -60,9 +60,9 @@ The `polyterm` command is your central hub for environment management.
 
 ---
 
-## 🎛️ Unified Command Palette (`Alt+p`)
+## 🎛️ Unified Command Palette (`Ctrl+Shift+P`)
 
-The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive menu triggered via `Alt+p` (or `Meta+p`) inside Tmux.
+The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive menu triggered via `Ctrl+Shift+P` inside Tmux/Zellij. `Alt+p` is available as a fallback for terminals that don't support Ctrl+Shift combos.
 
 ### Features:
 - **Launch App**: Search and launch CLI tools defined in your Brewfile with dynamic descriptions.
@@ -76,7 +76,7 @@ The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive men
 PolyTerm includes a dynamic theme system controlled by the `POLYTERM_THEME` setting.
 
 **Selecting a theme** (via palette):
-1. Open the Command Palette (`Alt+p`).
+1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Go to **Settings** → **Theme...**.
 3. Choose from available presets (Peppermint, Catppuccin Mocha, Tokyo Night) or any custom theme you've created.
 4. The fzf colors update immediately.
@@ -132,7 +132,7 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 - **`Mouse Support`**: Mouse dragging also triggers selection and copies to the clipboard on release.
 
 ### System & Navigation
-- **`Alt+p`**: Open Command Palette
+- **`Ctrl+Shift+P`**: Open Command Palette (`Alt+p` available as fallback)
 - **`Alt+r`**: Reload Configuration (`dot-reload`). This reloads both Zsh and Tmux configs even if executed from a non-Tmux shell.
 
 ---
@@ -186,8 +186,15 @@ PolyTerm includes a customized **Micro** editor configuration located in `common
 
 ## 🛠️ Troubleshooting
 
-### Alt/Option Keys Not Working
-If `Alt+p` or other shortcuts fail:
+### Ctrl+Shift+P Not Working
+If `Ctrl+Shift+P` doesn't open the Command Palette:
+1. Ensure your terminal supports Ctrl+Shift key combinations (most modern terminals do).
+2. Try the fallback binding `Alt+p`.
+3. **WSL/Linux**: Run the "Fix Alt Keys" option in the Command Palette if using the fallback.
+4. **macOS**: Ensure your terminal sends Ctrl+Shift correctly (iTerm2 and Terminal.app do by default).
+
+### Alt/Option Keys Not Working (Fallback)
+If `Alt+p` or other Alt shortcuts fail:
 1.  **WSL/Linux**: Run the "Fix Alt Keys" option in the Command Palette or execute `polyterm palette` -> `Fix Alt Keys`.
 2.  **macOS (iTerm2)**: Go to `Settings` -> `Profiles` -> `Keys` and set `Left Option key` to `Esc+`.
 3.  **macOS (Terminal.app)**: Go to `Settings` -> `Profiles` -> `Keyboard` and check `Use Option as Meta key`.
