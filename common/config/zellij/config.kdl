@@ -1,7 +1,7 @@
 keybinds {
     shared_except "locked" {
         bind "Ctrl Shift p" {
-            Run "polyterm" "palette"
+            Run "bash" "-c" "d=\"${DOTFILES_ROOT:-${HOME}/polyterm}\"; \"${d}/bin/polyterm\" palette"
             floating true
             move_to_focused_tab true
         }
