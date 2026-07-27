@@ -6,7 +6,7 @@
 
 function shortcuts_menu() {
     local query=$1
-    local mod="Alt"
+    local mod="Ctrl+Shift"
     local dim="\033[2m"
     local reset="\033[0m"
 

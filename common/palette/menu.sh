@@ -8,7 +8,7 @@ function list_all_items() {
     local query=$1
     local dim="\033[2m"
     local reset="\033[0m"
-    local mod="Alt"
+    local mod="Ctrl+Shift"
     local idx=0
 
     if [[ -z "$query" ]]; then
@@ -25,7 +25,7 @@ function list_all_items() {
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "10" "󰇶  Push Changes" "${dim}Sync configs to GitHub${reset}" "ACTION" "push"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "11" "  Reload Configs..." "${dim}Selectively refresh shell, settings, or mux${reset}" "SUBCAT" "reload"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "12" "󰒃  Security Scan" "${dim}Run audit and vulnerability checks${reset}" "ACTION" "scan"
-        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "13" "󰌌  Fix Alt Keys" "${dim}Diagnose and resolve keyboard issues${reset}" "ACTION" "fix_alt"
+        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "13" "󰌌  Keyboard Diagnostics" "${dim}Diagnose and resolve keyboard issues${reset}" "ACTION" "fix_alt"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "14" "󰖟  Device Manager..." "${dim}Scan, manage, SSH into devices${reset}" "CAT" "devices"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "15" "󰒓  Configuration Manager..." "${dim}Manage app configs (Zellij)${reset}" "CAT" "config"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "16" "󰅙  Exit" "${dim}Close the command palette${reset}" "ACTION" "exit"

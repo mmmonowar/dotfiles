@@ -19,7 +19,7 @@ onboarding_welcome() {
 choose_multiplexer() {
     echo -e "\n${YELLOW}── Multiplexer ───────────────────────────${NC}"
     echo -e "PolyTerm works with both Tmux and Zellij."
-    echo -e "Both offer the same Command Palette (Alt+P)"
+    echo -e "Both offer the same Command Palette (Ctrl+Shift+P)"
     echo -e "and keybindings."
     echo ""
     echo -e "  ${GREEN}1${NC}) tmux    — Auto-start Tmux Dashboard on terminal open"
@@ -124,7 +124,7 @@ choose_apps() {
 }
 
 configure_alt_keys() {
-    echo -e "\n${YELLOW}── Alt/Option Key Setup ───────────────────${NC}"
+    echo -e "\n${YELLOW}── Keyboard Compatibility Setup ──────────${NC}"
 
     if [[ "$OS_ENV" == "mac" ]]; then
         local terminal=""
@@ -193,23 +193,23 @@ configure_alt_keys() {
         local distro=""
         if command -v gsettings &> /dev/null; then
             if gsettings get org.gnome.Terminal.Legacy.Settings menu-accelerator-enabled 2>/dev/null | grep -q "true"; then
-                printf "Disable GNOME Terminal menu accelerators (so Alt bindings work)? (Y/n): "
+                printf "Disable GNOME Terminal menu accelerators (so Ctrl+Shift shortcuts work)? (Y/n): "
                 read -r resp
                 if [[ ! "$resp" =~ ^[nN] ]]; then
                     gsettings set org.gnome.Terminal.Legacy.Settings menu-accelerator-enabled false
                     echo -e "${GREEN}✅  Menu accelerators disabled.${NC}"
                 fi
             else
-                echo -e "${GREEN}✅  Alt keys already configured.${NC}"
+                echo -e "${GREEN}✅  Keyboard already configured.${NC}"
             fi
         else
             echo -e "${YELLOW}GNOME Terminal not detected — no changes needed.${NC}"
         fi
 
     elif [[ "$OS_ENV" == "wsl" ]]; then
-        echo -e "${YELLOW}If Alt bindings don't work in Windows Terminal,${NC}"
-        echo -e "${YELLOW}check for conflicting Alt shortcuts in:${NC}"
-        echo -e "  Settings → Actions → (search for Alt)"
+        echo -e "${YELLOW}If Ctrl+Shift shortcuts don't work in Windows Terminal,${NC}"
+        echo -e "${YELLOW}check for conflicting keyboard shortcuts in:${NC}"
+        echo -e "  Settings → Actions → (search for Ctrl+Shift)"
         echo ""
     fi
 }
@@ -221,6 +221,6 @@ onboarding_done() {
     echo -e "=========================================${NC}"
     echo -e "Next steps:"
     echo -e "  1. ${BLUE}Restart your terminal${NC} or run: ${GREEN}source ~/.zshrc${NC}"
-    echo -e "  2. Press ${GREEN}Alt+P${NC} to open the Command Palette"
-    echo -e "  3. In Tmux, press ${GREEN}Alt+I${NC} to install plugins"
+    echo -e "  2. Press ${GREEN}Ctrl+Shift+P${NC} to open the Command Palette"
+    echo -e "  3. In Tmux, press ${GREEN}Ctrl+Shift+I${NC} to install plugins"
 }

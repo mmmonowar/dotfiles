@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # ==========================================
-#   ALT/OPTION KEY COMPATIBILITY FIX
+#  KEYBOARD DIAGNOSTICS
 # ==========================================
+# Diagnoses Ctrl+Shift and Alt key compatibility for PolyTerm shortcuts.
+# Ctrl+Shift is the primary modifier; Alt is available as fallback.
 
 # OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -19,10 +21,10 @@ echo "󰄀  Detected OS: $OS"
 
 # --- Diagnostic Test ---
 echo "------------------------------------------------"
-echo "🔍 DIAGNOSTIC TEST: Press Alt+P now (or any Alt combo)"
-echo "If you see '^[p', your terminal is correctly sending Meta sequences."
-echo "If you see 'π' or nothing, it is NOT configured correctly."
-echo "Press ENTER after testing to see the fix instructions."
+echo "🔍 DIAGNOSTIC TEST: Press Ctrl+Shift+P now (or any Ctrl+Shift combo)"
+echo "If nothing happens or the palette opens, your terminal supports Ctrl+Shift."
+echo "If you see garbled output, try Alt+P as a fallback."
+echo "Press ENTER after testing to see fix instructions."
 printf "> "
 if [ -n "$BASH_VERSION" ]; then
     read -n 3 test_key

@@ -60,9 +60,9 @@ The `polyterm` command is your central hub for environment management.
 
 ---
 
-## 🎛️ Unified Command Palette (`Alt+p`)
+## 🎛️ Unified Command Palette (`Ctrl+Shift+P`)
 
-The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive menu triggered via `Alt+p` (or `Meta+p`) inside Tmux.
+The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive menu triggered via `Ctrl+Shift+P` inside Tmux/Zellij.
 
 ### Features:
 - **Launch App**: Search and launch CLI tools defined in your Brewfile with dynamic descriptions.
@@ -70,13 +70,13 @@ The heart of PolyTerm is the **Command Palette**, a VSCode-style interactive men
 - **Scratchpad**: Instant access to your daily worklog (`micro`). Configurable paths for Mac, WSL, and Linux via the **Settings** menu.
 - **Execute Shortcut**: Trigger complex Tmux window/pane operations via a menu.
 - **Maintenance**: Access `dot-sync`, `dot-pull`, and interactive environment reloading with component selection.
-- **Alt-Key Fix**: A built-in utility to diagnose and fix keyboard shortcut issues.
+- **Keyboard Diagnostics**: A built-in utility to diagnose and resolve keyboard shortcut issues.
 
 ### Theme System
 PolyTerm includes a dynamic theme system controlled by the `POLYTERM_THEME` setting.
 
 **Selecting a theme** (via palette):
-1. Open the Command Palette (`Alt+p`).
+1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Go to **Settings** → **Theme...**.
 3. Choose from available presets (Peppermint, Catppuccin Mocha, Tokyo Night) or any custom theme you've created.
 4. The fzf colors update immediately.
@@ -108,20 +108,20 @@ Zellij has its own theme system using `.kdl` files in `common/config/zellij/them
 
 ## 🗖 Tmux Shortcuts & Navigation
 
-PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience across all platforms.
+PolyTerm uses `Ctrl+Shift` keybindings for a consistent experience across all platforms.
 
 ### Window & Session Management
-- **`Alt+m`**: New Window
-- **`Alt+e`**: Kill Window
-- **`Alt+Up` / `Alt+Down`**: Cycle Windows
-- **`Alt+,`**: New Session
-- **`Alt+0`**: Cycle Sessions
-- **`Alt+w`**: Kill Session
+- **`Ctrl+Shift+m`**: New Window
+- **`Ctrl+Shift+e`**: Kill Window
+- **`Ctrl+Shift+Up` / `Ctrl+Shift+Down`**: Cycle Windows
+- **`Ctrl+Shift+,`**: New Session
+- **`Ctrl+Shift+0`**: Cycle Sessions
+- **`Ctrl+Shift+w`**: Kill Session
 
 ### Pane Management (2x2 Focus Grid)
-- **`Alt+1`**: Create/Split Pane (Maximum 4 per window)
-- **`Alt+2`**: Close/Kill Pane
-- **`Alt+Left` / `Alt+Right`**: Cycle Panes
+- **`Ctrl+Shift+1`**: Create/Split Pane (Maximum 4 per window)
+- **`Ctrl+Shift+2`**: Close/Kill Pane
+- **`Ctrl+Shift+Left` / `Ctrl+Shift+Right`**: Cycle Panes
 - **Ergonomics**: 
     - **Visual Padding**: An empty border header creates "air" at the top of each pane for a cleaner look.
     - **Active Highlighting**: The active pane is displayed with a bright blue border and full background brightness, while inactive panes are slightly dimmed for better focus.
@@ -132,8 +132,8 @@ PolyTerm uses standardized `Alt` (Meta) keybindings for a consistent experience 
 - **`Mouse Support`**: Mouse dragging also triggers selection and copies to the clipboard on release.
 
 ### System & Navigation
-- **`Alt+p`**: Open Command Palette
-- **`Alt+r`**: Reload Configuration (`dot-reload`). This reloads both Zsh and Tmux configs even if executed from a non-Tmux shell.
+- **`Ctrl+Shift+P`**: Open Command Palette
+- **`Ctrl+Shift+r`**: Reload Configuration (`dot-reload`). This reloads both Zsh and Tmux configs even if executed from a non-Tmux shell.
 
 ---
 
@@ -186,11 +186,11 @@ PolyTerm includes a customized **Micro** editor configuration located in `common
 
 ## 🛠️ Troubleshooting
 
-### Alt/Option Keys Not Working
-If `Alt+p` or other shortcuts fail:
-1.  **WSL/Linux**: Run the "Fix Alt Keys" option in the Command Palette or execute `polyterm palette` -> `Fix Alt Keys`.
-2.  **macOS (iTerm2)**: Go to `Settings` -> `Profiles` -> `Keys` and set `Left Option key` to `Esc+`.
-3.  **macOS (Terminal.app)**: Go to `Settings` -> `Profiles` -> `Keyboard` and check `Use Option as Meta key`.
+### Shortcuts Not Working
+If `Ctrl+Shift+P` or other shortcuts don't respond:
+1.  **Ensure Ctrl+Shift support**: Use iTerm2, WezTerm, Alacritty, or Windows Terminal. macOS Terminal.app does not distinguish Ctrl+Shift from Ctrl.
+2.  **WSL/Linux**: Run "Keyboard Diagnostics" in the Command Palette or execute `polyterm palette` → `Keyboard Diagnostics`.
+3.  **Check for conflicts**: Some terminal emulators or multiplexers may intercept Ctrl+Shift combinations. Check your terminal's keybinding settings.
 
 ### Monochrome Display
 If the terminal lacks color:
