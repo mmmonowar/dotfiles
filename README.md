@@ -46,16 +46,13 @@ PolyTerm installs packages in three tiers:
 
 ## 🔧 Troubleshooting
 
-### Command Palette Not Opening
+### Shortcuts Not Working
 
-If `Ctrl+Shift+P` doesn't open the Command Palette:
+If `Ctrl+Shift+P` (Command Palette) doesn't respond:
 
-- Try the fallback binding `Alt+p`.
-- **macOS**: The first-run onboarding wizard automatically detects your terminal (Terminal.app or iTerm2) and configures the Option key as Meta for Alt fallback.
-- **SSH session**: Terminal detection may fall back to applying both fixes. Open a new terminal window on the host machine for changes to take effect.
-- **Manual fix**: Run `polyterm palette` → Fix Alt Keys, or configure your terminal:
-  - **Terminal.app**: Settings → Profiles → Keyboard → Check "Use Option as Meta key"
-  - **iTerm2**: Settings → Profiles → Keys → Left Option key → Esc+
+- **Terminal support**: Use iTerm2, WezTerm, Alacritty, or Windows Terminal. macOS Terminal.app does not distinguish Ctrl+Shift from Ctrl.
+- **Run diagnostics**: `polyterm palette` → Keyboard Diagnostics to check your terminal's key support.
+- **Check conflicts**: Some terminal emulators may intercept Ctrl+Shift combinations in their settings.
 
 ### Quick Exit from Tmux/Zellij
 
