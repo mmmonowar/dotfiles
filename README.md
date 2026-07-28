@@ -5,7 +5,8 @@
 ## ✨ Highlights
 - **One-Command Install**: Setup your entire environment in seconds.
 - **Unified Command Palette**: `Ctrl+Shift+P` to launch apps, manage packages, and execute shortcuts.
-- **Self-Healing Sync**: `dot-sync` automatically repairs your environment by installing missing dependencies.
+- **Self-Healing Sync**: `dot-sync` pulls remote changes (with rebase) before committing, preventing divergent branches across multi-device workflows.
+- **Welcome Banner**: Themed ASCII art banner displayed at shell startup and after `clear`. Toggle via Settings.
 - **Auto-Updating Agent**: Gemini CLI stays up-to-date automatically in the background.
 - **Cross-Platform**: Seamlessly transition between Mac and Linux with consistent keybindings.
 - **Declarative**: All packages managed via Homebrew Brewfiles.
@@ -82,6 +83,8 @@ brew update && brew install polyterm && polyterm setup
 | **Update** | `brew update && brew upgrade polyterm` |
 | **Reinstall** | `brew reinstall polyterm` |
 | **Repair** | `polyterm setup` |
+| **Sync to GitHub** | `dot-sync` or `polyterm sync` |
+| **Pull updates** | `dot-pull` or `polyterm pull` |
 | **Uninstall** | `brew uninstall polyterm` |
 | **Remove symlinks** | `polyterm offboard` |
 | **Full removal** | `brew uninstall polyterm && polyterm offboard && rm -rf ~/polyterm ~/polyterm-data` |

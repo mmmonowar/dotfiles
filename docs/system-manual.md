@@ -13,7 +13,7 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 1.  **Core (`common/`)**: Shared logic and configurations used across all platforms.
 2.  **OS-Layer (`linux/`, `mac/`, `wsl/`)**: Platform-specific entry points and package definitions.
 3.  **CLI Interface (`bin/polyterm`)**: A wrapper that exposes system functions to the user.
-4.  **Automation Layer**: Shell functions (`dot-sync`, `dot-pull`) that handle Git and Homebrew synchronization.
+4.  **Automation Layer**: Shell functions (`dot-sync`, `dot-pull`) in `common/palette/sync.sh` that handle Git and Homebrew synchronization with automatic rebase to prevent divergent branches.
 
 ### Key Environment Variables
 
@@ -78,8 +78,8 @@ export DOTFILES_DATA="/your/custom/path/to/polyterm-data"
 ## 🔄 Core Workflows & Logic
 
 ### 1. Self-Healing Sync (`dot-sync`)
--   **Location**: Defined in `[os]/zshrc`.
--   **Logic**: Before updating the `Brewfile`, it runs `brew bundle check`. If unsatisfied, it automatically runs `brew bundle` to install/update dependencies.
+-   **Location**: Defined in `common/palette/sync.sh`.
+-   **Logic**: Before committing, it pulls remote changes with `--rebase` to prevent divergent branches across multi-device workflows. Falls back to merge if rebase fails. Before updating the `Brewfile`, it runs `brew bundle check`. If unsatisfied, it automatically runs `brew bundle` to install/update dependencies.
 -   **Failure Impact**: If the healing logic is corrupted, users might push incomplete configurations or use an out-of-sync environment.
 
 ### 2. Integrated Reloading (`dot-reload`)

@@ -142,10 +142,11 @@ PolyTerm uses `Ctrl+Shift` keybindings for a consistent experience across all pl
 - **Automated Cockpit**: Terminal launch automatically switches to Zsh and initializes a Tmux "default" session.
 - **Smart Dashboard**: A dedicated `Dashboard` session starts with `btop` and `docker ps` on launch.
 - **Unified Prompt**: Shell prompt displays `username@hostname $ ` (green username, blue hostname) across all platforms. Uses Zsh `%n` and `%m` expansion sequences for live system values.
+- **Welcome Banner**: A themed ASCII art banner displays at shell startup and after the `clear` command. Toggle via `POLYTERM_WELCOME` in Settings or set `POLYTERM_WELCOME="off"` in your `.polyterm_settings`.
 - **AI & LLM Aliases**: Use `gemini`, `gemini-flash`, and `gemini-pro` for context-aware AI interactions. All sessions include a **1-hour timeout** to manage costs.
 - **`search <query>`**: Instant DuckDuckGo search from the command line via `ddgr`.
-- **`dot-sync`**: Automated workflow that checks for missing dependencies (self-healing), runs `brew bundle dump`, git adds, commits with a timestamp, and pushes.
-- **`dot-pull`**: Automated workflow that pulls latest changes and runs `brew bundle` to stay in sync.
+- **`dot-sync`**: Automated workflow that pulls remote changes (with rebase), checks for missing dependencies (self-healing), runs `brew bundle dump`, git adds, commits with a timestamp, and pushes. Falls back to merge if rebase fails.
+- **`dot-pull`**: Automated workflow that pulls latest changes (with rebase) and runs `brew bundle` to stay in sync. Automatically sets `pull.rebase true` to prevent divergent branches across multi-device workflows.
 
 ---
 
