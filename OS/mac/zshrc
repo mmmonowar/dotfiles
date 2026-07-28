@@ -42,6 +42,11 @@ fi
 # --- 2. Theme (loaded from active POLYTERM_THEME) ---
 [[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
 
+# --- Welcome Banner & Clear Override ---
+[[ -f "$DOTFILES_ROOT/common/palette/welcome.sh" ]] && source "$DOTFILES_ROOT/common/palette/welcome.sh"
+alias clear='polyterm_clear'
+polyterm_welcome
+
 # Preferred applications (after settings-loader so POLYTERM_* vars are available)
 export PAGER="$POLYTERM_APP_PAGER"
 alias glow="$POLYTERM_APP_MARKDOWN_VIEWER -w $POLYTERM_GLOW_WIDTH"
@@ -147,8 +152,3 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && [[ -n "$POL
         fi
     fi
 fi
-
-# --- 8. Welcome Banner & Clear Override ---
-[[ -f "$DOTFILES_ROOT/common/palette/welcome.sh" ]] && source "$DOTFILES_ROOT/common/palette/welcome.sh"
-alias clear='polyterm_clear'
-polyterm_welcome

@@ -30,6 +30,11 @@ fi
 # Load all settings and themes
 [[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
 
+# --- Welcome Banner & Clear Override ---
+[[ -f "$DOTFILES_ROOT/common/palette/welcome.sh" ]] && source "$DOTFILES_ROOT/common/palette/welcome.sh"
+alias clear='polyterm_clear'
+polyterm_welcome
+
 # Optimization: Speed up Homebrew by disabling automatic cleanup after install
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 
@@ -71,11 +76,6 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && [[ -n "$POL
         tmux attach-session -t Dashboard 2>/dev/null || tmux new-session -s Dashboard
     fi
 fi
-
-# --- Welcome Banner & Clear Override ---
-[[ -f "$DOTFILES_ROOT/common/palette/welcome.sh" ]] && source "$DOTFILES_ROOT/common/palette/welcome.sh"
-alias clear='polyterm_clear'
-polyterm_welcome
 
 # 2. AESTHETICS & PROMPT
 # -----------------------------------------------------------------------------
