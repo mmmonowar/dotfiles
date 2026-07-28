@@ -4,6 +4,9 @@
 # 🎛️  COMMAND PALETTE (TMUX & ZELLIJ COMPATIBLE)
 # ==========================================
 
+# 0. Capture the absolute script path for reliable fzf reload binding
+readonly PALETTE_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/palette.sh"
+
 # 1. Capture the pane ID if inside Tmux
 if [[ -n "$TMUX" ]]; then
     TARGET_PANE=$(tmux display-message -p '#{client_pane_id}')

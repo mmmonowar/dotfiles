@@ -27,6 +27,9 @@ if is_agent_or_non_interactive; then
     return
 fi
 
+# CLI mode guard — skip heavy initialization for polyterm sync/pull/reload
+[[ -n "$POLYTERM_CLI" ]] && return
+
 # Load all settings and themes
 [[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
 

@@ -250,7 +250,7 @@ function main_menu() {
         --delimiter ' │ ' \
         --with-nth '1,2,3' \
         --info=inline \
-        --bind "change:reload($0 --list {q})")
+        --bind "change:reload($PALETTE_SCRIPT --list {q})")
 
     if [[ -z "$selection" ]]; then exit 0; fi
 

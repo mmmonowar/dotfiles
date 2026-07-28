@@ -108,42 +108,42 @@ case "$1" in
         ;;
     scan)
         echo -e "🛡️  ${BLUE}Starting Security Scan...${NC}"
-        zsh -ic "dot-scan"
+        POLYTERM_CLI=1 zsh -ic "dot-scan"
         ;;
     sync)
         echo -e "🔄  ${BLUE}Syncing Dotfiles...${NC}"
         # We use zsh -ic to ensure aliases/functions are loaded
-        zsh -ic "dot-sync"
+        POLYTERM_CLI=1 zsh -ic "dot-sync"
         ;;
     pull)
         echo -e "📥  ${BLUE}Pulling Updates...${NC}"
-        zsh -ic "dot-pull"
+        POLYTERM_CLI=1 zsh -ic "dot-pull"
         ;;
     reload)
         case "$2" in
             --all)
                 echo -e "  ${BLUE}Reloading All Configs...${NC}"
-                zsh -ic "dot-reload-all"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-all"
                 ;;
             --shell)
                 echo -e "  ${BLUE}Reloading Shell Configs...${NC}"
-                zsh -ic "dot-reload-shell"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-shell"
                 ;;
             --settings)
                 echo -e "  ${BLUE}Reloading PolyTerm Settings...${NC}"
-                zsh -ic "dot-reload-settings"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-settings"
                 ;;
             --mux-config)
                 echo -e "  ${BLUE}Reloading Multiplexer Config...${NC}"
-                zsh -ic "dot-reload-mux-config"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-mux-config"
                 ;;
             --mux-restart)
                 echo -e "  ${BLUE}Restarting Multiplexer...${NC}"
-                zsh -ic "dot-restart-mux"
+                POLYTERM_CLI=1 zsh -ic "dot-restart-mux"
                 ;;
             *)
                 echo -e "  ${BLUE}Interactive Reload...${NC}"
-                zsh -ic "dot-reload-interactive"
+                POLYTERM_CLI=1 zsh -ic "dot-reload-interactive"
                 ;;
         esac
         ;;
