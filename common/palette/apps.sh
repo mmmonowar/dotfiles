@@ -51,6 +51,31 @@ function install_app() {
         return
     fi
     
+    if grep -qiE "^(brew|cask)\s+\"$app_name\"" "$BREWFILE_PATH" 2>/dev/null; then
+        echo "󰄬  '$app_name' is already in your Brewfile."
+        sleep 1
+        main_menu
+        return
+    fi
+    
+    local entry_type="brew"
+    if brew info --cask "$app_name" >/dev/null 2>&1; then
+        entry_type="cask"
+    fi
+    
+    echo "$entry_type \"$app_name\"" >> "$BREWFILE_PATH"
+    echo "󰇥  Added to Brewfile as $entry_type package."
+    
+    local desc
+    if [[ "$entry_type" == "cask" ]]; then
+        desc=$(brew info --cask "$app_name" 2>/dev/null | head -n 2 | tail -n 1 | xargs)
+    else
+        desc=$(brew info "$app_name" 2>/dev/null | head -n 2 | tail -n 1 | xargs)
+    fi
+    if [[ -n "$desc" && ! "$desc" =~ "==>" ]]; then
+        echo "${app_name}|${desc}" >> "$META_PATH"
+    fi
+    
     trigger_and_sync "brew install --verbose $app_name"
 }
 
@@ -93,8 +118,10 @@ function uninstall_app() {
         if confirm_action "Uninstall $app_name ($type) and sync to GitHub?"; then
             if [[ "$OS_ENV" == "mac" ]]; then
                 sed -i '' "/^$app_name|/d" "$META_PATH" 2>/dev/null
+                sed -i '' "\|\"$app_name\"|d" "$BREWFILE_PATH" 2>/dev/null
             else
                 sed -i "/^$app_name|/d" "$META_PATH" 2>/dev/null
+                sed -i "\|\"$app_name\"|d" "$BREWFILE_PATH" 2>/dev/null
             fi
             
             if [[ "$type" == "cask" ]]; then

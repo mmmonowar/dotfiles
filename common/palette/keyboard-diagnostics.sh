@@ -22,7 +22,7 @@ echo "󰄀  Detected OS: $OS"
 # --- Diagnostic Test ---
 echo "------------------------------------------------"
 echo "🔍 DIAGNOSTIC TEST: Press Ctrl+Shift+P now (or any Ctrl+Shift combo)"
-echo "If nothing happens or the palette opens, your terminal supports Ctrl+Shift."
+echo "If nothing happens or the menu opens, your terminal supports Ctrl+Shift."
 echo "If you see garbled output, try Alt+P as a fallback."
 echo "Press ENTER after testing to see fix instructions."
 printf "> "
@@ -121,4 +121,4 @@ fi
 echo "------------------------------------------------"
 echo "🔄 Reloading Tmux configuration..."
 tmux source-file ~/.tmux.conf &> /dev/null
-echo "✅ Done! All shortcuts now use the ALT key."
+echo "✅ Done! All shortcuts now use the Ctrl+Shift key."

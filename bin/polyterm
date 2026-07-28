@@ -45,6 +45,7 @@ function show_help() {
     echo ""
     echo "Commands:"
     echo -e "  ${GREEN}palette${NC}      Launch the Tmux Command Palette"
+    echo -e "  ${GREEN}menu${NC}         Alias for palette — launch the Command Menu"
     echo -e "  ${GREEN}setup${NC}        Run the bootstrap installer"
     echo -e "  ${GREEN}offboard${NC}     Remove PolyTerm and restore system to defaults"
     echo -e "  ${GREEN}sync${NC}         Sync configurations to GitHub (dot-sync)"
@@ -146,7 +147,7 @@ case "$1" in
                 ;;
         esac
         ;;
-    palette)
+    menu|palette)
         # Check if inside Tmux or Zellij
         if [[ -n "$TMUX" || -n "$ZELLIJ" ]]; then
             "$REPO_PATH/common/palette/palette.sh"

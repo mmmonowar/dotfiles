@@ -25,10 +25,11 @@ function list_all_items() {
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "10" "󰇶  Push Changes" "${dim}Sync configs to GitHub${reset}" "ACTION" "push"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "11" "  Reload Configs..." "${dim}Selectively refresh shell, settings, or mux${reset}" "SUBCAT" "reload"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "12" "󰒃  Security Scan" "${dim}Run audit and vulnerability checks${reset}" "ACTION" "scan"
-        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "13" "󰌌  Keyboard Diagnostics" "${dim}Diagnose and resolve keyboard issues${reset}" "ACTION" "fix_alt"
+        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "13" "󰌌  Keyboard Diagnostics" "${dim}Diagnose and resolve keyboard issues${reset}" "ACTION" "keyboard_diagnostics"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "14" "󰖟  Device Manager..." "${dim}Scan, manage, SSH into devices${reset}" "CAT" "devices"
         printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "15" "󰒓  Configuration Manager..." "${dim}Manage app configs (Zellij)${reset}" "CAT" "config"
-        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "16" "󰅙  Exit" "${dim}Close the command palette${reset}" "ACTION" "exit"
+        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "16" "󰅙  Exit" "${dim}Close the command menu${reset}" "ACTION" "exit"
+        printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "17" "󰅖  Kill Gemini" "${dim}Terminate all Gemini processes${reset}" "ACTION" "kill_gemini"
     else
         # Flattened Global Discovery with Category Headers
         local cyan="\033[36m"
@@ -58,9 +59,12 @@ function list_all_items() {
         echo -e "${cyan}──── SETTINGS${header_reset}"
         local scan_push_status="[OFF]"; [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && scan_push_status="[ON]"
         local scan_pull_status="[OFF]"; [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
+        local welcome_status="[ON]"; [[ "$POLYTERM_WELCOME" == "off" ]] && welcome_status="[OFF]"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰒃  Security Check on Push $scan_push_status" "${dim}Toggle pre-push scan${reset}" "SETTING" "SCAN_PUSH"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰒃  Security Check on Pull $scan_pull_status" "${dim}Toggle post-pull scan${reset}" "SETTING" "SCAN_PULL"
+        ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰋗  Welcome Banner $welcome_status" "${dim}Toggle login welcome banner${reset}" "SETTING" "WELCOME"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰈙  Scratchpad Settings" "${dim}Configure paths and access${reset}" "ACTION" "scratchpad_settings"
+        ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰑐  Theme..." "${dim}Select or customize color theme${reset}" "ACTION" "THEME"
         # ──── SCRATCHPAD ────
         echo -e "${cyan}──── SCRATCHPAD${header_reset}"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰈙  Scratchpad" "${dim}Open worklog scratch-pad in micro${reset}" "ACTION" "scratchpad"
@@ -80,6 +84,7 @@ function list_all_items() {
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰇚  poly-sync" "${dim}Clone or update PolyOS repos from GitHub${reset}" "ACTION" "poly-sync"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "  Reload Configs..." "${dim}Selectively refresh configs${reset}" "SUBCAT" "reload"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰒃  Security Scan" "${dim}Run audit${reset}" "ACTION" "scan"
+        ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰅖  Kill Gemini" "${dim}Terminate all Gemini processes${reset}" "ACTION" "kill_gemini"
         # ──── DEVICES ────
         echo -e "${cyan}──── DEVICES${header_reset}"
         ((idx++)); printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "$idx" "󰖟  Scan Current Device" "${dim}Detect system and update device registry${reset}" "ACTION" "scan_device"
@@ -277,6 +282,7 @@ function main_menu() {
             case "$arg" in
                 SCAN_PUSH) update_setting "POLYTERM_SCAN_ON_PUSH" "$([[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]] && echo false || echo true)" ;;
                 SCAN_PULL) update_setting "POLYTERM_SCAN_ON_PULL" "$([[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && echo false || echo true)" ;;
+                WELCOME) update_setting "POLYTERM_WELCOME" "$([[ "$POLYTERM_WELCOME" == "on" ]] && echo off || echo on)" ;;
             esac
             settings_menu
             ;;
@@ -298,7 +304,8 @@ function main_menu() {
                 poly-sync) trigger_zsh_func "poly-sync" ;;
                 scan) trigger_zsh_func "dot-scan" ;;
                 kill_gemini) kill_gemini_processes ;;
-                fix_alt) clear; "$REPO_PATH/common/palette/fix-alt-keys.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
+                THEME) theme_menu ;;
+                keyboard_diagnostics) clear; "$REPO_PATH/common/palette/keyboard-diagnostics.sh"; printf "Press Enter to return..."; read -r; main_menu ;;
                 scan_device) scan_current_device ;;
                 ssh_device) ssh_into_device ;;
                 manual_device) manual_device_entry ;;

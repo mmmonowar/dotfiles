@@ -55,18 +55,6 @@ choose_multiplexer() {
     fi
 }
 
-install_core_apps() {
-    echo -e "\n${YELLOW}── Core Application Dependencies ────────${NC}"
-    echo -e "PolyTerm requires these apps for core features:"
-    echo -e "  ${GREEN}micro${NC} — Scratchpad editor (Command Palette default)"
-    echo -e "  ${GREEN}btop${NC}  — System monitor (Tmux Dashboard)"
-    echo -e "  ${GREEN}glow${NC}  — Markdown viewer (Command Palette docs)"
-    echo ""
-    echo -e "${BLUE}Installing core app dependencies...${NC}"
-    brew install micro btop glow
-    echo -e "${GREEN}✅  Core apps installed.${NC}"
-}
-
 choose_apps() {
     echo -e "\n${YELLOW}── Optional Applications ────────────────${NC}"
 
