@@ -24,6 +24,7 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 | `OS_ENV` | Each zshrc | Current platform: `mac`, `wsl`, or `linux` |
 | `POLYTERM_THEME` | `.polyterm_settings` | Active theme name |
 | `POLYTERM_MULTIPLEXER` | `.polyterm_settings` | Auto-start multiplexer: `tmux`, `zellij`, or `none` |
+| `POLYTERM_WELCOME` | `.polyterm_settings` | Welcome banner toggle: `on` (default) or `off` |
 
 `DOTFILES_DATA` can be overridden via `~/.zshenv` (sourced before `.zshrc`):
 ```bash
@@ -62,6 +63,7 @@ export DOTFILES_DATA="/your/custom/path/to/polyterm-data"
 | `settings.sh` | System Preferences | `settings_menu`, `scratchpad_menu`, `open_scratchpad`. |
 | `shortcuts.sh` | Tmux Automation | `shortcuts_menu`, `execute_shortcut`. |
 | `menu.sh` | Palette Core | `main_menu`, `list_all_items` (Global Search logic). |
+| `welcome.sh` | Welcome Banner | `polyterm_welcome`, `polyterm_clear` (login banner display). |
 
 ### 3. OS-Specific Directories (`linux/`, `mac/`, `wsl/`)
 | Path | Purpose | Interdependencies | If Damaged/Deleted |

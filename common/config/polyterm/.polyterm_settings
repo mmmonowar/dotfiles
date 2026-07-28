@@ -18,6 +18,7 @@
 export POLYTERM_SCAN_ON_PUSH=false
 export POLYTERM_SCAN_ON_PULL="true"
 export POLYTERM_THEME=peppermint
+export POLYTERM_WELCOME="on"
 export GEMINI_API_KEY=""  # Set your Gemini API key here (https://aistudio.google.com/app/apikey)
 
 # ── OS-level Overrides ───────────────────────────────────────────────────────

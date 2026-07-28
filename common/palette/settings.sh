@@ -374,10 +374,14 @@ function settings_menu() {
     local scan_pull_status="[OFF]"
     [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && scan_pull_status="[ON]"
 
+    local welcome_status="[ON]"
+    [[ "$POLYTERM_WELCOME" == "off" ]] && welcome_status="[OFF]"
+
     local settings_options="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "1" "󰒃  Security Check on Push $scan_push_status" "${dim}Toggle pre-push scan${reset}" "SETTING" "SCAN_PUSH")"
     settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "2" "󰒃  Security Check on Pull $scan_pull_status" "${dim}Toggle post-pull scan${reset}" "SETTING" "SCAN_PULL")"
-    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰈙  Scratchpad Settings..." "${dim}Configure paths and access${reset}" "ACTION" "SCRATCHPAD")"
-    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "4" "󰑐  Theme... $theme_name" "${dim}Select or customize color theme${reset}" "ACTION" "THEME")"
+    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "3" "󰋗  Welcome Banner $welcome_status" "${dim}Toggle login welcome banner${reset}" "SETTING" "WELCOME")"
+    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "4" "󰈙  Scratchpad Settings..." "${dim}Configure paths and access${reset}" "ACTION" "SCRATCHPAD")"
+    settings_options+="$(printf "%3s │ %-35s │ %b │ %-8s │ %s\n" "5" "󰑐  Theme... $theme_name" "${dim}Select or customize color theme${reset}" "ACTION" "THEME")"
 
     local selection=$(echo -e "$settings_options" | fzf \
         --ansi \
@@ -399,6 +403,10 @@ function settings_menu() {
                 ;;
             SCAN_PULL)
                 update_setting "POLYTERM_SCAN_ON_PULL" "$([[ "$POLYTERM_SCAN_ON_PULL" == "true" ]] && echo false || echo true)"
+                settings_menu
+                ;;
+            WELCOME)
+                update_setting "POLYTERM_WELCOME" "$([[ "$POLYTERM_WELCOME" == "on" ]] && echo off || echo on)"
                 settings_menu
                 ;;
             SCRATCHPAD) scratchpad_menu ;;

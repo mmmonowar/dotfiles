@@ -147,3 +147,8 @@ if [[ -o interactive ]] && [[ -z "$TMUX" ]] && [[ -z "$ZELLIJ" ]] && [[ -n "$POL
         fi
     fi
 fi
+
+# --- 8. Welcome Banner & Clear Override ---
+[[ -f "$DOTFILES_ROOT/common/palette/welcome.sh" ]] && source "$DOTFILES_ROOT/common/palette/welcome.sh"
+alias clear='polyterm_clear'
+polyterm_welcome
