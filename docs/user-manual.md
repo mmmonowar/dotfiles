@@ -141,6 +141,7 @@ PolyTerm uses `Ctrl+Shift` keybindings for a consistent experience across all pl
 
 - **Automated Cockpit**: Terminal launch automatically switches to Zsh and initializes a Tmux "default" session.
 - **Smart Dashboard**: A dedicated `Dashboard` session starts with `btop` and `docker ps` on launch.
+- **Unified Prompt**: Shell prompt displays `username@hostname $ ` (green username, blue hostname) across all platforms. Uses Zsh `%n` and `%m` expansion sequences for live system values.
 - **AI & LLM Aliases**: Use `gemini`, `gemini-flash`, and `gemini-pro` for context-aware AI interactions. All sessions include a **1-hour timeout** to manage costs.
 - **`search <query>`**: Instant DuckDuckGo search from the command line via `ddgr`.
 - **`dot-sync`**: Automated workflow that checks for missing dependencies (self-healing), runs `brew bundle dump`, git adds, commits with a timestamp, and pushes.
