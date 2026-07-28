@@ -51,7 +51,7 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 ### 3. OS-Specific Directories (`linux/`, `mac/`, `wsl/`)
 | Path | Purpose | Interdependencies | If Damaged/Deleted |
 | :--- | :--- | :--- | :--- |
-| `zshrc` | Primary shell configuration for the platform. | Sources `common/` logic | Shell startup fails; aliases, functions, and prompt settings lost. |
+| `zshrc` | Primary shell configuration for the platform. | Sources `common/` logic | Shell startup fails; aliases, functions, and `username@hostname` prompt lost. |
 | `Brewfile.core` | Essential system packages (Git, Tmux, FZF). | Used by `dot-sync` (Healing) | Core tools cannot be automatically reinstalled or updated. |
 | `Brewfile.apps` | User-installed CLI tools and apps. | Managed by Palette + `dot-sync` | Application list is lost; difficult to reproduce the environment. |
 | `apps_meta.txt` | Cached descriptions for the App Launcher. | Used by `palette.sh` | Palette becomes slow as it fetches descriptions from Homebrew. |

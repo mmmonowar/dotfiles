@@ -81,7 +81,7 @@ fi
 
 # 2. AESTHETICS & PROMPT
 # -----------------------------------------------------------------------------
-PROMPT='%F{cyan}[%1d] > %f'
+PROMPT='%F{green}%n%f@%F{blue}%m%f $ '
 export COLORTERM=truecolor
 export MICRO_TRUECOLOR=1
 

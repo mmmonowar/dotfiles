@@ -77,7 +77,7 @@ zstyle ':completion:*' menu select
 # --- 5. Custom Peppermint Prompt ---
 # Minimal, high contrast, clean. Teal indicator with path relative to home.
 autoload -Uz colors && colors
-PROMPT="%F{#14b8a6}⸎ %F{#b4b4b4}%~ %F{#89d287}›%f "
+PROMPT='%F{green}%n%f@%F{blue}%m%f $ '
 
 # --- 6. Aliases & Functions ---
 
