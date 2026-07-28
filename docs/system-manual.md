@@ -15,6 +15,21 @@ PolyTerm is designed as a modular, cross-platform terminal environment. It uses 
 3.  **CLI Interface (`bin/polyterm`)**: A wrapper that exposes system functions to the user.
 4.  **Automation Layer**: Shell functions (`dot-sync`, `dot-pull`) that handle Git and Homebrew synchronization.
 
+### Key Environment Variables
+
+| Variable | Set In | Purpose |
+|----------|--------|---------|
+| `DOTFILES_ROOT` | Each zshrc (line 9/16) | Root of the dotfiles repo (auto-resolved from zshrc symlink path) |
+| `DOTFILES_DATA` | Each zshrc (line 10/17) + settings-loader.sh | Root of the mutable data repo (default: `$DOTFILES_ROOT/../polyterm-data`) |
+| `OS_ENV` | Each zshrc | Current platform: `mac`, `wsl`, or `linux` |
+| `POLYTERM_THEME` | `.polyterm_settings` | Active theme name |
+| `POLYTERM_MULTIPLEXER` | `.polyterm_settings` | Auto-start multiplexer: `tmux`, `zellij`, or `none` |
+
+`DOTFILES_DATA` can be overridden via `~/.zshenv` (sourced before `.zshrc`):
+```bash
+export DOTFILES_DATA="/your/custom/path/to/polyterm-data"
+```
+
 ---
 
 ## 📂 Directory & File Map

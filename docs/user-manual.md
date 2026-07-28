@@ -149,6 +149,44 @@ PolyTerm uses `Ctrl+Shift` keybindings for a consistent experience across all pl
 
 ---
 
+## 📁 Data Storage
+
+PolyTerm separates **read-only configuration** from **mutable user state** across two repositories:
+
+| Repository | Contains | Mutable? |
+|------------|----------|----------|
+| `dotfiles/` | Scripts, shell configs, themes, Brewfiles, docs | No — read-only code |
+| `dotfiles-data/` | Settings, device registry, caches, per-device data | Yes — user state |
+
+### What goes where
+
+**`dotfiles/`** (shared across all devices):
+- `common/config/tmux/`, `common/config/zellij/` — multiplexer configs
+- `common/palette/` — command palette scripts
+- `OS/{mac,wsl,linux}/zshrc` — shell configs
+- `common/config/themes/` — built-in theme JSONs
+
+**`dotfiles-data/`** (per-device isolation):
+- `settings/.polyterm_settings` — runtime preferences
+- `settings/themes/` — user-custom themes
+- `device-list.yml` — multi-device registry
+- `cache/OS/{mac,wsl,linux}/` — cached app descriptions
+- `hledger/<device-id>/` — per-device hledger journals
+- `editor/buffers/<device-id>/` — per-device Micro editor state
+- `scratchpad/<device-id>/` — per-device scratchpad content
+
+### Customizing the data path
+
+By default, `dotfiles-data/` lives as a sibling to `dotfiles/` (e.g., `~/polyterm-data`). To change this, set `DOTFILES_DATA` in `~/.zshenv` before the shell loads:
+
+```bash
+export DOTFILES_DATA="/your/custom/path/to/polyterm-data"
+```
+
+This works on all platforms since `~/.zshenv` is sourced before `~/.zshrc`.
+
+---
+
 ## 🛡️ Security & Vulnerability Management
 
 PolyTerm prioritizes the security of your development environment with integrated scanning and automated remediation.
