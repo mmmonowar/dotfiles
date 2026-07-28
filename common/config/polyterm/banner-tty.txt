@@ -1,0 +1,16 @@
+P O L Y O S / P O L Y T E R M ===============================================================                                                          
+                                                                                                                                                       
+             *                 PolyTerm - A Terminal Service for PolyOS                                                                                 
+            / \\                                                                                                                                        
+     *     /   \\     *         Date: \d                                                                                                                
+      \\   /  |  \\   /          Time: \t                                                                                                     
+       \\ /   |   \\ /                                                                                                                                  
+   *----x----*----x----*       Device: \n \o                                                                                                            
+      / \\   |   / \\           OS: \S \s \m                                                                                                           
+     /   \\  |  /   \\                                                                                                                                 
+    *     \\   /     *         \l                                                                                                                      
+           \\ /                Users: \u                                                                                                               
+            *                                                                                                                                          
+                  Copyright (c) 2026 Muhammad Mustafa Monowar (MIT License)                                                                            
+                                                                                                                                                       
+==============================================================================================
