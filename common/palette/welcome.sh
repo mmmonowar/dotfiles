@@ -7,15 +7,24 @@
 # and after the `clear` command. Theme-aware coloring via POLYTERM_COLOR_*.
 
 function polyterm_welcome() {
-    [[ "${POLYTERM_WELCOME:-on}" == "off" ]] && return 0
-    [[ -z "$DOTFILES_ROOT" ]] && return 0
+    # Debug mode: set POLYTERM_WELCOME_DEBUG=true to trace exit paths
+    if [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]]; then
+        echo "[welcome] POLYTERM_WELCOME=${POLYTERM_WELCOME:-on}" >&2
+        echo "[welcome] DOTFILES_ROOT=${DOTFILES_ROOT:-UNSET}" >&2
+        echo "[welcome] TERM=${TERM:-UNSET}" >&2
+        echo "[welcome] is_interactive=$([[ $- == *i* ]] && echo yes || echo no)" >&2
+        echo "[welcome] TTY=$([[ -t 1 ]] && echo yes || echo no)" >&2
+    fi
+
+    [[ "${POLYTERM_WELCOME:-on}" == "off" ]] && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: POLYTERM_WELCOME=off" >&2; return 0; }
+    [[ -z "$DOTFILES_ROOT" ]] && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: DOTFILES_ROOT empty" >&2; return 0; }
 
     if (( ${+functions[is_agent_or_non_interactive]} )); then
-        is_agent_or_non_interactive && return 0
+        is_agent_or_non_interactive && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: is_agent_or_non_interactive returned true" >&2; return 0; }
     else
-        [[ $- != *i* ]] && return 0
-        [[ "$TERM" == "dumb" ]] && return 0
-        [[ ! -t 1 ]] && return 0
+        [[ $- != *i* ]] && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: \$- lacks 'i'" >&2; return 0; }
+        [[ "$TERM" == "dumb" ]] && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: TERM=dumb" >&2; return 0; }
+        [[ ! -t 1 ]] && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: stdout not a tty (PTY=$([[ -t 1 ]] && echo yes || echo no))" >&2; return 0; }
     fi
 
     local banner_file
@@ -28,7 +37,10 @@ function polyterm_welcome() {
             ;;
     esac
 
-    [[ ! -f "$banner_file" ]] && return 0
+    [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] banner_file=$banner_file" >&2
+    [[ ! -f "$banner_file" ]] && { [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] exit: banner file not found at $banner_file" >&2; return 0; }
+
+    [[ "${POLYTERM_WELCOME_DEBUG}" == "true" ]] && echo "[welcome] banner file found, rendering..." >&2
 
     local _date _time _hostname _os_env _sysname _shell _machine _load _users
     _date=$(date +"%Y-%m-%d")
