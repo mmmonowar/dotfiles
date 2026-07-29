@@ -18,6 +18,16 @@ function dot-sync() {
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
 
+        # Git health check before sync
+        [[ -f "$DOT_PATH/common/palette/git-health.sh" ]] && source "$DOT_PATH/common/palette/git-health.sh"
+        if type gh-check-all &>/dev/null; then
+            local _gh_stash=""
+            _gh_stash=$(gh-check-all "$DOT_PATH" "false" "true" 2>&1 | tail -1)
+            if echo "$_gh_stash" | grep -qE '^[0-9]+'; then
+                _gh_stash_msg="$_gh_stash"
+            fi
+        fi
+
         if [[ "$POLYTERM_SCAN_ON_PUSH" == "true" ]]; then
             echo "  Running pre-sync security check..."
             dot-scan
@@ -80,7 +90,10 @@ function dot-sync() {
         git add -A
         local timestamp
         timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
-        git commit -m "Sync: ${timestamp} [$(hostname)]"
+        local file_summary
+        file_summary=$(git diff --cached --stat -- ':!*.lock' ':(exclude).git/' 2>/dev/null | tail -1 | grep -oE '[0-9]+ files? changed' || echo "")
+        local commit_msg="Sync: ${timestamp} [$(hostname)]${file_summary:+ — ${file_summary}}"
+        git commit -m "$commit_msg"
         local remote_url
         remote_url=$(git remote get-url origin 2>/dev/null)
         if [[ "$remote_url" == *"mmmonowar/dotfiles"* ]]; then
@@ -94,11 +107,19 @@ function dot-sync() {
         # Sync polyterm-data (private data repo)
         if [[ -d "$DATA_PATH/.git" ]]; then
             echo "  Syncing polyterm-data to GitHub..."
-            cd "$DATA_PATH"
+            cd "$DATA_PATH" || { echo "  Could not cd to polyterm-data"; cd "$current_dir"; return 1; }
             git pull --rebase --quiet origin main 2>/dev/null || true
             git add -A
-            git commit -m "Sync: ${timestamp} [$(hostname)]" || true
+            local data_summary
+            data_summary=$(git diff --cached --stat ':!*.lock' ':(exclude).git/' 2>/dev/null | tail -1 | grep -oE '[0-9]+ files? changed' || echo "")
+            local data_commit_msg="Sync: ${timestamp} [$(hostname)]${data_summary:+ — ${data_summary}}"
+            git commit -m "$data_commit_msg" || true
             git push origin main && echo "  polyterm-data pushed to GitHub." || echo "  Failed to push polyterm-data."
+        fi
+
+        # Pop stash if we stashed dirty worktree
+        if [[ -n "$_gh_stash_msg" ]] && type gh-stash-pop &>/dev/null; then
+            gh-stash-pop "$DOT_PATH" "$_gh_stash_msg"
         fi
 
         cd "$current_dir"
@@ -119,6 +140,17 @@ function dot-pull() {
 
     if [ -d "$DOT_PATH" ]; then
         cd "$DOT_PATH"
+
+        # Git health check before pull
+        [[ -f "$DOT_PATH/common/palette/git-health.sh" ]] && source "$DOT_PATH/common/palette/git-health.sh"
+        local _gh_stash_pull=""
+        if type gh-check-all &>/dev/null; then
+            _gh_stash_pull=$(gh-check-all "$DOT_PATH" "false" "true" 2>&1 | tail -1)
+            if echo "$_gh_stash_pull" | grep -qE '^[0-9]+'; then
+                _gh_stash_msg="$_gh_stash_pull"
+            fi
+        fi
+
         echo "  Fetching updates from GitHub..."
         if git pull --rebase --verbose origin main; then
             echo "  Installing any new dependencies from Brewfile..."
@@ -141,10 +173,17 @@ function dot-pull() {
                 dot-scan
             fi
 
+            # Pop stash if we stashed dirty worktree
+            if [[ -n "$_gh_stash_msg" ]] && type gh-stash-pop &>/dev/null; then
+                gh-stash-pop "$DOT_PATH" "$_gh_stash_msg"
+            fi
+
             # Pull polyterm-data (private data repo)
             if [[ -d "$DATA_PATH/.git" ]]; then
                 echo "  Fetching polyterm-data updates..."
-                cd "$DATA_PATH" && git pull --rebase origin main && cd "$DOT_PATH"
+                cd "$DATA_PATH" || { echo "  Could not cd to polyterm-data"; cd "$current_dir"; return 1; }
+                git pull --rebase origin main
+                cd "$DOT_PATH" || { echo "  Could not return to dotfiles"; return 1; }
             fi
 
             # Reload configs automatically

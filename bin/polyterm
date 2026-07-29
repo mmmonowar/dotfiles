@@ -50,6 +50,7 @@ function show_help() {
     echo -e "  ${GREEN}offboard${NC}     Remove PolyTerm and restore system to defaults"
     echo -e "  ${GREEN}sync${NC}         Sync configurations to GitHub (dot-sync)"
     echo -e "  ${GREEN}pull${NC}         Pull latest updates from GitHub (dot-pull)"
+    echo -e "  ${GREEN}git-health${NC}   Run git health checks and diagnostics"
     echo -e "  ${GREEN}reload${NC}       Reload configurations (interactive by default)"
     echo -e "  ${GREEN}--start ${GREEN}tmux|zellij${NC}  Start multiplexer (install if missing)"
     echo -e "  ${GREEN}quit${NC}          Quit current Tmux or Zellij session"
@@ -146,6 +147,10 @@ case "$1" in
                 POLYTERM_CLI=1 zsh -ic "dot-reload-interactive"
                 ;;
         esac
+        ;;
+    git-health)
+        echo -e "🩺  ${BLUE}Running Git Health Check...${NC}"
+        POLYTERM_CLI=1 zsh -ic "source \"$REPO_PATH/common/palette/git-health.sh\" && gh-check-all \"$REPO_PATH\" && gh-report \"$REPO_PATH\""
         ;;
     menu|palette)
         # Check if inside Tmux or Zellij
