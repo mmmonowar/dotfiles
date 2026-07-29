@@ -8,6 +8,10 @@ function palette() {
     source "$DOTFILES_ROOT/common/palette/palette.sh"
 }
 
+function menu() {
+    palette "$@"
+}
+
 function dot-sync() {
     local DOT_PATH="$DOTFILES_ROOT"
     local current_dir=$(pwd)
