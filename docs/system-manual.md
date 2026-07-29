@@ -64,6 +64,7 @@ export DOTFILES_DATA="/your/custom/path/to/polyterm-data"
 | `shortcuts.sh` | Tmux Automation | `shortcuts_menu`, `execute_shortcut`. |
 | `menu.sh` | Palette Core | `main_menu`, `list_all_items` (Global Search logic). |
 | `welcome.sh` | Welcome Banner | `polyterm_welcome`, `polyterm_clear` (login banner display). |
+| `git-health.sh` | Git Health | `gh-check-all` (pre-flight checks for stale MERGE_HEAD, lock files, dirty worktree, bogus filenames, CRLF, divergent branches), `gh-report` (diagnostics summary). |
 
 ### 3. OS-Specific Directories (`linux/`, `mac/`, `wsl/`)
 | Path | Purpose | Interdependencies | If Damaged/Deleted |
