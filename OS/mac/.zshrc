@@ -105,6 +105,7 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 alias search='ddgr --reg en-us --num 5'
 alias glow="$POLYTERM_APP_MARKDOWN_VIEWER -w $POLYTERM_GLOW_WIDTH"
 alias poly-sync="gh repo list \${POLYTERM_GITHUB_ORG:-\$(gh api user -q .login)} --topic polyos --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | while read -r repo; do dir=\${repo##*/}; if [ -d \"\$dir\" ]; then echo \"󰇚 Updating \$dir...\"; git -C \"\$dir\" pull; else echo \"󰇚 Cloning \$dir...\"; gh repo clone \"\$repo\"; fi; done"
+alias menu='palette'
 alias reload-tmux='dot-reload'
 alias restart-tmux='tmux kill-server'
 alias kbcheck='hidutil property --get "UserKeyMapping"'

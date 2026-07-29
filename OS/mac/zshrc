@@ -86,6 +86,8 @@ PROMPT='%F{green}%n%f@%F{blue}%m%f $ '
 
 # --- 6. Aliases & Functions ---
 
+alias menu='palette'
+
 # Palette Helpers & Automation (shared functions)
 [[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
 [[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
