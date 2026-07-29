@@ -10,6 +10,14 @@ export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
 export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
 export OS_ENV="mac"
 
+# Source modular commands (defines dot-sync, dot-pull, dot-reload, dot-scan)
+[[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
+
+# CLI mode guard — skip heavy initialization for polyterm sync/pull/reload
+[[ -n "$POLYTERM_CLI" ]] && return
+
 # Helper function to detect agent or non-interactive environments
 is_agent_or_non_interactive() {
     [[ $- != *i* ]] && return 0
@@ -25,9 +33,6 @@ if is_agent_or_non_interactive; then
     export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
     return
 fi
-
-# CLI mode guard — skip heavy initialization for polyterm sync/pull/reload
-[[ -n "$POLYTERM_CLI" ]] && return
 
 # Load all settings and themes
 [[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
@@ -107,11 +112,6 @@ alias fixkb='~/kb_toggle.sh'
 
 # 5. DOTFILES AUTOMATION & COMMANDS
 # -----------------------------------------------------------------------------
-# Source modular commands
-[[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
-[[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
-[[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
-
 # Always update security tools on start in background
 (brew upgrade gemini-cli shellcheck lynis &>/dev/null &)
 
