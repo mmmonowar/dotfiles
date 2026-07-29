@@ -173,6 +173,15 @@ fi
 # 6.25. Self-heal ownership for polyterm-data (defined after repo init)
 fix_root_ownership "$DATA_DIR" "polyterm-data directory"
 
+# 7. Config Audit & Merge — detect diverged managed configs before symlinking
+if [[ -f "$TARGET_DIR/common/palette/config-audit.sh" ]]; then
+    source "$TARGET_DIR/common/palette/config-audit.sh"
+    if type ca_offer_merge &>/dev/null; then
+        echo -e "🔍  ${BLUE}Checking existing config files...${NC}"
+        ca_offer_merge "$TARGET_DIR" "$OS_ENV" "false"
+    fi
+fi
+
 # 7. Backup & Symlink Configuration Files
 echo -e "🔗  ${BLUE}Setting up symbolic links...${NC}"
 

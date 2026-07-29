@@ -197,6 +197,19 @@ gh-check-divergent() {
     return 0
 }
 
+gh-check-config-audit() {
+    local dir="${1:-$DOTFILES_ROOT}"
+    local audit_file="$dir/common/palette/config-audit.sh"
+    if [[ -f "$audit_file" ]]; then
+        source "$audit_file"
+        if type ca_check_symlinks &>/dev/null; then
+            ca_check_symlinks "$dir" "$OS_ENV"
+        fi
+    else
+        _gh_log "Config audit module not available"
+    fi
+}
+
 gh-check-all() {
     local dir="${1:-.}"
     local skip_dirty="${2:-false}"
@@ -216,6 +229,7 @@ gh-check-all() {
     fi
     gh-check-bogus-filenames "$dir"
     gh-check-crlf "$dir"
+    gh-check-config-audit "$dir"
     if [[ "$skip_divergent" != "true" ]]; then
         gh-check-divergent "$dir"
     fi

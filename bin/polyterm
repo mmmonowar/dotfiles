@@ -51,6 +51,7 @@ function show_help() {
     echo -e "  ${GREEN}sync${NC}         Sync configurations to GitHub (dot-sync)"
     echo -e "  ${GREEN}pull${NC}         Pull latest updates from GitHub (dot-pull)"
     echo -e "  ${GREEN}git-health${NC}   Run git health checks and diagnostics"
+    echo -e "  ${GREEN}config-audit${NC} Audit managed config files (symlinks, divergence)"
     echo -e "  ${GREEN}reload${NC}       Reload configurations (interactive by default)"
     echo -e "  ${GREEN}--start ${GREEN}tmux|zellij${NC}  Start multiplexer (install if missing)"
     echo -e "  ${GREEN}quit${NC}          Quit current Tmux or Zellij session"
@@ -62,6 +63,7 @@ function show_help() {
     echo -e "  ${GREEN}--settings${NC}   Reload only PolyTerm settings"
     echo -e "  ${GREEN}--mux-config${NC} Reload only multiplexer configuration"
     echo -e "  ${GREEN}--mux-restart${NC} Restart multiplexer only"
+    echo -e "  ${GREEN}--repair${NC}     Detect and fix broken config symlinks"
     echo ""
 }
 
@@ -142,9 +144,29 @@ case "$1" in
                 echo -e "  ${BLUE}Restarting Multiplexer...${NC}"
                 POLYTERM_CLI=1 zsh -ic "dot-restart-mux"
                 ;;
+            --repair)
+                echo -e "  ${BLUE}Repairing Config Symlinks...${NC}"
+                POLYTERM_CLI=1 zsh -ic "dot-reload --repair"
+                ;;
             *)
                 echo -e "  ${BLUE}Interactive Reload...${NC}"
                 POLYTERM_CLI=1 zsh -ic "dot-reload-interactive"
+                ;;
+        esac
+        ;;
+    config-audit)
+        case "$2" in
+            --repair)
+                echo -e "🔧  ${BLUE}Repairing Config Symlinks...${NC}"
+                POLYTERM_CLI=1 zsh -ic "source \"$REPO_PATH/common/palette/config-audit.sh\" && ca_repair_symlinks \"$REPO_PATH\" \"$OS_ENV\""
+                ;;
+            --merge)
+                echo -e "🔀  ${BLUE}Merging Diverged Configs...${NC}"
+                POLYTERM_CLI=1 zsh -ic "source \"$REPO_PATH/common/palette/config-audit.sh\" && ca_offer_merge \"$REPO_PATH\" \"$OS_ENV\" \"false\""
+                ;;
+            *)
+                echo -e "🔍  ${BLUE}Running Config Audit...${NC}"
+                POLYTERM_CLI=1 zsh -ic "source \"$REPO_PATH/common/palette/config-audit.sh\" && ca_run_audit \"$REPO_PATH\" \"$OS_ENV\""
                 ;;
         esac
         ;;

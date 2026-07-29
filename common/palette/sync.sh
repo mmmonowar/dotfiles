@@ -168,6 +168,12 @@ function dot-pull() {
             brew bundle --verbose --file="$brew_core_path"
             brew bundle --verbose --file="$brew_apps_path"
             
+            # Config audit after pull — detect diverged managed configs
+            [[ -f "$DOT_PATH/common/palette/config-audit.sh" ]] && source "$DOT_PATH/common/palette/config-audit.sh"
+            if type ca_offer_merge &>/dev/null; then
+                ca_offer_merge "$DOT_PATH" "$OS_ENV" "false"
+            fi
+            
             if [[ "$POLYTERM_SCAN_ON_PULL" == "true" ]]; then
                 echo "  Running post-pull security scan..."
                 dot-scan
@@ -196,6 +202,15 @@ function dot-pull() {
 }
 
 function dot-reload() {
+    if [[ "$1" == "--repair" ]]; then
+        echo "  Running config repair..."
+        [[ -f "${DOTFILES_ROOT}/common/palette/config-audit.sh" ]] && source "${DOTFILES_ROOT}/common/palette/config-audit.sh"
+        if type ca_repair_symlinks &>/dev/null; then
+            ca_repair_symlinks "$DOTFILES_ROOT" "$OS_ENV"
+        fi
+        return 0
+    fi
+
     echo "  Reloading configurations..."
     [[ -f "$HOME/.zshrc" ]] && source "$HOME/.zshrc" 2>/dev/null
     # Re-source sync.sh so function definitions stay current after .zshrc sourcing

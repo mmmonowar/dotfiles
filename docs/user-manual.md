@@ -49,6 +49,9 @@ The `polyterm` command is your central hub for environment management.
 | `polyterm sync` | Dumps local `Brewfile`, commits, and pushes to GitHub |
 | `polyterm pull` | Fetches updates from GitHub and installs new dependencies |
 | `polyterm git-health` | Runs pre-flight git health checks and diagnostics (stale MERGE_HEAD, lock files, dirty worktree, CRLF, divergent branches) |
+| `polyterm config-audit` | Audits managed config files — checks symlink integrity, detects divergence from repo |
+| `polyterm config-audit --repair` | Fix broken symlinks and replace content-matching standalone files with symlinks |
+| `polyterm config-audit --merge` | Interactive per-hunk merge for diverged config files |
 | `polyterm reload` | Opens interactive reload menu to select which configs to refresh |
 | `polyterm reload --all` | Reload all configs non-interactively |
 | `polyterm reload --shell` | Reload only shell configs (zshrc, bashrc) |
