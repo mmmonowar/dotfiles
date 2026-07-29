@@ -2,13 +2,20 @@
 # =============================================================================
 # 🖥️  WSL (UBUNTU) - zshrc
 # =============================================================================
-
 # 1. PATH & ENVIRONMENT
 # -----------------------------------------------------------------------------
 # Determine the root of the dotfiles repository dynamically
 export DOTFILES_ROOT="${${${(%):-%x}:A}:h:h:h}"
 export DOTFILES_DATA="${DOTFILES_DATA:-${DOTFILES_ROOT}/../polyterm-data}"
 export OS_ENV="wsl"
+
+# Source modular commands (defines dot-sync, dot-pull, dot-reload, dot-scan)
+[[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
+[[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
+
+# CLI mode guard — skip heavy initialization for polyterm sync/pull/reload
+[[ -n "$POLYTERM_CLI" ]] && return
 
 # Helper function to detect agent or non-interactive environments
 is_agent_or_non_interactive() {
@@ -26,9 +33,6 @@ if is_agent_or_non_interactive; then
     [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     return
 fi
-
-# CLI mode guard — skip heavy initialization for polyterm sync/pull/reload
-[[ -n "$POLYTERM_CLI" ]] && return
 
 # Load all settings and themes
 [[ -f "$DOTFILES_ROOT/common/palette/settings-loader.sh" ]] && source "$DOTFILES_ROOT/common/palette/settings-loader.sh"
@@ -136,11 +140,6 @@ fi
 
 # 6. DOTFILES AUTOMATION & COMMANDS
 # -----------------------------------------------------------------------------
-# Source modular commands
-[[ -f "$DOTFILES_ROOT/common/palette/helpers.sh" ]] && source "$DOTFILES_ROOT/common/palette/helpers.sh"
-[[ -f "$DOTFILES_ROOT/common/palette/security.sh" ]] && source "$DOTFILES_ROOT/common/palette/security.sh"
-[[ -f "$DOTFILES_ROOT/common/palette/sync.sh" ]] && source "$DOTFILES_ROOT/common/palette/sync.sh"
-
 # Always update security tools on start in background
 (brew upgrade gemini-cli shellcheck lynis &>/dev/null &)
 
